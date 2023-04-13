@@ -9,14 +9,14 @@ function ChatTab({ name, lastMessage, imageUrl, unreadMessages }) {
 
       <div>
         <h3>{name}</h3>
-        <p>{lastMessage.text}</p>
+        <p className="grey">{lastMessage.text}</p>
       </div>
 
-      <div>
+      <div className="small">
         {unreadMessages && (
           <div className="ChatTab_unread-label">{unreadMessages.length}</div>
         )}
-        <div>{lastMessage.date}</div>
+        <div className="grey">{lastMessage.date}</div>
       </div>
     </div>
   );

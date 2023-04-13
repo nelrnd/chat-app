@@ -8,7 +8,7 @@
   --dark-10: #f7f7f7;
 }
 
-* {
+body {
   /* Default typographic values */
   font-family: 'Inter', 'Roboto', Arial, Helvetica, sans-serif;
   color: var(--dark-100);
@@ -19,6 +19,9 @@
 
 p {
   line-height: 150%;
+}
+h3 {
+  font-size: 1.125rem;
 }
 .large {
   font-size: 2rem;
