@@ -1,12 +1,17 @@
 import './App.css';
 
-import Avatar from './components/Avatar';
+import ChatTab from './components/ChatTab';
 
 function App() {
   return (
     <div className="App">
       <h1>Hello World</h1>
-      <Avatar imageUrl="https://marketplace.canva.com/EAFEits4-uw/1/0/1600w/canva-boy-cartoon-gamer-animated-twitch-profile-photo-oEqs2yqaL8s.jpg" />
+      <ChatTab
+        name={'Aubrey'}
+        lastMessage={{ text: 'Perfect', date: '16m' }}
+        imageUrl="https://marketplace.canva.com/EAFEits4-uw/1/0/1600w/canva-boy-cartoon-gamer-animated-twitch-profile-photo-oEqs2yqaL8s.jpg"
+        unreadMessages={['ud', 'id']}
+      />
     </div>
   );
 }
