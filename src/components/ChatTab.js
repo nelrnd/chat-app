@@ -2,14 +2,24 @@ import Avatar from './Avatar';
 
 import '../styles/ChatTab.css';
 
-function ChatTab({ name, lastMessage, imageUrl, unreadMessages }) {
+function ChatTab({
+  name,
+  lastMessage,
+  imageUrl,
+  unreadMessages,
+  isActive,
+  handleClick,
+}) {
   return (
-    <div className="ChatTab">
+    <div
+      className={'ChatTab' + (isActive ? ' active' : '')}
+      onClick={handleClick}
+    >
       <Avatar imageUrl={imageUrl} />
 
       <div>
         <h3>{name}</h3>
-        <p className="grey">{lastMessage.text}</p>
+        <p className={unreadMessages ? 'bold' : 'grey'}>{lastMessage.text}</p>
       </div>
 
       <div className="small">
