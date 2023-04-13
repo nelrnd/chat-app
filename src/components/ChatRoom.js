@@ -27,7 +27,7 @@ function ChatRoom() {
         />
         <Message text={'Sounds great to me'} date={'10:32AM'} />
         <Message text={'Are you arrived yet?'} date={'10:32AM'} isSent={true} />
-        <Message text={'I’ll be there in 2 mins'} date={'10:32AM'} />
+        <Message text={`I'll be there in 2 mins`} date={'10:32AM'} />
       </section>
 
       <section className="bottom">

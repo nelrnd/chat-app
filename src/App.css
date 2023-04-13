@@ -76,7 +76,18 @@ button {
   border: none;
   border-radius: 8px;
   cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+
   transition: all 0.2s ease-in-out;
+}
+
+button.small {
+  padding: 12px 24px;
+  font-size: 1.125rem;
 }
 
 button:hover {

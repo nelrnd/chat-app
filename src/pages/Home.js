@@ -1,5 +1,5 @@
 import Sidebar from '../components/Sidebar';
-import ChatRoom from '../components/ChatRoom';
+import Settings from '../components/Settings';
 
 import '../styles/Home.css';
 
@@ -7,7 +7,7 @@ function Home() {
   return (
     <div className="Home">
       <Sidebar />
-      <ChatRoom />
+      <Settings />
     </div>
   );
 }
