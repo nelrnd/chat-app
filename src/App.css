@@ -7,3 +7,30 @@
   --dark-20: #f3f4f6;
   --dark-10: #f7f7f7;
 }
+
+* {
+  /* Default typographic values */
+  font-family: 'Inter', 'Roboto', Arial, Helvetica, sans-serif;
+  color: var(--dark-100);
+  font-size: 1.125rem;
+}
+
+/* Typographic styles */
+
+p {
+  line-height: 150%;
+}
+.large {
+  font-size: 2rem;
+  line-height: 110%;
+}
+.bold {
+  font-weight: 600;
+}
+.grey {
+  color: var(--dark-70);
+}
+.small {
+  font-size: 0.875rem;
+  line-height: 130%;
+}
