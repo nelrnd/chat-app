@@ -3,6 +3,8 @@
 
   display: grid;
   grid-template-rows: auto 1fr auto;
+  max-height: 100%;
+  overflow: hidden;
 }
 
 .ChatRoom > header,
@@ -15,4 +17,9 @@
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 16px;
+}
+
+.ChatRoom > section.messages {
+  padding: 16px 36px;
+  overflow: auto;
 }
