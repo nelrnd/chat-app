@@ -1,0 +1,18 @@
+.ChatRoom {
+  background-color: var(--dark-20);
+
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.ChatRoom > header,
+.ChatRoom > section.bottom {
+  padding: 36px;
+  background-color: white;
+}
+
+.ChatRoom > section.bottom > form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+}
