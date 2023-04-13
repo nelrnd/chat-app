@@ -1,0 +1,11 @@
+.Sidebar {
+  width: 372px;
+}
+
+.Sidebar > header {
+  padding: 36px 20px;
+}
+
+.Sidebar > .SearchBar {
+  margin: 0 20px 32px;
+}

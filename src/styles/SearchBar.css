@@ -1,0 +1,34 @@
+.SearchBar {
+  position: relative;
+}
+
+.SearchBar > svg {
+  color: var(--dark-50);
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  pointer-events: none;
+}
+
+.SearchBar > input {
+  display: block;
+  width: 100%;
+  font-size: 1.125rem;
+  padding: 13px;
+  padding-left: calc(12px + 24px + 16px);
+  background-color: var(--dark-20);
+  border: none;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+  outline: 2px solid transparent;
+}
+
+.SearchBar > input:focus {
+  outline: 2px solid var(--dark-20);
+  background-color: transparent;
+  box-shadow: var(--shadow);
+}
+
+.SearchBar > input::placeholder {
+  color: var(--dark-50);
+}
