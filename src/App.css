@@ -41,17 +41,14 @@ h3 {
   line-height: 130%;
 }
 
-/* Basic input field style */
+/* Input field style */
 
 input {
   display: block;
+  width: 100%;
   font-size: 1.125rem;
   padding: 16px;
-  width: 100%;
-  background-color: var(--dark-20);
-  border: none;
   border-radius: 8px;
-  outline: 2px solid transparent;
   transition: all 0.2s ease-in-out;
 }
 
@@ -60,10 +57,35 @@ input::placeholder {
   opacity: 1;
 }
 
-input:focus {
+input.outline {
+  border: solid 2px var(--dark-20);
+}
+
+input.outline:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+input.filled {
+  background-color: var(--dark-20);
+  border: none;
+  outline: 2px solid transparent;
+}
+
+input.filled:focus {
   outline-color: var(--dark-20);
   background-color: transparent;
   box-shadow: var(--shadow);
+}
+
+/* Label style */
+
+label {
+  display: block;
+  color: var(--dark-70);
+  font-size: 0.875rem;
+  margin-left: 1rem;
+  margin-bottom: 6px;
 }
 
 /* Basic button style */
@@ -91,5 +113,34 @@ button.small {
 }
 
 button:hover {
-  filter: brightness(200%);
+  filter: brightness(90%);
+}
+
+button.primary {
+  color: white;
+  background-color: var(--primary);
+}
+
+button.full-width {
+  width: 100%;
+}
+
+.google-btn {
+  color: var(--dark-100);
+  justify-content: center;
+  border-radius: 1000px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 2px solid var(--dark-20);
+  margin-bottom: 40px;
+}
+
+/* Anchor style */
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }

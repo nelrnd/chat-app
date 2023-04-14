@@ -1,0 +1,37 @@
+.Login {
+  height: 100%;
+}
+
+.Login > .grid {
+  display: grid;
+  max-width: 1440px;
+  height: 100%;
+  margin: auto;
+  grid-template-columns: repeat(12, 1fr);
+  align-items: center;
+  gap: 1rem;
+}
+
+.Login .img-wrapper {
+  grid-column: 2 / span 5;
+}
+
+.Login .img-wrapper img {
+  max-width: 100%;
+}
+
+.Login .form-wrapper {
+  grid-column: 8 / span 3;
+}
+
+.Login h1 {
+  margin-bottom: 48px;
+}
+
+.Login form > div {
+  margin-bottom: 16px;
+}
+
+.Login form > button[type='submit'] {
+  margin-top: 20px;
+}
