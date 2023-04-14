@@ -116,6 +116,11 @@ button:hover {
   filter: brightness(90%);
 }
 
+button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 button.primary {
   color: white;
   background-color: var(--primary);
@@ -123,6 +128,19 @@ button.primary {
 
 button.full-width {
   width: 100%;
+}
+
+.icon-btn {
+  color: var(--dark-70);
+  padding: 6px;
+  background-color: transparent;
+  border: 2px solid var(--dark-20);
+  border-radius: 1000px;
+}
+
+.icon-btn > svg {
+  width: 20px;
+  height: 20px;
 }
 
 .google-btn {

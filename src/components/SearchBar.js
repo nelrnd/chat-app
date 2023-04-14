@@ -5,7 +5,7 @@ function SearchBar() {
   return (
     <div className="SearchBar">
       <SearchIcon />
-      <input type="search" placeholder="Search" />
+      <input type="search" placeholder="Search" className="filled" />
     </div>
   );
 }

@@ -32,7 +32,11 @@ function ChatRoom() {
 
       <section className="bottom">
         <form action="#">
-          <input type="text" placeholder="Type in something..." />
+          <input
+            type="text"
+            placeholder="Type in something..."
+            className="filled"
+          />
           <button type="submit">Submit</button>
         </form>
       </section>
