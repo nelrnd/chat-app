@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+
 import JoinLayout from '../components/JoinLayout';
 import Separator from '../components/Separator';
 
@@ -87,7 +89,7 @@ function EnterEmailSection({ userEmail, handleEmailChange, goNextStep }) {
       </button>
 
       <p>
-        You already have an account? <a href="/">Log in</a>
+        You already have an account? <Link to="/login">Log in</Link>
       </p>
     </>
   );

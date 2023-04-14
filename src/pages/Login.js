@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import JoinLayout from '../components/JoinLayout';
 import Separator from '../components/Separator';
@@ -55,7 +56,7 @@ function Login() {
         </button>
 
         <p className="small grey">
-          You don't have an account? <a href="/">Sign up</a>
+          You don't have an account? <Link to="/signup">Sign up</Link>
         </p>
       </form>
     </JoinLayout>
