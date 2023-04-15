@@ -137,7 +137,7 @@ function CreateAccountSection({
 }) {
   return (
     <>
-      <button className="icon-btn" onClick={goPrevStep}>
+      <button className="icon-btn" onClick={goPrevStep} type="button">
         <BackIcon />
       </button>
 
@@ -164,6 +164,7 @@ function CreateAccountSection({
           id="name"
           name="name"
           required
+          autoFocus
           value={userName}
           onChange={handleNameChange}
         />

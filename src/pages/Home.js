@@ -13,7 +13,6 @@ function Home() {
   if (!user && !loading) {
     return <Navigate to="/login" replace />;
   } else if (user && !loading) {
-    console.log(user.displayName);
     return (
       <div className="Home">
         <Sidebar />
