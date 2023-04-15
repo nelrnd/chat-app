@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
 import { auth } from '../firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { Navigate } from 'react-router-dom';
 
 import Sidebar from '../components/Sidebar';
@@ -8,14 +8,9 @@ import ChatRoom from '../components/ChatRoom';
 import '../styles/Home.css';
 
 function Home() {
-  const [authenticated, setAuthenticated] = useState(null);
+  const [user, loading] = useAuthState(auth);
 
-  useEffect(() => {
-    const user = auth.currentUser;
-    setAuthenticated(user);
-  }, []);
-
-  if (!authenticated) {
+  if (!user && !loading) {
     return <Navigate to="/login" replace />;
   } else {
     return (

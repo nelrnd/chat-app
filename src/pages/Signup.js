@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, signInWithGoogle } from '../firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 import JoinLayout from '../components/JoinLayout';
 import Separator from '../components/Separator';
@@ -15,6 +16,8 @@ function Signup() {
   const [userPwd, setUserPwd] = useState('');
 
   const [currentStep, setCurrentStep] = useState(1);
+
+  const [user] = useAuthState(auth);
 
   const handleEmailChange = (event) => setUserEmail(event.target.value);
   const handleNameChange = (event) => setUserName(event.target.value);
@@ -36,29 +39,33 @@ function Signup() {
   const goNextStep = () => setCurrentStep(currentStep + 1);
   const goPrevStep = () => setCurrentStep(currentStep - 1);
 
-  return (
-    <JoinLayout>
-      <form onSubmit={handleFormSubmit}>
-        {currentStep === 1 && (
-          <EnterEmailSection
-            userEmail={userEmail}
-            handleEmailChange={handleEmailChange}
-            goNextStep={goNextStep}
-          />
-        )}
-        {currentStep === 2 && (
-          <CreateAccountSection
-            userEmail={userEmail}
-            userName={userName}
-            userPwd={userPwd}
-            handleNameChange={handleNameChange}
-            handlePwdChange={handlePwdChange}
-            goPrevStep={goPrevStep}
-          />
-        )}
-      </form>
-    </JoinLayout>
-  );
+  if (user) {
+    return <Navigate to="/" replace />;
+  } else {
+    return (
+      <JoinLayout>
+        <form onSubmit={handleFormSubmit}>
+          {currentStep === 1 && (
+            <EnterEmailSection
+              userEmail={userEmail}
+              handleEmailChange={handleEmailChange}
+              goNextStep={goNextStep}
+            />
+          )}
+          {currentStep === 2 && (
+            <CreateAccountSection
+              userEmail={userEmail}
+              userName={userName}
+              userPwd={userPwd}
+              handleNameChange={handleNameChange}
+              handlePwdChange={handlePwdChange}
+              goPrevStep={goPrevStep}
+            />
+          )}
+        </form>
+      </JoinLayout>
+    );
+  }
 }
 
 function EnterEmailSection({ userEmail, handleEmailChange, goNextStep }) {

@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth, signInWithGoogle } from '../firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 import JoinLayout from '../components/JoinLayout';
 import Separator from '../components/Separator';
@@ -11,6 +12,8 @@ import { ReactComponent as GoogleIcon } from '../assets/icons/google.svg';
 function Login() {
   const [userEmail, setUserEmail] = useState('');
   const [userPwd, setUserPwd] = useState('');
+
+  const [user] = useAuthState(auth);
 
   const handleEmailChange = (event) => setUserEmail(event.target.value);
   const handlePwdChange = (event) => setUserPwd(event.target.value);
@@ -28,59 +31,63 @@ function Login() {
       });
   };
 
-  return (
-    <JoinLayout>
-      <form onSubmit={handleFormSubmit}>
-        <h1 className="large">Log in</h1>
+  if (user) {
+    return <Navigate to="/" replace />;
+  } else {
+    return (
+      <JoinLayout>
+        <form onSubmit={handleFormSubmit}>
+          <h1 className="large">Log in</h1>
 
-        <div className="row">
-          <label htmlFor="email">Email</label>
-          <input
-            className="outline"
-            type="email"
-            id="email"
-            name="email"
-            required
-            value={userEmail}
-            onChange={handleEmailChange}
-          />
-        </div>
+          <div className="row">
+            <label htmlFor="email">Email</label>
+            <input
+              className="outline"
+              type="email"
+              id="email"
+              name="email"
+              required
+              value={userEmail}
+              onChange={handleEmailChange}
+            />
+          </div>
 
-        <div className="row">
-          <label htmlFor="password">Password</label>
-          <input
-            className="outline"
-            type="password"
-            id="password"
-            name="password"
-            required
-            minLength="6"
-            value={userPwd}
-            onChange={handlePwdChange}
-          />
-        </div>
+          <div className="row">
+            <label htmlFor="password">Password</label>
+            <input
+              className="outline"
+              type="password"
+              id="password"
+              name="password"
+              required
+              minLength="6"
+              value={userPwd}
+              onChange={handlePwdChange}
+            />
+          </div>
 
-        <button type="submit" className="primary full-width">
-          Log in
-        </button>
+          <button type="submit" className="primary full-width">
+            Log in
+          </button>
 
-        <Separator />
+          <Separator />
 
-        <button
-          className="google-btn full-width"
-          type="button"
-          onClick={signInWithGoogle}
-        >
-          <GoogleIcon />
-          Log in with Google
-        </button>
+          <button
+            className="google-btn full-width"
+            type="button"
+            onClick={signInWithGoogle}
+          >
+            <GoogleIcon />
+            Log in with Google
+          </button>
 
-        <p className="small grey">
-          You don't have an account? <Link to="/signup">Sign up</Link>
-        </p>
-      </form>
-    </JoinLayout>
-  );
+          <p className="small grey">
+            You don't have an account? <Link to="/signup">Sign up</Link>
+          </p>
+        </form>
+      </JoinLayout>
+    );
+  }
 }
 
 export default Login;
