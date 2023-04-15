@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth, signInWithGoogle } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
@@ -28,6 +28,9 @@ function Signup() {
 
     try {
       await createUserWithEmailAndPassword(auth, userEmail, userPwd);
+      await updateProfile(auth.currentUser, {
+        displayName: userName,
+      });
     } catch (err) {
       console.error(`${err.code}: ${err.message}`);
     }
@@ -88,6 +91,12 @@ function EnterEmailSection({ userEmail, handleEmailChange, goNextStep }) {
           value={userEmail}
           onChange={handleEmailChange}
           ref={emailInput}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && isEmailValid) {
+              e.preventDefault();
+              goNextStep();
+            }
+          }}
         />
       </div>
 
