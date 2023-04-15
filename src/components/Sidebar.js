@@ -1,7 +1,12 @@
+import { auth } from '../firebase';
+import { signOut } from 'firebase/auth';
+
 import SearchBar from './SearchBar';
 import ChatTabs from './ChatTabs';
 
 import '../styles/Sidebar.css';
+
+const logout = () => signOut(auth);
 
 function Sidebar() {
   return (
@@ -13,6 +18,8 @@ function Sidebar() {
       <SearchBar />
 
       <ChatTabs />
+
+      <button onClick={logout}>Log out</button>
     </div>
   );
 }

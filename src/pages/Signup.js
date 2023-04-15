@@ -26,14 +26,11 @@ function Signup() {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
-    createUserWithEmailAndPassword(auth, userEmail, userPwd)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        console.log(user);
-      })
-      .catch((error) => {
-        console.error(`${error.code}: ${error.message}`);
-      });
+    try {
+      await createUserWithEmailAndPassword(auth, userEmail, userPwd);
+    } catch (err) {
+      console.error(`${err.code}: ${err.message}`);
+    }
   };
 
   const goNextStep = () => setCurrentStep(currentStep + 1);

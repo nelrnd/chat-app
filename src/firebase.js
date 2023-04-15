@@ -16,13 +16,10 @@ export const db = getFirestore(app);
 export const auth = getAuth(app);
 
 export async function signInWithGoogle() {
-  const provider = new GoogleAuthProvider();
-  signInWithPopup(auth, provider)
-    .then((result) => {
-      const user = result.user;
-      console.log(user);
-    })
-    .catch((error) => {
-      console.error(`${error.code}: ${error.message}`);
-    });
+  try {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+  } catch (err) {
+    console.error(`${err.code}: ${err.message}`);
+  }
 }

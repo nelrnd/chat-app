@@ -18,17 +18,14 @@ function Login() {
   const handleEmailChange = (event) => setUserEmail(event.target.value);
   const handlePwdChange = (event) => setUserPwd(event.target.value);
 
-  const handleFormSubmit = (event) => {
+  const handleFormSubmit = async (event) => {
     event.preventDefault();
 
-    signInWithEmailAndPassword(auth, userEmail, userPwd)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        console.log(user);
-      })
-      .catch((error) => {
-        console.error(`${error.code}: ${error.message}`);
-      });
+    try {
+      signInWithEmailAndPassword(auth, userEmail, userPwd);
+    } catch (err) {
+      console.error(`${err.code}: ${err.message}`);
+    }
   };
 
   if (user) {
