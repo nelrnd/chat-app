@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, signInWithGoogle } from '../firebase';
 
 import JoinLayout from '../components/JoinLayout';
 import Separator from '../components/Separator';
@@ -18,12 +20,25 @@ function Signup() {
   const handleNameChange = (event) => setUserName(event.target.value);
   const handlePwdChange = (event) => setUserPwd(event.target.value);
 
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+
+    createUserWithEmailAndPassword(auth, userEmail, userPwd)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log(user);
+      })
+      .catch((error) => {
+        console.error(`${error.code}: ${error.message}`);
+      });
+  };
+
   const goNextStep = () => setCurrentStep(currentStep + 1);
   const goPrevStep = () => setCurrentStep(currentStep - 1);
 
   return (
     <JoinLayout>
-      <form>
+      <form onSubmit={handleFormSubmit}>
         {currentStep === 1 && (
           <EnterEmailSection
             userEmail={userEmail}
@@ -83,12 +98,16 @@ function EnterEmailSection({ userEmail, handleEmailChange, goNextStep }) {
 
       <Separator />
 
-      <button className="google-btn full-width" type="button">
+      <button
+        className="google-btn full-width"
+        type="button"
+        onClick={signInWithGoogle}
+      >
         <GoogleIcon />
         Sign up with Google
       </button>
 
-      <p>
+      <p className="small grey">
         You already have an account? <Link to="/login">Log in</Link>
       </p>
     </>
@@ -145,6 +164,7 @@ function CreateAccountSection({
           id="pwd"
           name="password"
           required
+          minLength="6"
           value={userPwd}
           onChange={handlePwdChange}
         />

@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth, signInWithGoogle } from '../firebase';
 
 import JoinLayout from '../components/JoinLayout';
 import Separator from '../components/Separator';
@@ -13,9 +15,22 @@ function Login() {
   const handleEmailChange = (event) => setUserEmail(event.target.value);
   const handlePwdChange = (event) => setUserPwd(event.target.value);
 
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+
+    signInWithEmailAndPassword(auth, userEmail, userPwd)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log(user);
+      })
+      .catch((error) => {
+        console.error(`${error.code}: ${error.message}`);
+      });
+  };
+
   return (
     <JoinLayout>
-      <form>
+      <form onSubmit={handleFormSubmit}>
         <h1 className="large">Log in</h1>
 
         <div className="row">
@@ -39,6 +54,7 @@ function Login() {
             id="password"
             name="password"
             required
+            minLength="6"
             value={userPwd}
             onChange={handlePwdChange}
           />
@@ -50,7 +66,11 @@ function Login() {
 
         <Separator />
 
-        <button className="google-btn full-width" type="button">
+        <button
+          className="google-btn full-width"
+          type="button"
+          onClick={signInWithGoogle}
+        >
           <GoogleIcon />
           Log in with Google
         </button>
