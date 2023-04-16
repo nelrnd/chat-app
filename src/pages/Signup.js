@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { auth, signInWithGoogle } from '../firebase';
+import { addNewUserToFirestore, auth, signInWithGoogle } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import JoinLayout from '../components/JoinLayout';
@@ -28,9 +28,8 @@ function Signup() {
 
     try {
       await createUserWithEmailAndPassword(auth, userEmail, userPwd);
-      await updateProfile(auth.currentUser, {
-        displayName: userName,
-      });
+      await updateProfile(auth.currentUser, { displayName: userName });
+      await addNewUserToFirestore(auth.currentUser);
     } catch (err) {
       console.error(`${err.code}: ${err.message}`);
     }

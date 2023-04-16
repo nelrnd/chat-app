@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 
 const firebaseConfig = {
@@ -19,7 +19,22 @@ export async function signInWithGoogle() {
   try {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
+    await addNewUserToFirestore(auth.currentUser);
   } catch (err) {
     console.error(`${err.code}: ${err.message}`);
   }
+}
+
+export async function addNewUserToFirestore(user) {
+  const docRef = doc(db, 'users', user.uid);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    return;
+  }
+  await setDoc(docRef, {
+    displayName: user.displayName,
+    email: user.email,
+    photoURL: user.photoURL,
+    uid: user.uid,
+  });
 }
