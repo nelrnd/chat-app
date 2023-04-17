@@ -36,5 +36,16 @@ export async function addNewUserToFirestore(user) {
     email: user.email,
     photoURL: user.photoURL,
     uid: user.uid,
+    chats: [],
   });
+}
+
+export async function createNewChatDocument(uid1, uid2) {
+  const docId = uid1 < uid2 ? `${uid1}-${uid2}` : `${uid2}-${uid1}`;
+  const docData = {
+    members: [uid1, uid2],
+    messages: [],
+  };
+  await setDoc(doc(db, 'chats', docId), docData);
+  return docId;
 }

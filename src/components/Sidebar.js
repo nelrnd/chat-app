@@ -2,22 +2,42 @@ import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
 
 import SearchBar from './SearchBar';
+import SearchResults from './SearchResults';
 import ChatTabs from './ChatTabs';
 
 import '../styles/Sidebar.css';
 
 const logout = () => signOut(auth);
 
-function Sidebar() {
+function Sidebar({
+  searchTerm,
+  handleSearchTermChange,
+  currentChat,
+  handleChatTabClick,
+  handleSearchResultsTabClick,
+}) {
   return (
     <div className="Sidebar">
       <header>
         <h1>Chat App</h1>
       </header>
 
-      <SearchBar />
+      <SearchBar
+        searchTerm={searchTerm}
+        handleSearchTermChange={handleSearchTermChange}
+      />
 
-      <ChatTabs />
+      {searchTerm ? (
+        <SearchResults
+          searchTerm={searchTerm}
+          handleSearchResultsTabClick={handleSearchResultsTabClick}
+        />
+      ) : (
+        <ChatTabs
+          currentChat={currentChat}
+          handleChatTabClick={handleChatTabClick}
+        />
+      )}
 
       <button onClick={logout}>Log out</button>
     </div>
