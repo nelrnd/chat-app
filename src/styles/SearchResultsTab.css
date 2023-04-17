@@ -1,0 +1,16 @@
+.SearchResultsTab {
+  padding: 16px;
+  background-color: white;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 16px;
+}
+
+.SearchResultsTab h3 {
+  font-size: 400;
+}
+
+.SearchResultsTab:hover {
+  background-color: var(--dark-10);
+}
