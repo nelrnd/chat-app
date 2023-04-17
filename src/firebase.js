@@ -1,5 +1,12 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  arrayUnion,
+} from 'firebase/firestore';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 
 const firebaseConfig = {
@@ -48,4 +55,15 @@ export async function createNewChatDocument(uid1, uid2) {
   };
   await setDoc(doc(db, 'chats', docId), docData);
   return docId;
+}
+
+export async function addChatMessage(id, message) {
+  const docRef = doc(db, 'chats', id);
+  await updateDoc(docRef, {
+    messages: arrayUnion({
+      content: message,
+      from: auth.currentUser.uid,
+      date: Date.now(),
+    }),
+  });
 }

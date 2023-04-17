@@ -1,41 +1,57 @@
-import Message from './Message';
-
+import { useState } from 'react';
+import { doc } from 'firebase/firestore';
+import { addChatMessage, auth, db } from '../firebase';
+import { useDocumentData } from 'react-firebase-hooks/firestore';
 import '../styles/ChatRoom.css';
 
-function ChatRoom() {
+import Message from './Message';
+
+function ChatRoom({ currentChat }) {
+  const chatRef = doc(db, 'chats', currentChat);
+  const [chat] = useDocumentData(chatRef);
+
+  const uid = currentChat.split('-').find((i) => i !== auth.currentUser.uid);
+  const userRef = doc(db, 'users', uid);
+  const [user] = useDocumentData(userRef);
+
+  const [messageInput, setMessageInput] = useState('');
+
+  const handleMessageInputChange = (event) => {
+    setMessageInput(event.target.value);
+  };
+
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+    if (!messageInput) return;
+    addChatMessage(currentChat, messageInput);
+    setMessageInput('');
+  };
+
   return (
     <div className="ChatRoom">
       <header>
-        <h2 className="large">Aubrey</h2>
+        <h2 className="large">{user && user.displayName}</h2>
       </header>
 
       <section className="messages">
-        <Message
-          text={'Tuesday is fine for me. Where you want to meet?'}
-          date={'10:32AM'}
-        />
-        <Message text={'Restaurant or bar?'} date={'10:32AM'} isSent={true} />
-        <Message text={'I think a bar would be great'} date={'10:32AM'} />
-        <Message text={'Is that ok for you?'} date={'10:32AM'} />
-        <Message text={'Sure!'} date={'10:32AM'} isSent={true} />
-        <Message text={'Perfect!'} date={'10:32AM'} />
-        <Message text={'Do you have a place suggestion?'} date={'10:32AM'} />
-        <Message
-          text={'I propose Saint Ronavland bar'}
-          date={'10:32AM'}
-          isSent={true}
-        />
-        <Message text={'Sounds great to me'} date={'10:32AM'} />
-        <Message text={'Are you arrived yet?'} date={'10:32AM'} isSent={true} />
-        <Message text={`I'll be there in 2 mins`} date={'10:32AM'} />
+        {chat &&
+          chat.messages.map((msg) => (
+            <Message
+              content={msg.content}
+              date={msg.date}
+              isSent={msg.from === auth.currentUser.uid}
+            />
+          ))}
       </section>
 
       <section className="bottom">
-        <form action="#">
+        <form onSubmit={handleFormSubmit}>
           <input
             type="text"
             placeholder="Type in something..."
             className="filled"
+            value={messageInput}
+            onChange={handleMessageInputChange}
           />
           <button type="submit">Submit</button>
         </form>
