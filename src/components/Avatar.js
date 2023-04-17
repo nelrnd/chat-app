@@ -1,10 +1,12 @@
 import '../styles/Avatar.css';
 
-function Avatar({ imageUrl, size = 64 }) {
+import DefaultProfile from '../assets/images/default_profile.jpg';
+
+function Avatar({ imageUrl, size = 'medium' }) {
   return (
     <div
-      className="Avatar"
-      style={{ backgroundImage: `url(${imageUrl})`, width: size, height: size }}
+      className={`Avatar ${size}`}
+      style={{ backgroundImage: `url(${imageUrl || DefaultProfile})` }}
     ></div>
   );
 }
