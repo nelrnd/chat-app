@@ -66,9 +66,19 @@ export async function createNewChatDocument(users) {
 export async function createChatRefForUsers(users) {
   const chatId = getChatId(users);
   users.forEach(async (user) => {
+    // get other user infos
+    const uid = users.find((u) => u !== user);
+    const userRef = doc(db, 'users', uid);
+    const userSnap = await getDoc(userRef);
+    const userData = userSnap.data();
+
     const docRef = doc(db, 'users', user);
     await updateDoc(docRef, {
-      chats: arrayUnion(chatId),
+      chats: arrayUnion({
+        id: chatId,
+        displayName: userData.displayName,
+        profileUrl: userData.photoURL,
+      }),
     });
   });
 }
