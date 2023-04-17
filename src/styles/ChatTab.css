@@ -1,5 +1,6 @@
 .ChatTab {
-  padding: 20px;
+  padding: 20px 16px;
+  background-color: white;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -16,16 +17,16 @@
   border-right: 3px solid var(--primary);
 }
 
-.ChatTab > div:last-of-type > div {
+.ChatTab > div:last-of-type {
   margin-left: auto;
 }
 
-.ChatTab_unread-label {
+.UnreadLabel {
   width: 20px;
   height: 20px;
+  border-radius: 10px;
   color: white;
   background-color: var(--primary);
-  border-radius: 10px;
   display: grid;
   place-content: center;
   margin-bottom: 4px;
