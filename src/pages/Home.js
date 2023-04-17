@@ -26,7 +26,7 @@ function Home() {
     setSearchTerm('');
 
     // create new chat doc
-    const chatId = await createNewChatDocument(uid, auth.currentUser.uid);
+    const chatId = await createNewChatDocument([uid, auth.currentUser.uid]);
 
     // set current chat to chat Id
     setCurrentChat(chatId);

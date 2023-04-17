@@ -8,6 +8,7 @@ import {
   arrayUnion,
 } from 'firebase/firestore';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { getChatId } from './utils';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -47,14 +48,29 @@ export async function addNewUserToFirestore(user) {
   });
 }
 
-export async function createNewChatDocument(uid1, uid2) {
-  const docId = uid1 < uid2 ? `${uid1}-${uid2}` : `${uid2}-${uid1}`;
-  const docData = {
-    members: [uid1, uid2],
+export async function createNewChatDocument(users) {
+  const chatId = getChatId(users);
+  const chatRef = doc(db, 'chats', chatId);
+
+  const chatSnap = await getDoc(chatRef);
+  if (chatSnap.exists()) return chatId;
+
+  const chatData = {
+    members: users,
     messages: [],
   };
-  await setDoc(doc(db, 'chats', docId), docData);
-  return docId;
+  await setDoc(doc(db, 'chats', chatId), chatData);
+  return chatId;
+}
+
+export async function createChatRefForUsers(users) {
+  const chatId = getChatId(users);
+  users.forEach(async (user) => {
+    const docRef = doc(db, 'users', user);
+    await updateDoc(docRef, {
+      chats: arrayUnion(chatId),
+    });
+  });
 }
 
 export async function addChatMessage(id, message) {
