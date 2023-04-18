@@ -27,7 +27,29 @@ export function getFormattedElapsedTime(time, currentTime) {
     return Math.floor(elapsedTimeInSeconds / SECS_IN_HOUR) + 'h';
   } else if (elapsedTimeInSeconds >= SECS_IN_MINUTE) {
     return Math.floor(elapsedTimeInSeconds / SECS_IN_MINUTE) + 'm';
-  } else {
+  } else if (elapsedTimeInSeconds > 0) {
     return elapsedTimeInSeconds + 's';
+  } else {
+    return 'now';
+  }
+}
+
+export function getFormattedDate(time, currentTime) {
+  const date = new Date(time);
+  const currentDate = new Date(currentTime);
+
+  if (currentDate.getDate() > date.getDate()) {
+    const mm = (date.getMonth() + 1).toString().padStart(2, '0');
+    const dd = date.getDate().toString().padStart(2, '0');
+    const yyyy = date.getFullYear();
+    return [mm, dd, yyyy].join('/');
+  } else {
+    let hh = date.getHours();
+    const ampm = hh >= 12 ? 'PM' : 'AM';
+    hh = hh % 12;
+    hh = hh ? hh : 12;
+    hh = hh.toString().padStart(2, '0');
+    const mm = date.getMinutes().toString().padStart(2, '0');
+    return `${hh}:${mm}${ampm}`;
   }
 }

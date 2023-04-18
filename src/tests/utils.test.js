@@ -1,4 +1,9 @@
-import { getChatId, getUsersId, getFormattedElapsedTime } from '../utils';
+import {
+  getChatId,
+  getUsersId,
+  getFormattedElapsedTime,
+  getFormattedDate,
+} from '../utils';
 
 describe('getChatId', () => {
   it('gets chat Id from users Id (1)', () => {
@@ -63,5 +68,24 @@ describe('Get formatted elapsed time', () => {
     const time = 1681814815848;
     const result = '6s';
     expect(getFormattedElapsedTime(time, currentTime)).toBe(result);
+  });
+});
+
+describe('Get formatted date', () => {
+  const currentTime = 1681818323375;
+  it('returns date in MM:DD:YYYY if day is not today', () => {
+    const time = new Date('04/12/2023');
+    const result = '04/12/2023';
+    expect(getFormattedDate(time, currentTime)).toBe(result);
+  });
+  it('returns date in HH:MMPM format', () => {
+    const time = currentTime;
+    const result = '01:45PM';
+    expect(getFormattedDate(time, currentTime)).toBe(result);
+  });
+  it('returns date in HH:MMAM format', () => {
+    const time = currentTime - 3600 * 3 * 1000;
+    const result = '10:45AM';
+    expect(getFormattedDate(time, currentTime)).toBe(result);
   });
 });

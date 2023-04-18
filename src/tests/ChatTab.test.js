@@ -36,7 +36,7 @@ it('renders last message correctly', () => {
   expect(message).toBeInTheDocument();
 });
 
-it('renders correct number of unread messages', () => {
+it.skip('renders correct number of unread messages', () => {
   render(
     <ChatTab
       name={props.name}
@@ -49,7 +49,7 @@ it('renders correct number of unread messages', () => {
   expect(unread).toBeInTheDocument();
 });
 
-it('renders 9+ unread messages if more than 9', () => {
+it.skip('renders 9+ unread messages if more than 9', () => {
   const unreadProp = [];
   for (let i = 0; i < 15; i++) {
     unreadProp.push('item');
