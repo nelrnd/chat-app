@@ -24,6 +24,7 @@
   color: white;
   background-color: var(--primary);
   border-radius: 16px 16px 0 16px;
+  margin-left: auto;
 }
 
 .Message_date {
