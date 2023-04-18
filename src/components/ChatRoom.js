@@ -1,58 +1,72 @@
-import { useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { doc } from 'firebase/firestore';
+import { useDocumentData } from 'react-firebase-hooks/firestore';
 import {
   addChatMessage,
   auth,
   createChatRefForUsers,
   db,
+  getOtherUserId,
   updateLastMessage,
 } from '../firebase';
-import { useDocumentData } from 'react-firebase-hooks/firestore';
-import { getUsersId } from '../utils';
 import '../styles/ChatRoom.css';
 
 import Message from './Message';
 
 function ChatRoom({ currentChat }) {
-  const chatRef = doc(db, 'chats', currentChat);
-  const [chat] = useDocumentData(chatRef);
-
-  const uid = getUsersId(currentChat).find((i) => i !== auth.currentUser.uid);
-  const userRef = doc(db, 'users', uid);
-  const [user] = useDocumentData(userRef);
-
   const [messageInput, setMessageInput] = useState('');
+  const enteringRoom = useRef(true);
+  const bottomRef = useRef();
 
-  const handleMessageInputChange = (event) => {
-    setMessageInput(event.target.value);
+  const otherUid = getOtherUserId(currentChat);
+  const [otherUserData] = useDocumentData(doc(db, 'users', otherUid));
+  const [chatData] = useDocumentData(doc(db, 'chats', currentChat));
+
+  const handleMessageInputChange = (e) => {
+    setMessageInput(e.target.value);
   };
 
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
-
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
     if (!messageInput) return;
-
-    // If this is the first messsage being sent
-    if (!chat.messages.length) {
-      // Create a reference to the chat doc for each users
-      createChatRefForUsers([uid, auth.currentUser.uid]);
+    if (chatData.messages.length === 0) {
+      createChatRefForUsers([otherUid, auth.currentUser.uid]);
     }
-
     const message = await addChatMessage(currentChat, messageInput);
     updateLastMessage(currentChat, message);
-
     setMessageInput('');
   };
+
+  const scrollToBottom = (behavior) => {
+    bottomRef.current.scrollIntoView({ behavior });
+  };
+
+  useEffect(() => {
+    if (chatData) {
+      if (enteringRoom.current) {
+        scrollToBottom('instant');
+        enteringRoom.current = false;
+      } else {
+        scrollToBottom('smooth');
+      }
+    }
+  }, [chatData, enteringRoom]);
+
+  useEffect(() => {
+    enteringRoom.current = true;
+  }, [currentChat]);
 
   return (
     <div className="ChatRoom">
       <header>
-        <h2 className="large single-line">{user && user.name}</h2>
+        <h2 className="large single-line">
+          {otherUserData && otherUserData.name}
+        </h2>
       </header>
 
       <section className="messages">
-        {chat &&
-          chat.messages.map((msg) => (
+        {chatData &&
+          chatData.messages.map((msg) => (
             <Message
               key={msg.date + msg.from}
               content={msg.content}
@@ -60,6 +74,7 @@ function ChatRoom({ currentChat }) {
               isSent={msg.from === auth.currentUser.uid}
             />
           ))}
+        <div ref={bottomRef}></div>
       </section>
 
       <section className="bottom">
