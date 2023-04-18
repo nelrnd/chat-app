@@ -10,9 +10,9 @@ function ChatTab({ name, profileURL, lastMessage, isActive, handleClick }) {
     >
       <Avatar imageURL={profileURL} />
 
-      <div>
-        <h3>{name}</h3>
-        <p>{lastMessage.text}</p>
+      <div className="text">
+        <h3 className="single-line">{name}</h3>
+        <p className="single-line">{lastMessage.text}</p>
       </div>
 
       <div>

@@ -47,7 +47,7 @@ function ChatRoom({ currentChat }) {
   return (
     <div className="ChatRoom">
       <header>
-        <h2 className="large">{user && user.displayName}</h2>
+        <h2 className="large single-line">{user && user.name}</h2>
       </header>
 
       <section className="messages">
