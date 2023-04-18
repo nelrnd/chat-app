@@ -1,8 +1,16 @@
 import Avatar from './Avatar';
+import { getFormattedElapsedTime } from '../utils';
 
 import '../styles/ChatTab.css';
 
-function ChatTab({ name, profileURL, lastMessage, isActive, handleClick }) {
+function ChatTab({
+  name,
+  profileURL,
+  lastMessage,
+  isActive,
+  currentTime,
+  handleClick,
+}) {
   return (
     <div
       className={`ChatTab ${isActive ? 'active' : ''}`}
@@ -16,7 +24,9 @@ function ChatTab({ name, profileURL, lastMessage, isActive, handleClick }) {
       </div>
 
       <div>
-        <p className="small grey">{lastMessage.date}</p>
+        <p className="small grey">
+          {getFormattedElapsedTime(lastMessage.date, currentTime)}
+        </p>
       </div>
     </div>
   );
