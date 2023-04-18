@@ -1,5 +1,6 @@
 .Sidebar {
   width: 372px;
+  background-color: white;
   border-right: 1px solid var(--dark-10);
   position: relative;
   z-index: 5;
