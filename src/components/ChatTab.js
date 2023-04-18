@@ -2,36 +2,28 @@ import Avatar from './Avatar';
 
 import '../styles/ChatTab.css';
 
-function ChatTab({
-  name,
-  lastMessage,
-  imageUrl,
-  unreadMessages,
-  isActive,
-  handleClick,
-}) {
+function ChatTab({ name, profileURL, lastMessage, isActive, handleClick }) {
   return (
     <div
-      className={'ChatTab' + (isActive ? ' active' : '')}
+      className={`ChatTab ${isActive ? 'active' : ''}`}
       onClick={handleClick}
     >
-      <Avatar imageUrl={imageUrl} />
+      <Avatar imageURL={profileURL} />
 
       <div>
         <h3>{name}</h3>
-        <p className={unreadMessages ? 'bold' : 'grey'}>{lastMessage.text}</p>
+        <p>{lastMessage.text}</p>
       </div>
 
-      <div className="small">
-        {unreadMessages && (
-          <div className="ChatTab_unread-label">
-            {unreadMessages.length < 10 ? unreadMessages.length : '9+'}
-          </div>
-        )}
-        <div className="grey">{lastMessage.date}</div>
+      <div>
+        <p className="small grey">{lastMessage.date}</p>
       </div>
     </div>
   );
+}
+
+function UnreadLabel({ value }) {
+  return <div className="UnreadLabel">{value < 10 ? value : '9+'}</div>;
 }
 
 export default ChatTab;

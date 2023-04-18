@@ -5,7 +5,7 @@ import SearchResultsTab from './SearchResultsTab';
 
 import '../styles/SearchResults.css';
 
-function SearchResults({ searchTerm }) {
+function SearchResults({ searchTerm, handleSearchResultsTabClick }) {
   const allUsersRef = collection(db, 'users');
   const [allUsers] = useCollectionData(allUsersRef);
 
@@ -28,8 +28,10 @@ function SearchResults({ searchTerm }) {
       {usersFromSearch && usersFromSearch.length ? (
         usersFromSearch.map((user) => (
           <SearchResultsTab
-            name={user.displayName}
-            profileUrl={user.photoUrl}
+            key={user.uid}
+            name={user.name}
+            profileURL={user.profileURL}
+            handleClick={() => handleSearchResultsTabClick(user.uid)}
           />
         ))
       ) : (

@@ -1,11 +1,11 @@
 import Avatar from './Avatar';
 import '../styles/SearchResultsTab.css';
 
-function SearchResultsTab(props) {
+function SearchResultsTab({ name, profileURL, handleClick }) {
   return (
-    <div className="SearchResultsTab" onClick={props.handleClick}>
-      <Avatar imageUrl={props.profileUrl} size="small" />
-      <h3>{props.name}</h3>
+    <div className="SearchResultsTab" onClick={handleClick}>
+      <Avatar imageURL={profileURL} size="small" />
+      <h3>{name}</h3>
     </div>
   );
 }
