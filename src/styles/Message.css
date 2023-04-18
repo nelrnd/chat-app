@@ -3,21 +3,24 @@
   width: fit-content;
 }
 
-.Message_wrapper:has(.Message.sent) {
+.Message_wrapper.sent {
   margin-left: auto;
 }
 
 .Message {
-  color: var(--dark-100);
-  background-color: white;
+  width: fit-content;
   padding: 16px 24px;
   margin-bottom: 8px;
-  width: fit-content;
-  border-radius: 16px 16px 16px 0;
   box-shadow: var(--shadow);
 }
 
-.Message.sent {
+.Message_wrapper.received > .Message {
+  color: var(--dark-100);
+  background-color: white;
+  border-radius: 16px 16px 16px 0;
+}
+
+.Message_wrapper.sent > .Message {
   color: white;
   background-color: var(--primary);
   border-radius: 16px 16px 0 16px;
@@ -27,6 +30,6 @@
   color: var(--dark-50);
 }
 
-.Message.sent + .Message_date {
+.Message_wrapper.sent > .Message_date {
   text-align: right;
 }
