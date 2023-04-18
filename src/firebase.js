@@ -8,7 +8,7 @@ import {
   arrayUnion,
 } from 'firebase/firestore';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { getChatId } from './utils';
+import { getChatId, getUsersId } from './utils';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -23,6 +23,11 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 
+async function checkIfDocExists(docRef) {
+  const docSnap = await getDoc(docRef);
+  return docSnap.exists();
+}
+
 export async function signInWithGoogle() {
   try {
     const provider = new GoogleAuthProvider();
@@ -34,15 +39,14 @@ export async function signInWithGoogle() {
 }
 
 export async function addNewUserToFirestore(user) {
-  const docRef = doc(db, 'users', user.uid);
-  const docSnap = await getDoc(docRef);
-  if (docSnap.exists()) {
-    return;
-  }
-  await setDoc(docRef, {
-    displayName: user.displayName,
+  const userRef = doc(db, 'users', user.uid);
+
+  if (await checkIfDocExists(userRef)) return;
+
+  await setDoc(userRef, {
+    name: user.displayName,
     email: user.email,
-    photoURL: user.photoURL,
+    profileURL: user.photoURL,
     uid: user.uid,
     chats: [],
   });
@@ -52,44 +56,67 @@ export async function createNewChatDocument(users) {
   const chatId = getChatId(users);
   const chatRef = doc(db, 'chats', chatId);
 
-  const chatSnap = await getDoc(chatRef);
-  if (chatSnap.exists()) return chatId;
+  if ((await checkIfDocExists(chatRef)) === false) {
+    await setDoc(chatRef, {
+      members: users,
+      messages: [],
+    });
+  }
 
-  const chatData = {
-    members: users,
-    messages: [],
-  };
-  await setDoc(doc(db, 'chats', chatId), chatData);
   return chatId;
 }
 
 export async function createChatRefForUsers(users) {
   const chatId = getChatId(users);
-  users.forEach(async (user) => {
-    // get other user infos
-    const uid = users.find((u) => u !== user);
-    const userRef = doc(db, 'users', uid);
-    const userSnap = await getDoc(userRef);
-    const userData = userSnap.data();
 
-    const docRef = doc(db, 'users', user);
-    await updateDoc(docRef, {
+  const createChatRef = async (user) => {
+    const otherUserUid = users.find((u) => u !== user);
+    const otherUserSnap = await getDoc(doc(db, 'users', otherUserUid));
+
+    await updateDoc(doc(db, 'users', user), {
       chats: arrayUnion({
         id: chatId,
-        displayName: userData.displayName,
-        profileUrl: userData.photoURL,
+        name: otherUserSnap.data().name,
+        profileURL: otherUserSnap.data().profileURL,
+        lastMessage: null,
       }),
     });
-  });
+  };
+
+  users.forEach(createChatRef);
 }
 
-export async function addChatMessage(id, message) {
-  const docRef = doc(db, 'chats', id);
-  await updateDoc(docRef, {
-    messages: arrayUnion({
-      content: message,
-      from: auth.currentUser.uid,
-      date: Date.now(),
-    }),
+export async function addChatMessage(chatId, messageInput) {
+  const chatRef = doc(db, 'chats', chatId);
+
+  const message = {
+    content: messageInput,
+    from: auth.currentUser.uid,
+    date: Date.now(),
+  };
+
+  await updateDoc(chatRef, {
+    messages: arrayUnion(message),
   });
+
+  return message;
+}
+
+export async function updateLastMessage(chatId, message) {
+  const users = getUsersId(chatId);
+
+  const update = async (user) => {
+    const userRef = doc(db, 'users', user);
+    const userSnap = await getDoc(userRef);
+    const chats = userSnap.data().chats;
+    chats.find((chat) => chat.id === chatId).lastMessage = {
+      content: message.content,
+      date: message.date,
+    };
+    await updateDoc(userRef, {
+      chats: chats,
+    });
+  };
+
+  users.forEach(update);
 }
