@@ -28,13 +28,14 @@ function ChatRoom({ currentChat }) {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    if (!messageInput) return;
+    const messageInputCopy = messageInput.trim();
+    setMessageInput('');
+    if (!messageInputCopy) return;
     if (chatData.messages.length === 0) {
       createChatRefForUsers([otherUid, auth.currentUser.uid]);
     }
-    const message = await addChatMessage(currentChat, messageInput);
+    const message = await addChatMessage(currentChat, messageInputCopy);
     updateLastMessage(currentChat, message);
-    setMessageInput('');
   };
 
   const scrollToBottom = (behavior) => {
