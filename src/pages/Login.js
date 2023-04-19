@@ -12,6 +12,7 @@ import { ReactComponent as GoogleIcon } from '../assets/icons/google.svg';
 function Login() {
   const [userEmail, setUserEmail] = useState('');
   const [userPwd, setUserPwd] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const [user] = useAuthState(auth);
 
@@ -22,9 +23,14 @@ function Login() {
     event.preventDefault();
 
     try {
-      signInWithEmailAndPassword(auth, userEmail, userPwd);
+      await signInWithEmailAndPassword(auth, userEmail, userPwd);
     } catch (err) {
-      console.error(`${err.code}: ${err.message}`);
+      if (err.code === 'auth/user-not-found') {
+        const errorMessage = (
+          <p className="error-message small">Invalid email or password</p>
+        );
+        setErrorMessage(errorMessage);
+      }
     }
   };
 
@@ -62,6 +68,8 @@ function Login() {
               onChange={handlePwdChange}
             />
           </div>
+
+          {errorMessage}
 
           <button type="submit" className="primary full-width">
             Log in
