@@ -1,4 +1,4 @@
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 import { signOut } from 'firebase/auth';
 
 import SearchBar from './SearchBar';
@@ -6,16 +6,21 @@ import SearchResults from './SearchResults';
 import ChatTabs from './ChatTabs';
 
 import '../styles/Sidebar.css';
+import { useDocumentData } from 'react-firebase-hooks/firestore';
+import { doc } from 'firebase/firestore';
 
 const logout = () => signOut(auth);
 
 function Sidebar({
   searchTerm,
   handleSearchTermChange,
+  userId,
   currentChat,
   handleChatTabClick,
   handleSearchResultsTabClick,
 }) {
+  const [userData] = useDocumentData(doc(db, 'users', userId));
+
   return (
     <div className="Sidebar">
       <header>
@@ -34,6 +39,7 @@ function Sidebar({
         />
       ) : (
         <ChatTabs
+          chats={userData && userData.chats}
           currentChat={currentChat}
           handleChatTabClick={handleChatTabClick}
         />
