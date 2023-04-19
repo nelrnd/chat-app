@@ -14,6 +14,7 @@ function Signup() {
   const [userEmail, setUserEmail] = useState('');
   const [userName, setUserName] = useState('');
   const [userPwd, setUserPwd] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -31,7 +32,14 @@ function Signup() {
       await updateProfile(auth.currentUser, { displayName: userName });
       await addNewUserToFirestore(auth.currentUser);
     } catch (err) {
-      console.error(`${err.code}: ${err.message}`);
+      if (err.code === 'auth/email-already-in-use') {
+        const errorMessage = (
+          <p className="error-message small">
+            A user with that email already exists
+          </p>
+        );
+        setErrorMessage(errorMessage);
+      }
     }
   };
 
@@ -59,6 +67,7 @@ function Signup() {
               handleNameChange={handleNameChange}
               handlePwdChange={handlePwdChange}
               goPrevStep={goPrevStep}
+              errorMessage={errorMessage}
             />
           )}
         </form>
@@ -133,6 +142,7 @@ function CreateAccountSection({
   handleNameChange,
   handlePwdChange,
   goPrevStep,
+  errorMessage,
 }) {
   return (
     <>
@@ -183,7 +193,11 @@ function CreateAccountSection({
         />
       </div>
 
-      <button className="primary full-width">Sign up</button>
+      {errorMessage}
+
+      <button className="primary full-width" type="submit">
+        Sign up
+      </button>
     </>
   );
 }
