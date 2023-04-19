@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { auth, createNewChatDocument } from '../firebase';
-import { useAuthState } from 'react-firebase-hooks/auth';
 import { Navigate } from 'react-router-dom';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 import Sidebar from '../components/Sidebar';
 import ChatRoom from '../components/ChatRoom';
@@ -24,22 +24,21 @@ function Home() {
   const handleSearchResultsTabClick = async (uid) => {
     // clear search term
     setSearchTerm('');
-
     // create new chat doc
     const chatId = await createNewChatDocument([uid, auth.currentUser.uid]);
-
     // set current chat to chat Id
     setCurrentChat(chatId);
   };
 
   if (!user && !loading) {
     return <Navigate to="/login" replace />;
-  } else if (user && !loading) {
+  } else if (user) {
     return (
       <div className="Home">
         <Sidebar
           searchTerm={searchTerm}
           handleSearchTermChange={handleSearchTermChange}
+          userId={user.uid}
           currentChat={currentChat}
           handleChatTabClick={handleChatTabClick}
           handleSearchResultsTabClick={handleSearchResultsTabClick}
