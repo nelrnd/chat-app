@@ -78,7 +78,7 @@ export async function createChatRefForUsers(users) {
         id: chatId,
         name: otherUserSnap.data().name,
         profileURL: otherUserSnap.data().profileURL,
-        lastMessage: null,
+        lastMessage: { text: null, date: null },
       }),
     });
   };
@@ -110,7 +110,7 @@ export async function updateLastMessage(chatId, message) {
     const userSnap = await getDoc(userRef);
     const chats = userSnap.data().chats;
     chats.find((chat) => chat.id === chatId).lastMessage = {
-      content: message.content,
+      text: message.content,
       date: message.date,
     };
     await updateDoc(userRef, {
@@ -119,4 +119,9 @@ export async function updateLastMessage(chatId, message) {
   };
 
   users.forEach(update);
+}
+
+export function getOtherUserId(chatId) {
+  const users = getUsersId(chatId);
+  return users.find((user) => user !== auth.currentUser.uid);
 }
