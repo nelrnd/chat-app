@@ -1,0 +1,7 @@
+.Layout {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 370px 1fr;
+  grid-template-rows: 1fr;
+  background-color: var(--dark-20);
+}
