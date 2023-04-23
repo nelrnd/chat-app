@@ -3,6 +3,7 @@ import { auth, createNewChatDocument } from '../firebase';
 import { Navigate } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
+import Layout from '../components/Layout';
 import Sidebar from '../components/Sidebar';
 import ChatRoom from '../components/ChatRoom';
 
@@ -34,7 +35,7 @@ function Home() {
     return <Navigate to="/login" replace />;
   } else if (user) {
     return (
-      <div className="Home">
+      <Layout>
         <Sidebar
           searchTerm={searchTerm}
           handleSearchTermChange={handleSearchTermChange}
@@ -44,7 +45,7 @@ function Home() {
           handleSearchResultsTabClick={handleSearchResultsTabClick}
         />
         {currentChat && <ChatRoom currentChat={currentChat} />}
-      </div>
+      </Layout>
     );
   }
 }

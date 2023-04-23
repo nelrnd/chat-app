@@ -30,7 +30,6 @@ h3 {
 }
 .large {
   font-size: 2rem;
-  line-height: 110%;
 }
 .bold {
   font-weight: 600;
@@ -128,16 +127,29 @@ button.primary {
   background-color: var(--primary);
 }
 
+button.secondary {
+  color: var(--dark-100);
+  background-color: transparent;
+  border: solid 1px var(--dark-20);
+}
+
 button.full-width {
   width: 100%;
 }
 
 .icon-btn {
-  color: var(--dark-70);
-  padding: 6px;
+  color: var(--dark-50);
+  padding: 8px;
   background-color: transparent;
-  border: 2px solid var(--dark-20);
   border-radius: 1000px;
+
+  display: grid;
+  place-content: center;
+  width: fit-content;
+}
+
+.icon-btn:hover {
+  background-color: var(--dark-20);
 }
 
 .icon-btn > svg {
@@ -188,4 +200,29 @@ a:hover {
   background-image: url('./assets/icons/alert.svg');
   background-position: center;
   background-size: 100%;
+}
+
+/* Common component across pages styling */
+
+.page-bar {
+  padding: 36px;
+  background-color: white;
+}
+
+.page-section {
+  max-width: 814px;
+  min-height: 148px;
+  margin: 64px auto 0;
+  padding: 24px;
+  background-color: white;
+
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
+
+.page-section .row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
 }

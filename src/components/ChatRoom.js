@@ -59,7 +59,7 @@ function ChatRoom({ currentChat }) {
 
   return (
     <div className="ChatRoom">
-      <header>
+      <header className="page-bar">
         <h2 className="large single-line">
           {otherUserData && otherUserData.name}
         </h2>
@@ -78,7 +78,7 @@ function ChatRoom({ currentChat }) {
         <div ref={bottomRef}></div>
       </section>
 
-      <section className="bottom">
+      <section className="page-bar bottom">
         <form onSubmit={handleFormSubmit}>
           <input
             type="text"
