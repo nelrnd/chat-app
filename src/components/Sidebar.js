@@ -8,6 +8,9 @@ import ChatTabs from './ChatTabs';
 import '../styles/Sidebar.css';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import { doc } from 'firebase/firestore';
+import { Link } from 'react-router-dom';
+
+import { ReactComponent as SettingsIcon } from '../assets/icons/settings.svg';
 
 const logout = () => signOut(auth);
 
@@ -25,6 +28,9 @@ function Sidebar({
     <div className="Sidebar">
       <header>
         <h1>Chat App</h1>
+        <Link to="/settings" className="icon-btn">
+          <SettingsIcon />
+        </Link>
       </header>
 
       <SearchBar
