@@ -6,7 +6,7 @@
   z-index: 5;
 }
 
-.Sidebar > header {
+.Sidebar_header {
   padding: 36px 20px;
   display: flex;
   justify-content: space-between;

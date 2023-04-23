@@ -1,4 +1,4 @@
-import { auth, db } from '../firebase';
+import { auth, db, createNewChatDocument } from '../firebase';
 import { signOut } from 'firebase/auth';
 
 import SearchBar from './SearchBar';
@@ -6,28 +6,36 @@ import SearchResults from './SearchResults';
 import ChatTabs from './ChatTabs';
 
 import '../styles/Sidebar.css';
+import { useState } from 'react';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import { doc } from 'firebase/firestore';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { ReactComponent as SettingsIcon } from '../assets/icons/settings.svg';
 
 const logout = () => signOut(auth);
 
-function Sidebar({
-  searchTerm,
-  handleSearchTermChange,
-  userId,
-  currentChat,
-  handleChatTabClick,
-  handleSearchResultsTabClick,
-}) {
+function Sidebar({ userId, currentChat }) {
   const [userData] = useDocumentData(doc(db, 'users', userId));
+  const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearchTermChange = (e) => setSearchTerm(e.target.value);
+
+  const handleSearchResultsTabClick = async (uid) => {
+    // clear search term
+    setSearchTerm('');
+    // create new chat doc
+    const chatId = await createNewChatDocument([uid, auth.currentUser.uid]);
+    // set current chat to chat Id
+    navigate(`/chats/${chatId}`);
+  };
 
   return (
     <div className="Sidebar">
-      <header>
+      <header className="Sidebar_header">
         <h1>Chat App</h1>
+
         <Link to="/settings" className="icon-btn">
           <SettingsIcon />
         </Link>
@@ -47,11 +55,10 @@ function Sidebar({
         <ChatTabs
           chats={userData && userData.chats}
           currentChat={currentChat}
-          handleChatTabClick={handleChatTabClick}
         />
       )}
 
-      <button onClick={logout}>Log out</button>
+      <button onClick={logout}>Logout</button>
     </div>
   );
 }
