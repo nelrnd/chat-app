@@ -1,50 +1,21 @@
-import { useState } from 'react';
-import { auth, createNewChatDocument } from '../firebase';
 import { Navigate } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import Layout from '../components/Layout';
 import Sidebar from '../components/Sidebar';
-import ChatRoom from '../components/ChatRoom';
 
 import '../styles/Home.css';
+import { auth } from '../firebase';
 
 function Home() {
-  const [currentChat, setCurrentChat] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
   const [user, loading] = useAuthState(auth);
-
-  const handleSearchTermChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const handleChatTabClick = (id) => {
-    setCurrentChat(id);
-  };
-
-  const handleSearchResultsTabClick = async (uid) => {
-    // clear search term
-    setSearchTerm('');
-    // create new chat doc
-    const chatId = await createNewChatDocument([uid, auth.currentUser.uid]);
-    // set current chat to chat Id
-    setCurrentChat(chatId);
-  };
 
   if (!user && !loading) {
     return <Navigate to="/login" replace />;
   } else if (user) {
     return (
       <Layout>
-        <Sidebar
-          searchTerm={searchTerm}
-          handleSearchTermChange={handleSearchTermChange}
-          userId={user.uid}
-          currentChat={currentChat}
-          handleChatTabClick={handleChatTabClick}
-          handleSearchResultsTabClick={handleSearchResultsTabClick}
-        />
-        {currentChat && <ChatRoom currentChat={currentChat} />}
+        <Sidebar userId={user.uid} />
       </Layout>
     );
   }
