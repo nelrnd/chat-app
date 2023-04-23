@@ -2,6 +2,7 @@ import Avatar from './Avatar';
 import { getFormattedElapsedTime } from '../utils';
 
 import '../styles/ChatTab.css';
+import { Link } from 'react-router-dom';
 
 function ChatTab({
   name,
@@ -9,26 +10,25 @@ function ChatTab({
   lastMessage,
   isActive,
   currentTime,
-  handleClick,
+  chatId,
 }) {
   return (
-    <div
-      className={`ChatTab ${isActive ? 'active' : ''}`}
-      onClick={handleClick}
-    >
-      <Avatar imageURL={profileURL} />
+    <Link to={`/chats/${chatId}`} className="ChatTab_link">
+      <div className={`ChatTab ${isActive ? 'active' : ''}`}>
+        <Avatar imageURL={profileURL} />
 
-      <div className="text">
-        <h3 className="single-line">{name}</h3>
-        <p className="single-line">{lastMessage.text}</p>
-      </div>
+        <div className="text">
+          <h3 className="single-line">{name}</h3>
+          <p className="single-line">{lastMessage.text}</p>
+        </div>
 
-      <div>
-        <p className="small grey">
-          {getFormattedElapsedTime(lastMessage.date, currentTime)}
-        </p>
+        <div>
+          <p className="small grey">
+            {getFormattedElapsedTime(lastMessage.date, currentTime)}
+          </p>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }
 

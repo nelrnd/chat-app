@@ -26,6 +26,13 @@
   margin-left: auto;
 }
 
+.ChatTab_link {
+  color: inherit;
+}
+.ChatTab_link:hover {
+  text-decoration: inherit;
+}
+
 .UnreadLabel {
   width: 20px;
   height: 20px;

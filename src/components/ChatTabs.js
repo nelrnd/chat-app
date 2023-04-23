@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import ChatTab from './ChatTab';
 
-function ChatTabs({ chats, currentChat, handleChatTabClick }) {
+function ChatTabs({ chats, currentChat }) {
   const [currentTime, setCurrentTime] = useState(Date.now());
 
+  // keep updated elapsed time since last message
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(Date.now());
     }, 1000);
-
     return () => clearInterval(timer);
   });
 
@@ -25,7 +25,7 @@ function ChatTabs({ chats, currentChat, handleChatTabClick }) {
               lastMessage={chat.lastMessage}
               isActive={currentChat === chat.id}
               currentTime={currentTime}
-              handleClick={() => handleChatTabClick(chat.id)}
+              chatId={chat.id}
             />
           ))}
     </div>
