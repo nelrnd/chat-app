@@ -7,6 +7,9 @@ import Avatar from '../components/Avatar';
 import { ReactComponent as EditIcon } from '../assets/icons/edit.svg';
 import { ReactComponent as CopyIcon } from '../assets/icons/clipboard.svg';
 import Layout from '../components/Layout';
+import { signOut } from 'firebase/auth';
+
+const logout = () => signOut(auth);
 
 function Settings() {
   const [user, loading] = useAuthState(auth);
@@ -48,6 +51,10 @@ function Settings() {
               <CopyIcon />
               COPY
             </button>
+          </section>
+
+          <section className="page-section">
+            <button onClick={logout}>Logout</button>
           </section>
         </div>
       </Layout>

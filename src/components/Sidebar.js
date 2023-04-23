@@ -1,5 +1,4 @@
 import { auth, db, createNewChatDocument } from '../firebase';
-import { signOut } from 'firebase/auth';
 
 import SearchBar from './SearchBar';
 import SearchResults from './SearchResults';
@@ -12,8 +11,6 @@ import { doc } from 'firebase/firestore';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { ReactComponent as SettingsIcon } from '../assets/icons/settings.svg';
-
-const logout = () => signOut(auth);
 
 function Sidebar({ userId, currentChat }) {
   const [userData] = useDocumentData(doc(db, 'users', userId));
@@ -57,8 +54,6 @@ function Sidebar({ userId, currentChat }) {
           currentChat={currentChat}
         />
       )}
-
-      <button onClick={logout}>Logout</button>
     </div>
   );
 }
