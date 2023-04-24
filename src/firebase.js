@@ -8,6 +8,7 @@ import {
   arrayUnion,
 } from 'firebase/firestore';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { getStorage } from 'firebase/storage';
 import { getChatId, getUsersId } from './utils';
 
 const firebaseConfig = {
@@ -22,6 +23,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+export const storage = getStorage();
 
 async function checkIfDocExists(docRef) {
   const docSnap = await getDoc(docRef);
@@ -50,6 +52,21 @@ export async function addNewUserToFirestore(user) {
     uid: user.uid,
     chats: [],
   });
+}
+
+export async function updateUserInfo(uid, updatedProfileInfo) {
+  const userRef = doc(db, 'users', uid);
+
+  const updated = {};
+
+  if (updatedProfileInfo.displayName) {
+    updated.name = updatedProfileInfo.displayName;
+  }
+  if (updatedProfileInfo.photoURL || updatedProfileInfo.photoURL === '') {
+    updated.profileURL = updatedProfileInfo.photoURL;
+  }
+
+  await updateDoc(userRef, updated);
 }
 
 export async function createNewChatDocument(users) {

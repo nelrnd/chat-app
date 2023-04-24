@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { auth } from '../firebase';
+import { auth, storage, updateUserInfo } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import Sidebar from '../components/Sidebar';
 import Avatar from '../components/Avatar';
@@ -7,9 +7,10 @@ import Avatar from '../components/Avatar';
 import { ReactComponent as EditIcon } from '../assets/icons/edit.svg';
 import { ReactComponent as CopyIcon } from '../assets/icons/clipboard.svg';
 import Layout from '../components/Layout';
-import { signOut } from 'firebase/auth';
+import { signOut, updateProfile } from 'firebase/auth';
 import Modal from '../components/Modal';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 const logout = () => signOut(auth);
 
@@ -60,7 +61,9 @@ function Settings() {
           </section>
 
           <section className="page-section">
-            <button onClick={logout}>Logout</button>
+            <button onClick={logout} className="full-width">
+              Logout
+            </button>
           </section>
         </div>
 
@@ -68,6 +71,7 @@ function Settings() {
           show={showEditProfileModal}
           profileURL={user.photoURL}
           name={user.displayName}
+          userId={user.uid}
           handleClose={() => setShowEditProfileModal(false)}
         />
       </Layout>
@@ -75,26 +79,69 @@ function Settings() {
   }
 }
 
-function EditProfileModal({ show, name, profileURL, handleClose }) {
+function EditProfileModal({ show, name, profileURL, userId, handleClose }) {
   const [newProfileURL, setNewProfileURL] = useState(profileURL);
+  const [newProfileFile, setNewProfileFile] = useState();
   const [newName, setNewName] = useState(name);
+
+  const profileInput = useRef();
 
   const handleNameChange = (e) => setNewName(e.target.value);
 
-  const handleProfileURLChange = (e) => {
+  const handleUploadProfile = (e) => {
     const [file] = e.target.files;
     if (file) {
-      const profileURL = URL.createObjectURL(file);
-      setNewProfileURL(profileURL);
+      setNewProfileFile(file);
+      setNewProfileURL(URL.createObjectURL(file));
     }
   };
 
-  const handleRemoveProfileURL = () => setNewProfileURL(null);
+  const handleRemoveProfile = () => {
+    setNewProfileFile(null);
+    setNewProfileURL(null);
+    profileInput.current.value = null;
+  };
 
   const clearFields = () => {
     setNewProfileURL(profileURL);
     setNewName(name);
+    profileInput.current.value = null;
   };
+
+  const handleSave = async () => {
+    if (newProfileFile) {
+      // upload new profile to firebase cloud storage and get URL
+      const metadata = { contentType: newProfileFile.type };
+      const imageFormat = newProfileFile.type.split('/')[1];
+      const filePath = '/profiles/' + userId + imageFormat;
+      const storageRef = ref(storage, filePath);
+      await uploadBytes(storageRef, newProfileFile, metadata);
+      const profileURL = await getDownloadURL(storageRef);
+      setNewProfileURL(profileURL);
+    }
+
+    // update user's profile information
+    const updatedProfileInfo = {};
+    if (newProfileURL !== profileURL) {
+      updatedProfileInfo.photoURL = newProfileURL || '';
+    }
+    if (newName !== name) {
+      updatedProfileInfo.displayName = newName;
+    }
+    await updateProfile(auth.currentUser, updatedProfileInfo);
+
+    await updateUserInfo(userId, updatedProfileInfo);
+
+    clearFields();
+    handleClose();
+  };
+
+  useEffect(() => {
+    if (show) {
+      setNewName(name);
+      setNewProfileURL(profileURL);
+    }
+  }, [show, name, profileURL]);
 
   return (
     <Modal show={show}>
@@ -112,14 +159,12 @@ function EditProfileModal({ show, name, profileURL, handleClose }) {
             accept="image/*"
             name="new-profile-pic"
             id="new-profile-pic"
-            onChange={handleProfileURLChange}
+            onChange={handleUploadProfile}
+            ref={profileInput}
             className="hidden"
           />
           {newProfileURL && (
-            <button
-              className="secondary small"
-              onClick={handleRemoveProfileURL}
-            >
+            <button className="secondary small" onClick={handleRemoveProfile}>
               Remove
             </button>
           )}
@@ -148,7 +193,9 @@ function EditProfileModal({ show, name, profileURL, handleClose }) {
         >
           Cancel
         </button>
-        <button className="small">Save</button>
+        <button className="small" onClick={handleSave}>
+          Save
+        </button>
       </div>
     </Modal>
   );
