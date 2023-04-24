@@ -91,15 +91,18 @@ label {
 
 /* Basic button style */
 
-button {
+button,
+.button {
   font-size: 1.125rem;
   color: white;
   background-color: var(--dark-100);
   padding: 16px 32px;
+  margin: 0;
   border: none;
   border-radius: 8px;
   cursor: pointer;
 
+  width: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -108,12 +111,14 @@ button {
   transition: all 0.2s ease-in-out;
 }
 
-button.small {
+button.small,
+.button.small {
   padding: 12px 24px;
   font-size: 1.125rem;
 }
 
-button:hover {
+button:hover,
+.button:hover {
   filter: brightness(90%);
 }
 
@@ -122,18 +127,21 @@ button:disabled {
   pointer-events: none;
 }
 
-button.primary {
+button.primary,
+.button.primary {
   color: white;
   background-color: var(--primary);
 }
 
-button.secondary {
+button.secondary,
+.button.secondary {
   color: var(--dark-100);
   background-color: transparent;
   border: solid 1px var(--dark-20);
 }
 
-button.full-width {
+button.full-width,
+.button.full-width {
   width: 100%;
 }
 
@@ -225,4 +233,31 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 24px;
+}
+
+.row-left {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.flex-row {
+  display: flex;
+  gap: 32px;
+}
+
+.align-items {
+  align-items: center;
+}
+
+.gap32 {
+  gap: 32px;
+}
+
+.gap16 {
+  gap: 16px;
+}
+
+.hidden {
+  display: none;
 }

@@ -1,5 +1,6 @@
 .Modal_wrapper {
   position: absolute;
+  z-index: 10;
   top: 0;
   bottom: 0;
   left: 0;
@@ -11,9 +12,14 @@
 }
 
 .Modal {
-  max-width: 458px;
+  width: 458px;
+  max-width: 100%;
   padding: 36px;
   background-color: white;
   border-radius: 8px;
   box-shadow: var(--shadow);
+
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
 }
