@@ -7,7 +7,7 @@ import Avatar from '../components/Avatar';
 import { ReactComponent as EditIcon } from '../assets/icons/edit.svg';
 import { ReactComponent as CopyIcon } from '../assets/icons/clipboard.svg';
 import Layout from '../components/Layout';
-import { signOut, updateProfile } from 'firebase/auth';
+import { signOut } from 'firebase/auth';
 import Modal from '../components/Modal';
 import { useEffect, useRef, useState } from 'react';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
@@ -17,6 +17,13 @@ const logout = () => signOut(auth);
 function Settings() {
   const [user, loading] = useAuthState(auth);
   const [showEditProfileModal, setShowEditProfileModal] = useState(false);
+  const [copyBtnText, setCopyBtnText] = useState('COPY');
+
+  const handleCopyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    setCopyBtnText('COPIED');
+    setTimeout(() => setCopyBtnText('COPY'), 1000);
+  };
 
   if (!user && !loading) {
     return <Navigate to="/login" replace />;
@@ -54,9 +61,12 @@ function Settings() {
               <h3>{user.uid}</h3>
             </div>
 
-            <button className="secondary small">
+            <button
+              className="secondary small"
+              onClick={() => handleCopyToClipboard(user.uid)}
+            >
               <CopyIcon />
-              COPY
+              {copyBtnText}
             </button>
           </section>
 
@@ -143,13 +153,13 @@ function EditProfileModal({ show, name, profileURL, userId, handleClose }) {
 
   return (
     <Modal show={show}>
-      <form onSubmit={handleFormSubmit}>
+      <form onSubmit={handleFormSubmit} className="flex-col gap-32">
         <h2>Edit profile</h2>
 
-        <div className="flex-row gap32 align-items">
+        <div className="flex-row gap-32 align-items">
           <Avatar imageURL={newProfileURL} size="large" />
 
-          <div className="flex-row gap16">
+          <div className="flex-row gap-16">
             <label htmlFor="new-profile-pic" className="button small">
               Upload
             </label>

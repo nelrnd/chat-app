@@ -18,8 +18,4 @@
   background-color: white;
   border-radius: 8px;
   box-shadow: var(--shadow);
-
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
 }
