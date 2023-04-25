@@ -68,15 +68,16 @@ function ChatRoom({ chatId }) {
 
       <section className="messages">
         {chatData &&
-          chatData.message &&
+          chatData.messages &&
           chatData.messages.map((msg) => (
             <Message
               key={msg.date + msg.from}
-              content={msg.content}
+              text={msg.text}
               date={msg.date}
               isSent={msg.from === auth.currentUser.uid}
             />
           ))}
+
         <div ref={bottomRef}></div>
       </section>
 
