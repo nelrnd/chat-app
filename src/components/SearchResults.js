@@ -5,18 +5,18 @@ import SearchResultsTab from './SearchResultsTab';
 
 import '../styles/SearchResults.css';
 
-function SearchResults({ searchTerm, handleSearchResultsTabClick }) {
-  const allUsersRef = collection(db, 'users');
-  const [allUsers] = useCollectionData(allUsersRef);
+function SearchResults({ searchTerm, handleClick }) {
+  const userListRef = collection(db, 'users');
+  const [userList, loading] = useCollectionData(userListRef, { idField: 'id' });
 
-  let usersFromSearch =
-    allUsers &&
-    allUsers
-      .filter((user) => user.uid !== auth.currentUser.uid)
+  let filteredSearch =
+    userList &&
+    userList
+      .filter((user) => user.id !== auth.currentUser.uid)
       .filter(
         (user) =>
-          user.email.toLowerCase() === searchTerm.toLowerCase() ||
-          user.uid === searchTerm
+          user.id === searchTerm ||
+          user.email.toLowerCase() === searchTerm.toLowerCase()
       );
 
   return (
@@ -25,13 +25,15 @@ function SearchResults({ searchTerm, handleSearchResultsTabClick }) {
         <p className="small grey">Search results:</p>
       </header>
 
-      {usersFromSearch && usersFromSearch.length ? (
-        usersFromSearch.map((user) => (
+      {loading && <p>Loading...</p>}
+
+      {filteredSearch && filteredSearch.length ? (
+        filteredSearch.map((user) => (
           <SearchResultsTab
-            key={user.uid}
+            key={user.id}
             name={user.name}
             profileURL={user.profileURL}
-            handleClick={() => handleSearchResultsTabClick(user.uid)}
+            handleClick={() => handleClick(user.id)}
           />
         ))
       ) : (

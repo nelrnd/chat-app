@@ -1,7 +1,7 @@
 import { ReactComponent as SearchIcon } from '../assets/icons/search.svg';
 import '../styles/SearchBar.css';
 
-function SearchBar({ searchTerm, handleSearchTermChange }) {
+function SearchBar({ searchTerm, handleChange }) {
   return (
     <div className="SearchBar">
       <SearchIcon />
@@ -10,7 +10,7 @@ function SearchBar({ searchTerm, handleSearchTermChange }) {
         placeholder="Search"
         className="filled"
         value={searchTerm}
-        onChange={handleSearchTermChange}
+        onChange={handleChange}
       />
     </div>
   );

@@ -92,6 +92,7 @@ export async function createChat(userIds) {
       members: [...userIds],
       messages: [],
       lastMessage: { text: null, date: null },
+      id: chatId,
     });
     return chatId;
   } catch (err) {
@@ -105,9 +106,7 @@ export async function createChatRefs(userIds, chatId) {
     const createRef = async (userId) => {
       const userRef = doc(db, 'users', userId);
       await updateDoc(userRef, {
-        chats: arrayUnion({
-          id: chatId,
-        }),
+        chats: arrayUnion(chatId),
       });
     };
     userIds.forEach(createRef);

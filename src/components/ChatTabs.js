@@ -1,10 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { collection, query, where } from 'firebase/firestore';
+import { db } from '../firebase';
+import { useCollectionData } from 'react-firebase-hooks/firestore';
 import ChatTab from './ChatTab';
 
-function ChatTabs({ chats, currentChat }) {
+function ChatTabs({ chatIds, currentChat }) {
+  const chatsRef = collection(db, 'chats');
+  const chatsQuery = query(chatsRef, where('id', 'in', chatIds));
+  const [chats] = useCollectionData(chatsQuery);
   const [currentTime, setCurrentTime] = useState(Date.now());
 
-  // keep updated elapsed time since last message
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(Date.now());
@@ -12,24 +17,23 @@ function ChatTabs({ chats, currentChat }) {
     return () => clearInterval(timer);
   });
 
-  return (
-    <div className="ChatTabs">
-      {chats &&
-        chats
+  if (chats) {
+    return (
+      <div>
+        {chats
           .sort((a, b) => b.lastMessage.date - a.lastMessage.date)
           .map((chat) => (
             <ChatTab
               key={chat.id}
-              name={chat.name}
-              profileURL={chat.profileURL}
+              chatId={chat.id}
               lastMessage={chat.lastMessage}
               isActive={currentChat === chat.id}
               currentTime={currentTime}
-              chatId={chat.id}
             />
           ))}
-    </div>
-  );
+      </div>
+    );
+  }
 }
 
 export default ChatTabs;

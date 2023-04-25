@@ -33,7 +33,7 @@ function ChatRoom({ chatId }) {
     setMessageInput('');
     if (chatData.messages.length === 0) {
       const userIds = [auth.currentUser.uid, otherUid];
-      createChatRefs(userIds);
+      createChatRefs(userIds, chatId);
     }
     const message = await createChatMessage(chatId, messageInputCopy);
     updateLastChatMessage(chatId, message);
@@ -68,6 +68,7 @@ function ChatRoom({ chatId }) {
 
       <section className="messages">
         {chatData &&
+          chatData.message &&
           chatData.messages.map((msg) => (
             <Message
               key={msg.date + msg.from}

@@ -10,14 +10,14 @@ function Chat() {
   const params = useParams();
   const chatId = params.chatId;
 
-  const [user, loading] = useAuthState(auth);
+  const [user] = useAuthState(auth);
 
   if (user) {
     return (
       <Layout>
         <Sidebar userId={user.uid} currentChat={chatId} />
 
-        <ChatRoom currentChat={chatId} />
+        <ChatRoom chatId={chatId} />
       </Layout>
     );
   }

@@ -1,4 +1,4 @@
-import { db, createChat } from '../firebase';
+import { db, createChat, auth } from '../firebase';
 
 import SearchBar from './SearchBar';
 import SearchResults from './SearchResults';
@@ -12,22 +12,22 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import { ReactComponent as SettingsIcon } from '../assets/icons/settings.svg';
 
-function Sidebar({ userId, currentChat }) {
-  const [userData] = useDocumentData(doc(db, 'users', userId));
+function Sidebar({ currentChat }) {
+  const userRef = doc(db, 'users', auth.currentUser.uid);
+  const [userData] = useDocumentData(userRef);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
   const handleSearchTermChange = (e) => setSearchTerm(e.target.value);
 
   const handleSearchResultsTabClick = async (uid) => {
-    // clear search term
     setSearchTerm('');
-    // create new chat doc
-    const userIds = [userData.uid, uid];
+    const userIds = [auth.currentUser.uid, uid];
     const chatId = await createChat(userIds);
-    // set current chat to chat Id
     navigate(`/chats/${chatId}`);
   };
+
+  if (!userData) return null;
 
   return (
     <div className="Sidebar">
@@ -41,20 +41,17 @@ function Sidebar({ userId, currentChat }) {
 
       <SearchBar
         searchTerm={searchTerm}
-        handleSearchTermChange={handleSearchTermChange}
+        handleChange={handleSearchTermChange}
       />
 
       {searchTerm ? (
         <SearchResults
           searchTerm={searchTerm}
-          handleSearchResultsTabClick={handleSearchResultsTabClick}
+          handleClick={handleSearchResultsTabClick}
         />
-      ) : (
-        <ChatTabs
-          chats={userData && userData.chats}
-          currentChat={currentChat}
-        />
-      )}
+      ) : userData.chats && userData.chats.length ? (
+        <ChatTabs chatIds={userData.chats} currentChat={currentChat} />
+      ) : null}
     </div>
   );
 }

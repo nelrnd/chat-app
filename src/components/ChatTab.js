@@ -1,35 +1,36 @@
-import Avatar from './Avatar';
-import { getFormattedElapsedTime } from '../utils';
-
-import '../styles/ChatTab.css';
+import { doc } from 'firebase/firestore';
+import { useDocumentData } from 'react-firebase-hooks/firestore';
+import { db, getOtherUserId } from '../firebase';
 import { Link } from 'react-router-dom';
+import { getFormattedElapsedTime } from '../utils';
+import Avatar from './Avatar';
+import '../styles/ChatTab.css';
 
-function ChatTab({
-  name,
-  profileURL,
-  lastMessage,
-  isActive,
-  currentTime,
-  chatId,
-}) {
-  return (
-    <Link to={`/chats/${chatId}`} className="ChatTab_link">
-      <div className={`ChatTab ${isActive ? 'active' : ''}`}>
-        <Avatar imageURL={profileURL} />
+function ChatTab({ chatId, lastMessage, isActive, currentTime }) {
+  const otherUid = getOtherUserId(chatId);
+  const userRef = doc(db, 'users', otherUid);
+  const [userData] = useDocumentData(userRef);
 
-        <div className="text">
-          <h3 className="single-line">{name}</h3>
-          <p className="single-line">{lastMessage.text}</p>
+  if (userData) {
+    return (
+      <Link to={`/chats/${chatId}`} className="ChatTab_link">
+        <div className={`ChatTab ${isActive ? 'active' : ''}`}>
+          <Avatar imageURL={userData.profileURL} />
+
+          <div className="ChatTab_text">
+            <h3 className="single-line">{userData.name}</h3>
+            <p className="single-line">{lastMessage.text}</p>
+          </div>
+
+          <div>
+            <p className="small grey">
+              {getFormattedElapsedTime(lastMessage.date, currentTime)}
+            </p>
+          </div>
         </div>
-
-        <div>
-          <p className="small grey">
-            {getFormattedElapsedTime(lastMessage.date, currentTime)}
-          </p>
-        </div>
-      </div>
-    </Link>
-  );
+      </Link>
+    );
+  }
 }
 
 function UnreadLabel({ value }) {
