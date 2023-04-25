@@ -1,6 +1,6 @@
 import {
   getChatId,
-  getUsersId,
+  getUserIds,
   getFormattedElapsedTime,
   getFormattedDate,
 } from '../utils';
@@ -20,15 +20,15 @@ describe('getChatId', () => {
   });
 });
 
-describe('getUsersId', () => {
+describe('getUserIds', () => {
   it('gets users Id from chatId (1)', () => {
-    expect(getUsersId('abc-def')).toEqual(['abc', 'def']);
+    expect(getUserIds('abc-def')).toEqual(['abc', 'def']);
   });
   it('gets users Id from chatId (2)', () => {
     const chatId = 'jphMUrQdRhgULMsmUEoi9S478FG2-zPnA9VsqrwWqSpONE7JkyZfhO2y2';
     const uid1 = 'jphMUrQdRhgULMsmUEoi9S478FG2';
     const uid2 = 'zPnA9VsqrwWqSpONE7JkyZfhO2y2';
-    expect(getUsersId(chatId)).toEqual([uid1, uid2]);
+    expect(getUserIds(chatId)).toEqual([uid1, uid2]);
   });
 });
 

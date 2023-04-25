@@ -108,32 +108,30 @@ function EditProfileModal({ show, name, profileURL, userId, handleClose }) {
     profileInput.current.value = null;
   };
 
-  const handleSave = async () => {
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+
+    let uploadedProfileURL;
+
     if (newProfileFile) {
-      // upload new profile to firebase cloud storage and get URL
       const metadata = { contentType: newProfileFile.type };
       const imageFormat = newProfileFile.type.split('/')[1];
-      const filePath = '/profiles/' + userId + imageFormat;
-      const storageRef = ref(storage, filePath);
+      const imagePath = '/profiles' + userId + imageFormat;
+      const storageRef = ref(storage, imagePath);
       await uploadBytes(storageRef, newProfileFile, metadata);
-      const profileURL = await getDownloadURL(storageRef);
-      setNewProfileURL(profileURL);
+      uploadedProfileURL = await getDownloadURL(storageRef);
+      setNewProfileURL(uploadedProfileURL);
     }
 
-    // update user's profile information
-    const updatedProfileInfo = {};
-    if (newProfileURL !== profileURL) {
-      updatedProfileInfo.photoURL = newProfileURL || '';
-    }
-    if (newName !== name) {
-      updatedProfileInfo.displayName = newName;
-    }
-    await updateProfile(auth.currentUser, updatedProfileInfo);
+    const updatedInfo = {};
+    if (newProfileURL !== profileURL)
+      updatedInfo.photoURL = uploadedProfileURL || '';
+    if (newName !== name) updatedInfo.displayName = newName;
 
-    await updateUserInfo(userId, updatedProfileInfo);
+    await updateUserInfo(auth.currentUser, updatedInfo);
 
-    clearFields();
     handleClose();
+    clearFields();
   };
 
   useEffect(() => {
@@ -145,58 +143,65 @@ function EditProfileModal({ show, name, profileURL, userId, handleClose }) {
 
   return (
     <Modal show={show}>
-      <h2>Edit profile</h2>
+      <form onSubmit={handleFormSubmit}>
+        <h2>Edit profile</h2>
 
-      <div className="flex-row gap32 align-items">
-        <Avatar imageURL={newProfileURL} size="large" />
+        <div className="flex-row gap32 align-items">
+          <Avatar imageURL={newProfileURL} size="large" />
 
-        <div className="flex-row gap16">
-          <label htmlFor="new-profile-pic" className="button small">
-            Upload
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            name="new-profile-pic"
-            id="new-profile-pic"
-            onChange={handleUploadProfile}
-            ref={profileInput}
-            className="hidden"
-          />
-          {newProfileURL && (
-            <button className="secondary small" onClick={handleRemoveProfile}>
-              Remove
-            </button>
-          )}
+          <div className="flex-row gap16">
+            <label htmlFor="new-profile-pic" className="button small">
+              Upload
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              name="new-profile-pic"
+              id="new-profile-pic"
+              onChange={handleUploadProfile}
+              ref={profileInput}
+              className="hidden"
+            />
+            {newProfileURL && (
+              <button
+                className="secondary small"
+                onClick={handleRemoveProfile}
+                type="button"
+              >
+                Remove
+              </button>
+            )}
+          </div>
         </div>
-      </div>
 
-      <div>
-        <label htmlFor={name}>Name</label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          className="outline"
-          value={newName}
-          onChange={handleNameChange}
-        />
-      </div>
+        <div>
+          <label htmlFor={name}>Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            className="outline"
+            value={newName}
+            onChange={handleNameChange}
+          />
+        </div>
 
-      <div className="row-left">
-        <button
-          onClick={() => {
-            handleClose();
-            clearFields();
-          }}
-          className="secondary small"
-        >
-          Cancel
-        </button>
-        <button className="small" onClick={handleSave}>
-          Save
-        </button>
-      </div>
+        <div className="row-left">
+          <button
+            onClick={() => {
+              handleClose();
+              clearFields();
+            }}
+            className="secondary small"
+            type="button"
+          >
+            Cancel
+          </button>
+          <button className="small" type="submit">
+            Save
+          </button>
+        </div>
+      </form>
     </Modal>
   );
 }

@@ -1,4 +1,4 @@
-import { auth, db, createNewChatDocument } from '../firebase';
+import { db, createChat } from '../firebase';
 
 import SearchBar from './SearchBar';
 import SearchResults from './SearchResults';
@@ -23,7 +23,8 @@ function Sidebar({ userId, currentChat }) {
     // clear search term
     setSearchTerm('');
     // create new chat doc
-    const chatId = await createNewChatDocument([uid, auth.currentUser.uid]);
+    const userIds = [userData.uid, uid];
+    const chatId = await createChat(userIds);
     // set current chat to chat Id
     navigate(`/chats/${chatId}`);
   };

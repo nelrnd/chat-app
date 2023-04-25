@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { addNewUserToFirestore, auth, signInWithGoogle } from '../firebase';
+import { auth, createUser, signInWithGoogle } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import JoinLayout from '../components/JoinLayout';
@@ -20,17 +20,17 @@ function Signup() {
 
   const [user] = useAuthState(auth);
 
-  const handleEmailChange = (event) => setUserEmail(event.target.value);
-  const handleNameChange = (event) => setUserName(event.target.value);
-  const handlePwdChange = (event) => setUserPwd(event.target.value);
+  const handleEmailChange = (e) => setUserEmail(e.target.value);
+  const handleNameChange = (e) => setUserName(e.target.value);
+  const handlePwdChange = (e) => setUserPwd(e.target.value);
 
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
 
     try {
       await createUserWithEmailAndPassword(auth, userEmail, userPwd);
       await updateProfile(auth.currentUser, { displayName: userName });
-      await addNewUserToFirestore(auth.currentUser);
+      await createUser(auth.currentUser);
     } catch (err) {
       if (err.code === 'auth/email-already-in-use') {
         const errorMessage = (

@@ -1,8 +1,8 @@
-export function getChatId(usersId) {
-  return usersId.sort().join('-');
+export function getChatId(userIds) {
+  return userIds.sort().join('-');
 }
 
-export function getUsersId(chatId) {
+export function getUserIds(chatId) {
   return chatId.split('-');
 }
 
