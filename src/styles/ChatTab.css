@@ -22,10 +22,6 @@
   overflow: hidden;
 }
 
-.ChatTab > div:last-of-type {
-  margin-left: auto;
-}
-
 .ChatTab_link {
   color: inherit;
 }
@@ -33,7 +29,13 @@
   text-decoration: inherit;
 }
 
+.ChatTab.unread .ChatTab_message-text {
+  color: var(--dark-90);
+  font-weight: 700;
+}
+
 .UnreadLabel {
+  font-size: 14px;
   width: 20px;
   height: 20px;
   border-radius: 10px;
@@ -42,4 +44,5 @@
   display: grid;
   place-content: center;
   margin-bottom: 4px;
+  margin-left: auto;
 }

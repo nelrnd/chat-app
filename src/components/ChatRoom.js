@@ -6,8 +6,9 @@ import {
   createChatMessage,
   db,
   getOtherUserId,
+  incrementUnreadCount,
+  readLastChatMessage,
   updateLastChatMessage,
-  updateUnreadCount,
 } from '../firebase';
 import '../styles/ChatRoom.css';
 
@@ -22,6 +23,7 @@ function ChatRoom({ chatId }) {
   const otherUid = getOtherUserId(chatId);
   const [otherUserData] = useDocumentData(doc(db, 'users', otherUid));
   const [chatData] = useDocumentData(doc(db, 'chats', chatId));
+  const [messagesLength, setMessagesLength] = useState();
 
   const handleMessageInputChange = (e) => {
     setMessageInput(e.target.value);
@@ -36,9 +38,9 @@ function ChatRoom({ chatId }) {
       const userIds = [auth.currentUser.uid, otherUid];
       createChatRefs(userIds, chatId);
     }
+    incrementUnreadCount(chatId, auth.currentUser.uid);
     const message = await createChatMessage(chatId, messageInputCopy);
     updateLastChatMessage(chatId, auth.currentUser.uid, message);
-    updateUnreadCount(chatId);
   };
 
   const scrollToBottom = (behavior) => {
@@ -59,6 +61,18 @@ function ChatRoom({ chatId }) {
   useEffect(() => {
     enteringRoom.current = true;
   }, [chatId]);
+
+  useEffect(() => {
+    if (chatData && chatData.messages.length !== messagesLength) {
+      setMessagesLength(chatData.messages.length);
+    }
+  }, [chatData, messagesLength]);
+
+  useEffect(() => {
+    (async () => {
+      await readLastChatMessage(chatId, auth.currentUser.uid);
+    })();
+  }, [chatId, messagesLength]);
 
   return (
     <div className="ChatRoom">

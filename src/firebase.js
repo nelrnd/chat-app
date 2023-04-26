@@ -154,19 +154,29 @@ export async function updateLastChatMessage(chatId, senderId, message) {
   }
 }
 
-export async function updateUnreadCount(chatId) {
+export async function incrementUnreadCount(chatId, userId) {
   try {
     const chatRef = doc(db, 'chats', chatId);
     const chatDoc = await getDoc(chatRef);
     const chatData = chatDoc.data();
-    for (let user in chatData.unreadCount) {
-      if (!chatData.lastMessage.read[user]) {
+    for (const user in chatData.unreadCount) {
+      if (user !== userId) {
         chatData.unreadCount[user]++;
       }
     }
-    await updateDoc(chatRef, {
-      unreadCount: chatData.unreadCount,
-    });
+    await updateDoc(chatRef, { unreadCount: chatData.unreadCount });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function readLastChatMessage(chatId, userId) {
+  try {
+    const chatRef = doc(db, 'chats', chatId);
+    const update = {};
+    update[`lastMessage.read.${userId}`] = true;
+    update[`unreadCount.${userId}`] = 0;
+    await updateDoc(chatRef, update);
   } catch (err) {
     console.error(err);
   }

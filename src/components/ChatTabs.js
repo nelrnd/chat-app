@@ -27,6 +27,7 @@ function ChatTabs({ chatIds, currentChat }) {
               key={chat.id}
               chatId={chat.id}
               lastMessage={chat.lastMessage}
+              unreadCount={chat.unreadCount}
               isActive={currentChat === chat.id}
               currentTime={currentTime}
             />
