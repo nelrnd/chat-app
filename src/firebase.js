@@ -93,6 +93,10 @@ export async function createChat(userIds) {
       messages: [],
       lastMessage: { text: null, date: null },
       id: chatId,
+      unreadCount: {
+        [userIds[0]]: 0,
+        [userIds[1]]: 0,
+      },
     });
     return chatId;
   } catch (err) {
@@ -132,11 +136,36 @@ export async function createChatMessage(chatId, messageText) {
   }
 }
 
-export async function updateLastChatMessage(chatId, message) {
+export async function updateLastChatMessage(chatId, senderId, message) {
   try {
     const chatRef = doc(db, 'chats', chatId);
     await updateDoc(chatRef, {
-      lastMessage: { text: message.text, date: message.date },
+      lastMessage: {
+        text: message.text,
+        date: message.date,
+        read: {
+          [senderId]: true,
+          [getOtherUserId(chatId)]: false,
+        },
+      },
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function updateUnreadCount(chatId) {
+  try {
+    const chatRef = doc(db, 'chats', chatId);
+    const chatDoc = await getDoc(chatRef);
+    const chatData = chatDoc.data();
+    for (let user in chatData.unreadCount) {
+      if (!chatData.lastMessage.read[user]) {
+        chatData.unreadCount[user]++;
+      }
+    }
+    await updateDoc(chatRef, {
+      unreadCount: chatData.unreadCount,
     });
   } catch (err) {
     console.error(err);

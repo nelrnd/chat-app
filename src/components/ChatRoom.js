@@ -7,6 +7,7 @@ import {
   db,
   getOtherUserId,
   updateLastChatMessage,
+  updateUnreadCount,
 } from '../firebase';
 import '../styles/ChatRoom.css';
 
@@ -36,7 +37,8 @@ function ChatRoom({ chatId }) {
       createChatRefs(userIds, chatId);
     }
     const message = await createChatMessage(chatId, messageInputCopy);
-    updateLastChatMessage(chatId, message);
+    updateLastChatMessage(chatId, auth.currentUser.uid, message);
+    updateUnreadCount(chatId);
   };
 
   const scrollToBottom = (behavior) => {
