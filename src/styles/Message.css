@@ -9,6 +9,9 @@
 
 .Message {
   width: fit-content;
+  line-height: 140%;
+  max-width: 700px;
+  word-break: break-all;
   padding: 16px 24px;
   margin-bottom: 8px;
   box-shadow: var(--shadow);
