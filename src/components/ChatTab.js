@@ -6,6 +6,8 @@ import { getFormattedElapsedTime } from '../utils';
 import Avatar from './Avatar';
 import '../styles/ChatTab.css';
 
+import { ReactComponent as ImageIcon } from '../assets/icons/image.svg';
+
 function ChatTab({ chatId, lastMessage, unreadCount, isActive, currentTime }) {
   const otherUid = getOtherUserId(chatId);
   const userRef = doc(db, 'users', otherUid);
@@ -26,7 +28,13 @@ function ChatTab({ chatId, lastMessage, unreadCount, isActive, currentTime }) {
           <div className="ChatTab_text">
             <h3 className="single-line">{userData.name}</h3>
             <p className="ChatTab_message-text single-line">
-              {lastMessage.text}
+              {lastMessage.imageURL ? (
+                <>
+                  <ImageIcon /> {lastMessage.text || 'photo'}
+                </>
+              ) : (
+                lastMessage.text
+              )}
             </p>
           </div>
 

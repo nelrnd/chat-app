@@ -29,9 +29,20 @@
   text-decoration: inherit;
 }
 
+.ChatTab_message-text {
+  color: var(--dark-50);
+}
+
 .ChatTab.unread .ChatTab_message-text {
   color: var(--dark-90);
   font-weight: 700;
+}
+
+.ChatTab_message-text > svg {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  color: var(--dark-50);
 }
 
 .UnreadLabel {
