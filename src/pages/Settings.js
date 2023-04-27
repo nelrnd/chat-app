@@ -18,8 +18,8 @@ function Settings() {
   const [showEditProfileModal, setShowEditProfileModal] = useState(false);
   const [copyBtnText, setCopyBtnText] = useState('COPY');
 
-  const handleCopyToClipboard = (text) => {
-    navigator.clipboard.writeText(text);
+  const handleCopyToClipboard = () => {
+    navigator.clipboard.writeText(user.uid);
     setCopyBtnText('COPIED');
     setTimeout(() => setCopyBtnText('COPY'), 1000);
   };
@@ -31,7 +31,7 @@ function Settings() {
       <Layout>
         <Sidebar userId={user.uid} />
 
-        <div>
+        <div style={{ overflowY: 'auto' }}>
           <header className="page-bar">
             <h2 className="large single-line">Settings</h2>
           </header>
@@ -60,10 +60,7 @@ function Settings() {
               <h3>{user.uid}</h3>
             </div>
 
-            <button
-              className="secondary small"
-              onClick={() => handleCopyToClipboard(user.uid)}
-            >
+            <button className="secondary small" onClick={handleCopyToClipboard}>
               <CopyIcon />
               {copyBtnText}
             </button>
