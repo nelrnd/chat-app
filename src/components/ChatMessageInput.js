@@ -23,7 +23,6 @@ function ChatMessageInput({ chatId, isFirstMessage }) {
   const handleTextChange = (e) => setText(e.target.value);
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
-    console.log(e.target.files[0]);
   };
   const handleClearImage = () => {
     setImage(null);
