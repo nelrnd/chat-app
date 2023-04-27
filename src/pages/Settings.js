@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { auth, storage, updateUserInfo } from '../firebase';
+import { auth, updateUserInfo, uploadProfileImage } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import Sidebar from '../components/Sidebar';
 import Avatar from '../components/Avatar';
@@ -10,7 +10,6 @@ import Layout from '../components/Layout';
 import { signOut } from 'firebase/auth';
 import Modal from '../components/Modal';
 import { useEffect, useRef, useState } from 'react';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 const logout = () => signOut(auth);
 
@@ -121,25 +120,26 @@ function EditProfileModal({ show, name, profileURL, userId, handleClose }) {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
-    let uploadedProfileURL;
+    const updatedInfo = {};
 
     if (newProfileFile) {
-      const metadata = { contentType: newProfileFile.type };
-      const imageFormat = newProfileFile.type.split('/')[1];
-      const imagePath = '/profiles' + userId + imageFormat;
-      const storageRef = ref(storage, imagePath);
-      await uploadBytes(storageRef, newProfileFile, metadata);
-      uploadedProfileURL = await getDownloadURL(storageRef);
-      setNewProfileURL(uploadedProfileURL);
+      const imageURL = await uploadProfileImage(
+        newProfileFile,
+        auth.currentUser.uid
+      );
+      updatedInfo.photoURL = imageURL;
+      setNewProfileURL(imageURL);
     }
 
-    const updatedInfo = {};
-    if (newProfileURL !== profileURL)
-      updatedInfo.photoURL = uploadedProfileURL || '';
-    if (newName !== name) updatedInfo.displayName = newName;
+    if (newProfileURL === null) {
+      updatedInfo.photoURL = '';
+    }
+
+    if (newName !== name) {
+      updatedInfo.displayName = newName;
+    }
 
     await updateUserInfo(auth.currentUser, updatedInfo);
-
     handleClose();
     clearFields();
   };
