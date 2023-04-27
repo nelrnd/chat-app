@@ -62,6 +62,7 @@ function ChatRoom({ chatId }) {
             <Message
               key={msg.date + msg.from}
               text={msg.text}
+              imageURL={msg.imageURL}
               date={msg.date}
               isSent={msg.from === auth.currentUser.uid}
             />

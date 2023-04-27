@@ -1,4 +1,5 @@
 .Message_wrapper {
+  max-width: 700px;
   margin: 16px 0;
   width: fit-content;
 }
@@ -10,7 +11,6 @@
 .Message {
   width: fit-content;
   line-height: 140%;
-  max-width: 700px;
   word-break: break-all;
   padding: 16px 24px;
   margin-bottom: 8px;
@@ -36,4 +36,8 @@
 
 .Message_wrapper.sent > .Message_date {
   text-align: right;
+}
+
+.Message_wrapper > img {
+  max-width: 100%;
 }
