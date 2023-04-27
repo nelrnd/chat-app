@@ -18,8 +18,8 @@ function Settings() {
   const [showEditProfileModal, setShowEditProfileModal] = useState(false);
   const [copyBtnText, setCopyBtnText] = useState('COPY');
 
-  const handleCopyToClipboard = () => {
-    navigator.clipboard.writeText(user.uid);
+  const handleCopyToClipboard = async () => {
+    await navigator.clipboard.writeText(user.uid);
     setCopyBtnText('COPIED');
     setTimeout(() => setCopyBtnText('COPY'), 1000);
   };
