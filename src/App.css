@@ -154,6 +154,8 @@ button.full-width,
   display: grid;
   place-content: center;
   width: fit-content;
+
+  cursor: pointer;
 }
 
 .icon-btn:hover {

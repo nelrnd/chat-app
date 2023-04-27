@@ -5,12 +5,6 @@
   overflow: hidden;
 }
 
-.ChatRoom > section.bottom > form {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 16px;
-}
-
 .ChatRoom > section.messages {
   padding: 16px 36px;
   overflow: auto;

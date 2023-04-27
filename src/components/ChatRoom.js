@@ -14,6 +14,7 @@ import '../styles/ChatRoom.css';
 
 import Message from './Message';
 import { createChatRefs } from '../firebase';
+import ChatMessageInput from './ChatMessageInput';
 
 function ChatRoom({ chatId }) {
   const [messageInput, setMessageInput] = useState('');
@@ -97,18 +98,7 @@ function ChatRoom({ chatId }) {
         <div ref={bottomRef}></div>
       </section>
 
-      <section className="page-bar bottom">
-        <form onSubmit={handleFormSubmit}>
-          <input
-            type="text"
-            placeholder="Type in something..."
-            className="filled"
-            value={messageInput}
-            onChange={handleMessageInputChange}
-          />
-          <button type="submit">Submit</button>
-        </form>
-      </section>
+      <ChatMessageInput chatId={chatId} />
     </div>
   );
 }
