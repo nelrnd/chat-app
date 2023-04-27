@@ -136,7 +136,7 @@ export async function updateLastChatMessage(chatId, senderId, message) {
     await updateDoc(chatRef, {
       lastMessage: {
         text: message.text || '',
-        imageURL: message.imageURL,
+        imageURL: message.imageURL || '',
         date: message.date,
         read: {
           [senderId]: true,
