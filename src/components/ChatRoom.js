@@ -7,9 +7,13 @@ import '../styles/ChatRoom.css';
 import Message from './Message';
 import ChatMessageInput from './ChatMessageInput';
 
+import { ReactComponent as BackIcon } from '../assets/icons/back.svg';
+import { useNavigate } from 'react-router-dom';
+
 function ChatRoom({ chatId }) {
   const enteringRoom = useRef(true);
   const bottomRef = useRef();
+  const navigate = useNavigate();
 
   const otherUid = getOtherUserId(chatId);
   const [otherUserData] = useDocumentData(doc(db, 'users', otherUid));
@@ -19,6 +23,8 @@ function ChatRoom({ chatId }) {
   const scrollToBottom = (behavior) => {
     bottomRef.current.scrollIntoView({ behavior });
   };
+
+  const goBack = () => navigate('/');
 
   useEffect(() => {
     if (chatData) {
@@ -50,6 +56,10 @@ function ChatRoom({ chatId }) {
   return (
     <div className="ChatRoom">
       <header className="page-bar">
+        <button className="ChatRoom_back-btn" onClick={goBack}>
+          <BackIcon />
+        </button>
+
         <h2 className="large single-line">
           {otherUserData && otherUserData.name}
         </h2>

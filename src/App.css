@@ -217,6 +217,9 @@ a:hover {
 .page-bar {
   padding: 36px;
   background-color: white;
+
+  display: flex;
+  gap: 24px;
 }
 
 .page-section {
