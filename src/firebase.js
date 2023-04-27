@@ -176,16 +176,34 @@ export async function readLastChatMessage(chatId, userId) {
   }
 }
 
-// Upload image to Cloud Storage and return image URL
+export async function uploadFile(file, path) {
+  try {
+    const metadata = { contentType: file.type };
+    const ext = file.name.substr(file.name.lastIndexOf('.') + 1);
+    const storageRef = ref(storage, `${path}.${ext}`);
+
+    await uploadBytes(storageRef, file, metadata);
+    const fileURL = await getDownloadURL(storageRef);
+    return fileURL;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 export async function uploadImage(imageFile, userId) {
   try {
-    const metadata = { contentType: imageFile.type };
-    const ext = imageFile.name.substr(imageFile.name.lastIndexOf('.') + 1);
-    const path = `/images/${userId}/${Date.now()}.${ext}`;
-    const storageRef = ref(storage, path);
+    const path = `/images/${userId}/${Date.now()}`;
+    const imageURL = await uploadFile(imageFile, path);
+    return imageURL;
+  } catch (err) {
+    console.error(err);
+  }
+}
 
-    await uploadBytes(storageRef, imageFile, metadata);
-    const imageURL = await getDownloadURL(storageRef);
+export async function uploadProfileImage(imageFile, userId) {
+  try {
+    const path = `/profiles/${userId}`;
+    const imageURL = await uploadFile(imageFile, path);
     return imageURL;
   } catch (err) {
     console.error(err);
