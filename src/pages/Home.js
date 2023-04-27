@@ -1,7 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
-import Layout from '../components/Layout';
 import Sidebar from '../components/Sidebar';
 
 import '../styles/Home.css';
@@ -13,11 +12,7 @@ function Home() {
   if (!user && !loading) {
     return <Navigate to="/login" replace />;
   } else if (user) {
-    return (
-      <Layout>
-        <Sidebar userId={user.uid} />
-      </Layout>
-    );
+    return <Sidebar userId={user.uid} />;
   }
 }
 

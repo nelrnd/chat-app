@@ -56,7 +56,7 @@ function ChatRoom({ chatId }) {
   return (
     <div className="ChatRoom">
       <header className="page-bar">
-        <button className="ChatRoom_back-btn" onClick={goBack}>
+        <button className="back-btn" onClick={goBack}>
           <BackIcon />
         </button>
 

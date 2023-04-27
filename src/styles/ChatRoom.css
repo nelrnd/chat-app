@@ -9,19 +9,3 @@
   padding: 16px 36px;
   overflow: auto;
 }
-
-.ChatRoom_back-btn {
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  border-radius: 18px;
-  background-color: transparent;
-}
-
-.ChatRoom_back-btn:hover {
-  background-color: var(--dark-20);
-}
-
-.ChatRoom_back-btn > svg {
-  color: var(--dark-50);
-}

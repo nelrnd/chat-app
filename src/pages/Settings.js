@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { auth, updateUserInfo, uploadProfileImage } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import Sidebar from '../components/Sidebar';
@@ -6,6 +6,7 @@ import Avatar from '../components/Avatar';
 
 import { ReactComponent as EditIcon } from '../assets/icons/edit.svg';
 import { ReactComponent as CopyIcon } from '../assets/icons/clipboard.svg';
+import { ReactComponent as BackIcon } from '../assets/icons/back.svg';
 import Layout from '../components/Layout';
 import { signOut } from 'firebase/auth';
 import Modal from '../components/Modal';
@@ -17,12 +18,15 @@ function Settings() {
   const [user, loading] = useAuthState(auth);
   const [showEditProfileModal, setShowEditProfileModal] = useState(false);
   const [copyBtnText, setCopyBtnText] = useState('COPY');
+  const navigate = useNavigate();
 
   const handleCopyToClipboard = async () => {
     await navigator.clipboard.writeText(user.uid);
     setCopyBtnText('COPIED');
     setTimeout(() => setCopyBtnText('COPY'), 1000);
   };
+
+  const goBack = () => navigate('/');
 
   if (!user && !loading) {
     return <Navigate to="/login" replace />;
@@ -33,6 +37,10 @@ function Settings() {
 
         <div style={{ overflowY: 'auto' }}>
           <header className="page-bar">
+            <button className="back-btn" onClick={goBack}>
+              <BackIcon />
+            </button>
+
             <h2 className="large single-line">Settings</h2>
           </header>
 

@@ -1,5 +1,6 @@
 .Sidebar {
   width: 372px;
+  height: 100%;
   background-color: white;
   border-right: 1px solid var(--dark-10);
   position: relative;
@@ -11,4 +12,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+@media screen and (max-width: 900px) {
+  .Sidebar {
+    width: 100%;
+  }
 }
