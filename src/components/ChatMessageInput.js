@@ -3,8 +3,17 @@ import { ReactComponent as ImageIcon } from '../assets/icons/image.svg';
 import { ReactComponent as CloseIcon } from '../assets/icons/close.svg';
 
 import '../styles/ChatMessageInput.css';
+import {
+  auth,
+  createChatMessage,
+  createChatRefs,
+  incrementUnreadCount,
+  updateLastChatMessage,
+  uploadImage,
+} from '../firebase';
+import { getUserIds } from '../utils';
 
-function ChatMessageInput({ chatId }) {
+function ChatMessageInput({ chatId, isFirstMessage }) {
   const [text, setText] = useState('');
   const [image, setImage] = useState();
   let imageURL = image && URL.createObjectURL(image);
@@ -12,10 +21,41 @@ function ChatMessageInput({ chatId }) {
   const imageInput = useRef();
 
   const handleTextChange = (e) => setText(e.target.value);
-  const handleImageChange = (e) => setImage(e.target.files[0]);
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+    console.log(e.target.files[0]);
+  };
   const handleClearImage = () => {
     setImage(null);
     imageInput.current.value = null;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setText((t) => t.trim());
+    if (!text && !image) return;
+
+    const message = { from: auth.currentUser.uid, date: Date.now() };
+
+    if (text) {
+      message.text = text;
+      setText('');
+    }
+
+    if (image) {
+      const imageURL = await uploadImage(image, auth.currentUser.uid);
+      message.imageURL = imageURL;
+      handleClearImage();
+    }
+
+    if (isFirstMessage) {
+      const userIds = getUserIds(chatId);
+      createChatRefs(userIds, chatId);
+    }
+
+    await incrementUnreadCount(chatId, auth.currentUser.uid);
+    await createChatMessage(chatId, message);
+    await updateLastChatMessage(chatId, auth.currentUser.uid, message);
   };
 
   return (
@@ -24,7 +64,7 @@ function ChatMessageInput({ chatId }) {
         <ImagePreview imageURL={imageURL} handleClick={handleClearImage} />
       )}
 
-      <form>
+      <form onSubmit={handleSubmit}>
         <input
           type="file"
           name="messageImage"

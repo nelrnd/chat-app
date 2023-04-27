@@ -1,23 +1,13 @@
 import { useRef, useState, useEffect } from 'react';
 import { doc } from 'firebase/firestore';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
-import {
-  auth,
-  createChatMessage,
-  db,
-  getOtherUserId,
-  incrementUnreadCount,
-  readLastChatMessage,
-  updateLastChatMessage,
-} from '../firebase';
+import { auth, db, getOtherUserId, readLastChatMessage } from '../firebase';
 import '../styles/ChatRoom.css';
 
 import Message from './Message';
-import { createChatRefs } from '../firebase';
 import ChatMessageInput from './ChatMessageInput';
 
 function ChatRoom({ chatId }) {
-  const [messageInput, setMessageInput] = useState('');
   const enteringRoom = useRef(true);
   const bottomRef = useRef();
 
@@ -25,24 +15,6 @@ function ChatRoom({ chatId }) {
   const [otherUserData] = useDocumentData(doc(db, 'users', otherUid));
   const [chatData] = useDocumentData(doc(db, 'chats', chatId));
   const [messagesLength, setMessagesLength] = useState();
-
-  const handleMessageInputChange = (e) => {
-    setMessageInput(e.target.value);
-  };
-
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-    if (!messageInput.trim()) return;
-    const messageInputCopy = messageInput.trim();
-    setMessageInput('');
-    if (chatData.messages.length === 0) {
-      const userIds = [auth.currentUser.uid, otherUid];
-      createChatRefs(userIds, chatId);
-    }
-    incrementUnreadCount(chatId, auth.currentUser.uid);
-    const message = await createChatMessage(chatId, messageInputCopy);
-    updateLastChatMessage(chatId, auth.currentUser.uid, message);
-  };
 
   const scrollToBottom = (behavior) => {
     bottomRef.current.scrollIntoView({ behavior });
@@ -98,7 +70,7 @@ function ChatRoom({ chatId }) {
         <div ref={bottomRef}></div>
       </section>
 
-      <ChatMessageInput chatId={chatId} />
+      <ChatMessageInput chatId={chatId} isFirstMessage={messagesLength === 0} />
     </div>
   );
 }
