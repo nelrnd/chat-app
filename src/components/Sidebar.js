@@ -27,8 +27,6 @@ function Sidebar({ currentChat }) {
     navigate(`/chats/${chatId}`);
   };
 
-  if (!userData) return null;
-
   return (
     <div className="Sidebar">
       <header className="Sidebar_header">
@@ -44,13 +42,15 @@ function Sidebar({ currentChat }) {
         handleChange={handleSearchTermChange}
       />
 
-      {searchTerm ? (
-        <SearchResults
-          searchTerm={searchTerm}
-          handleClick={handleSearchResultsTabClick}
-        />
-      ) : userData.chats && userData.chats.length ? (
-        <ChatTabs chatIds={userData.chats} currentChat={currentChat} />
+      {userData ? (
+        searchTerm ? (
+          <SearchResults
+            searchTerm={searchTerm}
+            handleClick={handleSearchResultsTabClick}
+          />
+        ) : userData.chats && userData.chats.length ? (
+          <ChatTabs chatIds={userData.chats} currentChat={currentChat} />
+        ) : null
       ) : null}
     </div>
   );
