@@ -13,7 +13,7 @@ import {
   GoogleAuthProvider,
   updateProfile,
 } from 'firebase/auth';
-import { getStorage } from 'firebase/storage';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { getChatId, getUserIds } from './utils';
 
 const firebaseConfig = {
@@ -119,18 +119,12 @@ export async function createChatRefs(userIds, chatId) {
   }
 }
 
-export async function createChatMessage(chatId, messageText) {
+export async function createChatMessage(chatId, message) {
   try {
     const chatRef = doc(db, 'chats', chatId);
-    const message = {
-      text: messageText,
-      from: auth.currentUser.uid,
-      date: Date.now(),
-    };
     await updateDoc(chatRef, {
       messages: arrayUnion(message),
     });
-    return message;
   } catch (err) {
     console.error(err);
   }
@@ -177,6 +171,22 @@ export async function readLastChatMessage(chatId, userId) {
     update[`lastMessage.read.${userId}`] = true;
     update[`unreadCount.${userId}`] = 0;
     await updateDoc(chatRef, update);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// Upload image to Cloud Storage and return image URL
+export async function uploadImage(imageFile, userId) {
+  try {
+    const metadata = { contentType: imageFile.type };
+    const ext = imageFile.name.substr(imageFile.name.lastIndexOf('.') + 1);
+    const path = `/images/${userId}/${Date.now()}.${ext}`;
+    const storageRef = ref(storage, path);
+
+    await uploadBytes(storageRef, imageFile, metadata);
+    const imageURL = await getDownloadURL(storageRef);
+    return imageURL;
   } catch (err) {
     console.error(err);
   }
