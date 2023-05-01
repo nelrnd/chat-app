@@ -1,0 +1,67 @@
+.Button {
+  display: block;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+
+  transition: all 0.2s ease-in-out;
+}
+
+.Button.primary {
+  color: white;
+  background-color: black;
+}
+.Button.primary:hover {
+  background-color: var(--dark-grey);
+}
+
+.Button.secondary {
+  color: var(--grey);
+  background-color: var(--ghost);
+}
+.Button.secondary:hover {
+  background-color: var(--light-grey);
+}
+
+.Button.large {
+  width: 100%;
+  font-size: 18px;
+  padding: 16px 32px;
+}
+
+.Button.medium {
+  font-size: 18px;
+  padding: 16px 32px;
+}
+
+.Button.small {
+  font-size: 14px;
+  padding: 12px 24px;
+}
+
+.Button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.Button.primary:disabled:hover {
+  background-color: black;
+}
+.Button.secondary:disabled:hover {
+  background-color: var(--ghost);
+}
+
+.Button.large > svg,
+.Button.medium > svg {
+  width: 20px;
+  height: 20px;
+}
+
+.Button.small > svg {
+  width: 16px;
+  height: 16px;
+}

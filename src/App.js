@@ -7,10 +7,12 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Settings from './pages/Settings';
 import Chat from './pages/Chat';
+import ComponentsDisplay from './components/ComponentDisplay';
 
 function App() {
   return (
     <div className="App">
+      <ComponentsDisplay />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />

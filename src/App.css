@@ -90,7 +90,7 @@ label {
 }
 
 /* Basic button style */
-
+/*
 button,
 .button {
   font-size: 1.125rem;
@@ -144,7 +144,7 @@ button.full-width,
 .button.full-width {
   width: 100%;
 }
-
+*/
 .icon-btn {
   color: var(--dark-50);
   padding: 8px;

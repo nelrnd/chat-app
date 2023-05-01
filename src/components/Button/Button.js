@@ -5,9 +5,14 @@ const Button = ({
   size = 'medium',
   handleClick,
   children,
+  disabled,
 }) => {
   return (
-    <button className={`Button ${type} ${size}`} onClick={handleClick}>
+    <button
+      className={`Button ${type} ${size}`}
+      onClick={handleClick}
+      disabled={disabled}
+    >
       {children}
     </button>
   );
