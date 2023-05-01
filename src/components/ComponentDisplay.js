@@ -1,5 +1,6 @@
 import Button from './Button/Button';
 import Icon from './Icon/Icon';
+import TextInput from './TextInput/TextInput';
 
 import IconButton from './IconButton/IconButton';
 
@@ -18,6 +19,13 @@ const ComponentsDisplay = () => {
       <IconButton name="close" type="primary" size="large" />
 
       <IconButton name="settings" />
+
+      <TextInput
+        label="Email"
+        icon="search"
+        id="email"
+        placeholder="Your email"
+      />
     </div>
   );
 };
