@@ -1,16 +1,14 @@
 :root {
-  /* Color palette */
-  --primary: #ed592a;
-  --dark-100: #1a1a1a;
-  --dark-70: #595959;
-  --dark-50: #808080;
-  --dark-20: #f3f4f6;
-  --dark-10: #f7f7f7;
-
+  /* Colors */
+  --primary: #42d1c0;
+  --primary-75: #28a697;
+  --primary-50: #0f6359;
+  --primary-25: #0d3732;
+  --ghost: #f7f7f7;
+  --light-grey: #e6e6e6;
+  --grey: #808080;
+  --dark-grey: #171717;
   --red: #e3474b;
-
-  /* Shadow */
-  --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 body {
