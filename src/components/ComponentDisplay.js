@@ -1,6 +1,8 @@
 import Button from './Button/Button';
 import Icon from './Icon/Icon';
 
+import IconButton from './IconButton/IconButton';
+
 const ComponentsDisplay = () => {
   return (
     <div>
@@ -12,6 +14,10 @@ const ComponentsDisplay = () => {
         <Icon name="send" />
         Send
       </Button>
+
+      <IconButton name="close" type="primary" size="large" />
+
+      <IconButton name="settings" />
     </div>
   );
 };
