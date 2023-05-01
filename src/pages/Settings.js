@@ -5,7 +5,6 @@ import Sidebar from '../components/Sidebar';
 import Avatar from '../components/Avatar';
 
 import { ReactComponent as EditIcon } from '../assets/icons/edit.svg';
-import { ReactComponent as CopyIcon } from '../assets/icons/clipboard.svg';
 import { ReactComponent as BackIcon } from '../assets/icons/back.svg';
 import Layout from '../components/Layout';
 import { signOut } from 'firebase/auth';
@@ -69,7 +68,6 @@ function Settings() {
             </div>
 
             <button className="secondary small" onClick={handleCopyToClipboard}>
-              <CopyIcon />
               {copyBtnText}
             </button>
           </section>

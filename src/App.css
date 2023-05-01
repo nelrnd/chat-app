@@ -223,6 +223,7 @@ a:hover {
 .error-message {
   color: var(--red);
 }
+/*
 .error-message::before {
   content: '';
   display: inline-block;
@@ -234,6 +235,7 @@ a:hover {
   background-position: center;
   background-size: 100%;
 }
+*/
 
 /* Common component across pages styling */
 

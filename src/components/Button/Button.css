@@ -55,13 +55,13 @@
   background-color: var(--ghost);
 }
 
-.Button.large > svg,
-.Button.medium > svg {
+.Button.large > .Icon,
+.Button.medium > .Icon {
   width: 20px;
   height: 20px;
 }
 
-.Button.small > svg {
+.Button.small > .Icon {
   width: 16px;
   height: 16px;
 }

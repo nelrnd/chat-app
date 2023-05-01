@@ -1,19 +1,16 @@
 import Button from './Button/Button';
+import Icon from './Icon/Icon';
 
-import { ReactComponent as SendIcon } from '../assets/icons/image.svg';
 const ComponentsDisplay = () => {
   return (
     <div>
-      <Button disabled={true}>Button</Button>
-      <Button size="large">Button</Button>
-      <Button size="small">
-        <SendIcon />
-        Cancel
-      </Button>
+      <Icon name="search" size="small" />
+      <Icon name="send" />
+      <Icon name="close" size="large" />
 
       <Button type="secondary">
-        <SendIcon />
-        Upload
+        <Icon name="send" />
+        Send
       </Button>
     </div>
   );
