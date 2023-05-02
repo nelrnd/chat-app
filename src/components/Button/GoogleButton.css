@@ -1,0 +1,22 @@
+.GoogleButton {
+  font-size: 100%;
+  display: block;
+  width: 100%;
+  padding: 16px 32px;
+  color: black;
+  background-color: white;
+  border: solid 2px var(--ghost);
+  border-radius: 1000px;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+
+  transition: all 0.2s ease-in-out;
+}
+
+.GoogleButton:hover {
+  background-color: var(--ghost);
+}

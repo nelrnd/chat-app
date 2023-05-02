@@ -1,0 +1,20 @@
+.JoinLayout {
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  display: grid;
+  place-content: center;
+}
+
+.JoinLayout_content {
+  max-width: 1164px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 20px;
+}
+
+.JoinLayout_content:last-of-type {
+  padding: 0 118px;
+}
