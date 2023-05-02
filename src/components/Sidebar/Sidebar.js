@@ -1,13 +1,17 @@
-import './Sidebar.css';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import logoImg from '../../assets/images/logo.png';
 import IconButton from '../IconButton/IconButton';
 import TextInput from '../TextInput/TextInput';
-import { useState } from 'react';
+import './Sidebar.css';
 
 const Sidebar = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
 
   const handleSearchTermChagne = (e) => setSearchTerm(e.target.event);
+
+  const goToSettings = () => navigate('/settings');
 
   return (
     <div className="Sidebar">
@@ -16,7 +20,7 @@ const Sidebar = () => {
 
         <div className="row gap-16">
           <IconButton name="new" />
-          <IconButton name="settings" />
+          <IconButton name="settings" handleClick={goToSettings} />
         </div>
       </header>
 

@@ -3,6 +3,12 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from './firebase';
+import Sidebar from './components/Sidebar/Sidebar';
+import HomePage from './pages/HomePage';
+import SettingsPage from './pages/SettingsPage';
+import Layout from './components/Layout/Layout';
 
 /*
 function App() {
@@ -24,10 +30,30 @@ function App() {
 */
 
 function App() {
+  const [user] = useAuthState(auth);
+
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
+          <Route
+            path="/"
+            element={
+              <Layout>
+                {user && <Sidebar />}
+                <HomePage />
+              </Layout>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <Layout>
+                {user && <Sidebar />}
+                <SettingsPage />
+              </Layout>
+            }
+          />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
         </Routes>

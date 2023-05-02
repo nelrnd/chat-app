@@ -63,6 +63,15 @@ img {
 .gap-16 {
   gap: 16px;
 }
+.gap-32 {
+  gap: 32px;
+}
+.space-btw {
+  justify-content: space-between;
+}
+.align {
+  align-items: center;
+}
 
 .err-msg {
   color: var(--red);
@@ -72,6 +81,14 @@ img {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.Settings_section {
+  max-width: 700px;
+  margin: 36px auto;
+  padding: 24px;
+  background-color: white;
+  border-radius: 16px;
 }
 
 /*
