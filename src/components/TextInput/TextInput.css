@@ -45,3 +45,8 @@
 .TextInput > input.withIcon {
   padding-left: 56px;
 }
+
+.TextInput > input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
