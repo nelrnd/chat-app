@@ -1,0 +1,52 @@
+.TextInput {
+  position: relative;
+}
+
+.TextInput > label {
+  display: inline-block;
+  font-size: 14px;
+  color: var(--grey);
+  margin-left: 16px;
+  margin-bottom: 6px;
+}
+
+.TextInput > input {
+  display: block;
+  width: 100%;
+  font-size: 18px;
+  background-color: var(--ghost);
+  border: solid 1px transparent;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 2px;
+
+  outline: solid 2px transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+.TextInput > input::placeholder {
+  color: var(--grey);
+  opacity: 1;
+}
+
+.TextInput > input:focus {
+  background-color: white;
+  outline-color: var(--primary);
+}
+
+.TextInput > .Icon {
+  color: var(--grey);
+  position: absolute;
+  left: 16px;
+  bottom: 15px;
+  pointer-events: none;
+}
+
+.TextInput > input.withIcon {
+  padding-left: 56px;
+}
+
+.TextInput > input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

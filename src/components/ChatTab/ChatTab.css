@@ -1,0 +1,19 @@
+.ChatTab {
+  background-color: white;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+  border-right: solid 3px transparent;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.ChatTab.active {
+  border-right-color: var(--primary);
+}
+
+.ChatTab:hover {
+  background-color: var(--ghost);
+}

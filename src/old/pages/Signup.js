@@ -7,7 +7,6 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import JoinLayout from '../components/JoinLayout';
 import Separator from '../components/Separator';
 
-import { ReactComponent as GoogleIcon } from '../assets/icons/google.svg';
 import { ReactComponent as BackIcon } from '../assets/icons/back.svg';
 
 function Signup() {
@@ -124,7 +123,6 @@ function EnterEmailSection({ userEmail, handleEmailChange, goNextStep }) {
         type="button"
         onClick={signInWithGoogle}
       >
-        <GoogleIcon />
         Sign up with Google
       </button>
 
