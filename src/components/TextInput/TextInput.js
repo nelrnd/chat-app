@@ -1,7 +1,18 @@
 import Icon from '../Icon/Icon';
 import './TextInput.css';
 
-const TextInput = ({ label, icon, id, placeholder, value, handleChange }) => {
+const TextInput = ({
+  label,
+  icon,
+  id,
+  placeholder,
+  value,
+  handleChange,
+  type = 'text',
+  disabled = false,
+  required = false,
+  minLength,
+}) => {
   return (
     <div className="TextInput">
       {label && (
@@ -13,12 +24,15 @@ const TextInput = ({ label, icon, id, placeholder, value, handleChange }) => {
       {icon && <Icon name={icon} />}
 
       <input
-        type="text"
+        type={type}
         id={id}
         placeholder={placeholder}
         value={value}
         onChange={handleChange}
-        className={icon ? 'withIcon' : ''}
+        className={icon ? 'withIcon' : null}
+        disabled={disabled}
+        required={required}
+        minLength={minLength}
       />
     </div>
   );

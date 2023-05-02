@@ -1,3 +1,4 @@
+import { ReactComponent as AlertSVG } from '../../assets/icons/alert.svg';
 import { ReactComponent as BackSVG } from '../../assets/icons/back.svg';
 import { ReactComponent as CheckSVG } from '../../assets/icons/check.svg';
 import { ReactComponent as CloseSVG } from '../../assets/icons/close.svg';
@@ -13,6 +14,7 @@ import './Icon.css';
 
 const Icon = ({ name, size = 'medium' }) => {
   let icon;
+  if (name === 'alert') icon = <AlertSVG />;
   if (name === 'back') icon = <BackSVG />;
   if (name === 'check') icon = <CheckSVG />;
   if (name === 'close') icon = <CloseSVG />;

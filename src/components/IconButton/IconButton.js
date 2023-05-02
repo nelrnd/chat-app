@@ -8,7 +8,11 @@ const IconButton = ({
   handleClick,
 }) => {
   return (
-    <button className={`IconButton ${type} ${size}`} onClick={handleClick}>
+    <button
+      className={`IconButton ${type} ${size}`}
+      onClick={handleClick}
+      type="button"
+    >
       <Icon name={name} />
     </button>
   );

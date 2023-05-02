@@ -30,6 +30,26 @@ body {
   font-size: 1.125rem;
 }
 
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+img {
+  max-width: 100%;
+}
+
+.sml-txt {
+  font-size: 14px;
+}
+
+.grey {
+  color: var(--grey);
+}
+
 .row {
   display: flex;
 }
@@ -42,6 +62,16 @@ body {
 }
 .gap-16 {
   gap: 16px;
+}
+
+.err-msg {
+  color: var(--red);
+  font-size: 14px;
+  margin: 12px 0;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /*
@@ -109,15 +139,6 @@ h3 {
 }
 
 /* Anchor style */
-
-a {
-  color: var(--primary);
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
 
 /* Single line text style */
 

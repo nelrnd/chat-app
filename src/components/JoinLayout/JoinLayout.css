@@ -15,6 +15,33 @@
   gap: 20px;
 }
 
-.JoinLayout_content:last-of-type {
+.JoinLayout_content > div:last-of-type {
   padding: 0 118px;
+}
+
+/* Styling login and signup forms */
+
+.JoinLayout form .IconButton {
+  margin-bottom: 12px;
+}
+
+.JoinLayout form h1 {
+  margin-bottom: 48px;
+}
+
+.JoinLayout form .TextInput {
+  margin-top: 16px;
+}
+
+.JoinLayout form .Button,
+.JoinLayout form .Button:disabled:hover {
+  background-color: var(--primary);
+  margin-top: 20px;
+}
+.JoinLayout form .Button:hover {
+  background-color: var(--primary-75);
+}
+
+.JoinLayout form .GoogleButton {
+  margin-bottom: 32px;
 }
