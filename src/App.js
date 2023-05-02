@@ -1,14 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import './App.css';
-
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import Settings from './pages/Settings';
-import Chat from './pages/Chat';
-import ComponentsDisplay from './components/ComponentDisplay';
 import Sidebar from './components/Sidebar/Sidebar';
+import LoginPage from './pages/LoginPage/LoginPage';
 
 /*
 function App() {
@@ -32,7 +26,11 @@ function App() {
 function App() {
   return (
     <div className="App">
-      <Sidebar />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
