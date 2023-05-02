@@ -9,6 +9,7 @@ import Sidebar from './components/Sidebar/Sidebar';
 import HomePage from './pages/HomePage';
 import SettingsPage from './pages/SettingsPage';
 import Layout from './components/Layout/Layout';
+import ChatPage from './pages/ChatPage';
 
 /*
 function App() {
@@ -42,6 +43,15 @@ function App() {
               <Layout>
                 {user && <Sidebar />}
                 <HomePage />
+              </Layout>
+            }
+          />
+          <Route
+            path="/chats/:chatId"
+            element={
+              <Layout>
+                {user && <Sidebar />}
+                <ChatPage />
               </Layout>
             }
           />

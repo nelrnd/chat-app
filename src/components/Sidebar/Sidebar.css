@@ -16,3 +16,7 @@
 .Sidebar > section.search {
   padding: 0 24px 32px;
 }
+
+.Sidebar > header > img {
+  cursor: pointer;
+}

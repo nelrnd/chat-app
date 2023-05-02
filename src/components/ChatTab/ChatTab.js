@@ -1,21 +1,35 @@
+import { useNavigate } from 'react-router-dom';
+import { getOtherUserId } from '../../firebase';
+import useUserData from '../../hooks/useUserData';
+import { getFormattedElapsedTime } from '../../utils';
 import Avatar from '../Avatar/Avatar';
 import './ChatTab.css';
 
-const ChatTab = ({ profileURL, name, lastMessage }) => {
-  return (
-    <div className="ChatTab">
-      <Avatar imageURL={profileURL} />
+const ChatTab = ({ chatId, lastMessage }) => {
+  const otherUid = getOtherUserId(chatId);
+  const [userData] = useUserData(otherUid);
+  const navigate = useNavigate();
 
-      <div className="col gap-2">
-        <h3>{name}</h3>
-        <p>{lastMessage.text}</p>
-      </div>
+  const handleClick = () => navigate(`/chats/${chatId}`);
 
-      <div>
-        <div className="sml-txt grey">{lastMessage.date}</div>
+  if (userData) {
+    return (
+      <div className="ChatTab" onClick={handleClick}>
+        <Avatar imageURL={userData.profileURL} />
+
+        <div className="col gap-2">
+          <h3>{userData.name}</h3>
+          <p>{lastMessage.text}</p>
+        </div>
+
+        <div>
+          <div className="sml-txt grey">
+            {getFormattedElapsedTime(lastMessage.date, Date.now())}
+          </div>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 };
 
 export default ChatTab;

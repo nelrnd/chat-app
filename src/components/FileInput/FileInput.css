@@ -1,0 +1,13 @@
+.FileInput {
+  display: block;
+  padding: 15px;
+  border-radius: 16px;
+  color: var(--grey);
+  background-color: var(--ghost);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.FileInput:hover {
+  background-color: var(--light-grey);
+}
