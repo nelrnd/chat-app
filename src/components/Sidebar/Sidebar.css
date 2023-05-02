@@ -1,0 +1,18 @@
+.Sidebar {
+  width: 400px;
+  background-color: white;
+  border-right: solid 1px var(--light-grey);
+}
+
+.Sidebar > header {
+  height: 100px;
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.Sidebar > section.search {
+  padding: 0 24px 32px;
+}

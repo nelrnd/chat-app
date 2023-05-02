@@ -8,7 +8,9 @@ import Signup from './pages/Signup';
 import Settings from './pages/Settings';
 import Chat from './pages/Chat';
 import ComponentsDisplay from './components/ComponentDisplay';
+import Sidebar from './components/Sidebar/Sidebar';
 
+/*
 function App() {
   return (
     <div className="App">
@@ -22,6 +24,15 @@ function App() {
           <Route path="/signup" element={<Signup />} />
         </Routes>
       </BrowserRouter>
+    </div>
+  );
+}
+*/
+
+function App() {
+  return (
+    <div className="App">
+      <Sidebar />
     </div>
   );
 }

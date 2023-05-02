@@ -12,16 +12,35 @@
 }
 
 body {
-  /* Default typographic values */
+  background-color: var(--ghost);
+}
+
+.row {
+  display: flex;
+}
+.col {
+  display: flex;
+  flex-direction: column;
+}
+.gap-2 {
+  gap: 2px;
+}
+.gap-16 {
+  gap: 16px;
+}
+
+/*
+body {
   font-family: 'Inter', 'Roboto', Arial, Helvetica, sans-serif;
   color: var(--dark-100);
   font-size: 1.125rem;
 
   background-color: var(--dark-20);
 }
+*/
 
 /* Typographic styles */
-
+/*
 p {
   line-height: 150%;
 }
@@ -110,9 +129,7 @@ a:hover {
   background-position: center;
   background-size: 100%;
 }
-*/
 
-/* Common component across pages styling */
 
 .page-bar {
   padding: 36px;
@@ -183,3 +200,4 @@ a:hover {
 .hidden {
   display: none !important;
 }
+*/
