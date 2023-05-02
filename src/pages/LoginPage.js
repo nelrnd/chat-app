@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { auth, signInWithGoogle } from '../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { Link } from 'react-router-dom';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { Link, Navigate } from 'react-router-dom';
 import JoinLayout from '../components/JoinLayout/JoinLayout';
 import TextInput from '../components/TextInput/TextInput';
 import Button from '../components/Button/Button';
@@ -13,6 +14,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [pwd, setPwd] = useState('');
   const [errMsg, setErrMsg] = useState(null);
+  const [user] = useAuthState(auth);
 
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePwdChange = (e) => setPwd(e.target.value);
@@ -36,45 +38,49 @@ const LoginPage = () => {
     }
   };
 
-  return (
-    <JoinLayout>
-      <form onSubmit={handleSubmit}>
-        <h1>Log in</h1>
+  if (user) {
+    return <Navigate to="/" replace />;
+  } else {
+    return (
+      <JoinLayout>
+        <form onSubmit={handleSubmit}>
+          <h1>Log in</h1>
 
-        <TextInput
-          type="email"
-          label="Email"
-          id="email"
-          value={email}
-          handleChange={handleEmailChange}
-          required={true}
-        />
-        <TextInput
-          type="password"
-          label="Password"
-          id="password"
-          value={pwd}
-          handleChange={handlePwdChange}
-          required={true}
-        />
+          <TextInput
+            type="email"
+            label="Email"
+            id="email"
+            value={email}
+            handleChange={handleEmailChange}
+            required={true}
+          />
+          <TextInput
+            type="password"
+            label="Password"
+            id="password"
+            value={pwd}
+            handleChange={handlePwdChange}
+            required={true}
+          />
 
-        {errMsg}
+          {errMsg}
 
-        <Button size="large">Log in</Button>
+          <Button size="large">Log in</Button>
 
-        <Divider />
+          <Divider />
 
-        <GoogleButton
-          text="Log in with Google"
-          handleClick={signInWithGoogle}
-        />
+          <GoogleButton
+            text="Log in with Google"
+            handleClick={signInWithGoogle}
+          />
 
-        <p className="sml-txt grey">
-          You don't have an account? <Link to="/signup">Sign up</Link>
-        </p>
-      </form>
-    </JoinLayout>
-  );
+          <p className="sml-txt grey">
+            You don't have an account? <Link to="/signup">Sign up</Link>
+          </p>
+        </form>
+      </JoinLayout>
+    );
+  }
 };
 
 export default LoginPage;

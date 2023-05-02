@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth, createUser, signInWithGoogle } from '../firebase';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { validateEmail } from '../utils';
 import JoinLayout from '../components/JoinLayout/JoinLayout';
 import TextInput from '../components/TextInput/TextInput';
@@ -10,12 +10,14 @@ import Divider from '../components/Divider/Divider';
 import GoogleButton from '../components/Button/GoogleButton';
 import IconButton from '../components/IconButton/IconButton';
 import Icon from '../components/Icon/Icon';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 const SignupPage = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [pwd, setPwd] = useState('');
   const [errMsg, setErrMsg] = useState(null);
+  const [user] = useAuthState(auth);
 
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handleNameChange = (e) => setName(e.target.value);
@@ -47,30 +49,34 @@ const SignupPage = () => {
     }
   };
 
-  return (
-    <JoinLayout>
-      <form onSubmit={handleSubmit}>
-        {currentSection === 1 && (
-          <EnterEmailSection
-            goNextSection={goNextSection}
-            email={email}
-            handleEmailChange={handleEmailChange}
-          />
-        )}
-        {currentSection === 2 && (
-          <CreateAccountSection
-            goPrevSection={goPrevSection}
-            email={email}
-            name={name}
-            handleNameChange={handleNameChange}
-            pwd={pwd}
-            handlePwdChange={handlePwdChange}
-            errMsg={errMsg}
-          />
-        )}
-      </form>
-    </JoinLayout>
-  );
+  if (user) {
+    return <Navigate to="/" replace />;
+  } else {
+    return (
+      <JoinLayout>
+        <form onSubmit={handleSubmit}>
+          {currentSection === 1 && (
+            <EnterEmailSection
+              goNextSection={goNextSection}
+              email={email}
+              handleEmailChange={handleEmailChange}
+            />
+          )}
+          {currentSection === 2 && (
+            <CreateAccountSection
+              goPrevSection={goPrevSection}
+              email={email}
+              name={name}
+              handleNameChange={handleNameChange}
+              pwd={pwd}
+              handlePwdChange={handlePwdChange}
+              errMsg={errMsg}
+            />
+          )}
+        </form>
+      </JoinLayout>
+    );
+  }
 };
 
 const EnterEmailSection = ({ goNextSection, email, handleEmailChange }) => {
