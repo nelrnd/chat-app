@@ -5,6 +5,7 @@ import TextInput from './TextInput/TextInput';
 import IconButton from './IconButton/IconButton';
 import Avatar from './Avatar/Avatar';
 import GroupAvatar from './GroupAvatar/GroupAvatar';
+import ChatTab from './ChatTab/ChatTab';
 
 const ComponentsDisplay = () => {
   return (
@@ -109,6 +110,12 @@ const ComponentsDisplay = () => {
           'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80',
         ]}
         nbOfPeople="120"
+      />
+
+      <ChatTab
+        profileURL="https://marketplace.canva.com/EAFEits4-uw/1/0/1600w/canva-boy-cartoon-gamer-animated-twitch-profile-photo-oEqs2yqaL8s.jpg"
+        name="John Dona"
+        lastMessage={{ text: 'Hello', date: '2m' }}
       />
     </div>
   );

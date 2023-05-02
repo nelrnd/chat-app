@@ -5,6 +5,7 @@ const GroupAvatar = ({ imageURLs, size = 'medium', nbOfPeople }) => {
   const peopleClass =
     'people-' +
     (nbOfPeople ? (nbOfPeople > 5 ? '4-plus' : nbOfPeople) : imageURLs.length);
+
   return (
     <div className={`GroupAvatar ${size} ${peopleClass}`}>
       {!nbOfPeople || nbOfPeople < 5 ? (
