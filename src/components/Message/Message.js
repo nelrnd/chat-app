@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { getFormattedDate } from '../../utils';
 import './Message.css';
 

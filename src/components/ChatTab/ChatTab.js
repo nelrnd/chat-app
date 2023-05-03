@@ -30,11 +30,11 @@ const ChatTab = ({
 
         <div className="ChatTab_text col gap-2">
           <h3>{userData.name}</h3>
-          <p className="ChatTab_message">
+          <div className="ChatTab_message">
             {lastMessage.imageURL && <Icon name="image" />}
             {lastMessage.imageURL && !lastMessage.text && 'image'}
             {lastMessage.text}
-          </p>
+          </div>
         </div>
 
         <div>
