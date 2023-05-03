@@ -1,0 +1,18 @@
+.ContactTag {
+  width: fit-content;
+  padding: 8px 10px;
+  border-radius: 1000px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.ContactTab > .Icon {
+  color: var(--primary);
+}
+
+.ContactTag:hover {
+  background-color: var(--ghost);
+}
