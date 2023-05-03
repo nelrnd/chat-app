@@ -11,9 +11,23 @@
 }
 
 .ChatTab.active {
+  background-color: var(--ghost);
   border-right-color: var(--primary);
 }
 
 .ChatTab:hover {
   background-color: var(--ghost);
+}
+
+.UnreadLabel {
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  font-size: 14px;
+  color: white;
+  background-color: var(--primary);
+  display: grid;
+  place-content: center;
+  margin-left: auto;
+  margin-bottom: 6px;
 }

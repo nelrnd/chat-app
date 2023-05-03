@@ -1,6 +1,7 @@
+import { getFormattedDate } from '../../utils';
 import './Message.css';
 
-const Message = ({ text, imageURL, isSent, handleImageClick }) => {
+const Message = ({ text, imageURL, date, isSent, handleImageClick }) => {
   return (
     <div className={`Message_wrapper ${isSent ? 'sent' : 'received'}`}>
       {imageURL && (
@@ -12,7 +13,7 @@ const Message = ({ text, imageURL, isSent, handleImageClick }) => {
         />
       )}
       {text && <div className="Message">{text}</div>}
-      <div className="Message_date">10:32 AM</div>
+      {date && <div className="Message_date">{getFormattedDate(date)}</div>}
     </div>
   );
 };

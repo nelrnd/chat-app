@@ -94,6 +94,7 @@ const Sidebar = () => {
               key={chat.id}
               chatId={chat.id}
               lastMessage={chat.lastMessage}
+              unreadCount={chat.unreadCount[auth.currentUser.uid]}
             />
           ))}
         </section>

@@ -50,7 +50,7 @@ export function getFormattedDate(time, currentTime) {
     hh = hh ? hh : 12;
     hh = hh.toString().padStart(2, '0');
     const mm = date.getMinutes().toString().padStart(2, '0');
-    return `${hh}:${mm}${ampm}`;
+    return `${hh}:${mm} ${ampm}`;
   }
 }
 

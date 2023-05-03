@@ -1,5 +1,5 @@
 import { Navigate, useParams } from 'react-router-dom';
-import { auth } from '../firebase';
+import { auth, readLastChatMessage } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import PageHeader from '../components/PageHeader/PageHeader';
 import ChatInput from '../components/ChatInput/ChatInput';
@@ -7,18 +7,53 @@ import useChatData from '../hooks/useChatData';
 import Message from '../components/Message/Message';
 import IconButton from '../components/IconButton/IconButton';
 import ImageDisplay from '../components/ImageDisplay/ImageDisplay';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const ChatPage = () => {
   const [user, loading] = useAuthState(auth);
   const params = useParams();
   const chatId = params.chatId;
   const [chatData] = useChatData(chatId);
+  const [messagesLength, setMessagesLength] = useState();
 
   const [showImageURL, setShowImageURL] = useState(null);
 
   const handleOpenImage = (url) => setShowImageURL(url);
   const handleCloseImage = () => setShowImageURL(null);
+
+  const enteringRoom = useRef(true);
+  const bottomRef = useRef(null);
+  const scrollToBottom = (behavior) => {
+    bottomRef.current.scrollIntoView({ behavior });
+  };
+
+  // Set enteringRoom to true when entering new chat
+  useEffect(() => {
+    enteringRoom.current = true;
+  }, [chatId]);
+
+  // Handle bottom scroll
+  useEffect(() => {
+    if (!messagesLength) return;
+    if (enteringRoom.current === true) {
+      scrollToBottom('instant');
+      enteringRoom.current = false;
+    } else {
+      scrollToBottom('smooth');
+    }
+  }, [messagesLength, enteringRoom]);
+
+  // Update messagesLength
+  useEffect(() => {
+    if (chatData && chatData.messages.length !== messagesLength) {
+      setMessagesLength(chatData.messages.length);
+    }
+  }, [chatData, messagesLength]);
+
+  // Mark last message as read
+  useEffect(() => {
+    (async () => await readLastChatMessage(chatId, auth.currentUser.uid))();
+  }, [chatId, messagesLength]);
 
   if (!user && !loading) {
     return <Navigate to="/login" replace />;
@@ -36,16 +71,15 @@ const ChatPage = () => {
               key={msg.date}
               text={msg.text}
               imageURL={msg.imageURL}
+              date={msg.date}
               isSent={msg.from === auth.currentUser.uid}
               handleImageClick={handleOpenImage}
             />
           ))}
+          <div ref={bottomRef}></div>
         </main>
 
-        <ChatInput
-          chatId={chatId}
-          isFirstMessage={chatData.messages.length === 0}
-        />
+        <ChatInput chatId={chatId} isFirstMessage={messagesLength === 0} />
 
         <ImageDisplay imageURL={showImageURL} handleClose={handleCloseImage} />
       </div>
