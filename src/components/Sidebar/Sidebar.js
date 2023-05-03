@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import logoImg from '../../assets/images/logo.png';
 import IconButton from '../IconButton/IconButton';
 import TextInput from '../TextInput/TextInput';
@@ -14,6 +14,8 @@ import ChatTab from '../ChatTab/ChatTab';
 import ContactTab from '../ContactTab/ContactTab';
 
 const Sidebar = () => {
+  const params = useParams();
+  const chatId = params.chatId;
   const userRef = doc(db, 'users', auth.currentUser.uid);
   const [userData] = useDocumentData(userRef);
   const chatsRef = collection(db, 'chats');
@@ -104,6 +106,7 @@ const Sidebar = () => {
                 chatId={chat.id}
                 lastMessage={chat.lastMessage}
                 unreadCount={chat.unreadCount[auth.currentUser.uid]}
+                isActive={chat.id === chatId}
                 currentTime={currentTime}
               />
             ))}
