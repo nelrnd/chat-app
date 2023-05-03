@@ -1,5 +1,5 @@
 import { Navigate, useParams } from 'react-router-dom';
-import { auth, readLastChatMessage } from '../firebase';
+import { auth, getOtherUserId, readLastChatMessage } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import PageHeader from '../components/PageHeader/PageHeader';
 import ChatInput from '../components/ChatInput/ChatInput';
@@ -8,12 +8,14 @@ import Message from '../components/Message/Message';
 import IconButton from '../components/IconButton/IconButton';
 import ImageDisplay from '../components/ImageDisplay/ImageDisplay';
 import { useEffect, useRef, useState } from 'react';
+import useUserData from '../hooks/useUserData';
 
 const ChatPage = () => {
   const [user, loading] = useAuthState(auth);
   const params = useParams();
   const chatId = params.chatId;
   const [chatData] = useChatData(chatId);
+  const [otherUserData] = useUserData(getOtherUserId(chatId));
   const [messagesLength, setMessagesLength] = useState();
 
   const [showImageURL, setShowImageURL] = useState(null);
@@ -57,11 +59,11 @@ const ChatPage = () => {
 
   if (!user && !loading) {
     return <Navigate to="/login" replace />;
-  } else if (user && chatData) {
+  } else if (user && chatData && otherUserData) {
     return (
       <div className="chat-layout">
         <PageHeader>
-          <h1>Chat page</h1>
+          <h1>{otherUserData.name}</h1>
           <IconButton name="info" />
         </PageHeader>
 
