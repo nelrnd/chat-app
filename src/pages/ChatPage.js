@@ -15,7 +15,7 @@ const ChatPage = () => {
   const params = useParams();
   const chatId = params.chatId;
   const [chatData] = useChatData(chatId);
-  const [otherUserData] = useUserData(getOtherUserId(chatId));
+  const [otherUserData] = useUserData(user && getOtherUserId(chatId, user.uid));
   const [messagesLength, setMessagesLength] = useState();
 
   const [showImageURL, setShowImageURL] = useState(null);

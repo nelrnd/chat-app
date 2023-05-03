@@ -21,7 +21,7 @@ const ChatTab = ({ chatId, lastMessage, unreadCount, isActive }) => {
       <div className={className} onClick={handleClick}>
         <Avatar imageURL={userData.profileURL} />
 
-        <div className="col gap-2">
+        <div className="ChatTab_text col gap-2">
           <h3>{userData.name}</h3>
           <p className={unreadCount ? '' : 'grey'}>{lastMessage.text}</p>
         </div>

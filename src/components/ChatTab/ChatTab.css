@@ -10,6 +10,16 @@
   transition: all 0.2s ease-in-out;
 }
 
+.ChatTab_text {
+  overflow: hidden;
+}
+
+.ChatTab_text > * {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .ChatTab.active {
   background-color: var(--ghost);
   border-right-color: var(--primary);
