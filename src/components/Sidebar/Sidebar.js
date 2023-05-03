@@ -25,9 +25,11 @@ const Sidebar = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const allUsersRef = collection(db, 'users');
   const [allUsers] = useCollectionData(allUsersRef);
-  let filteredUsers = allUsers
-    .filter((user) => user.id !== auth.currentUser.uid)
-    .filter((user) => user.email.toLowerCase() === searchTerm.toLowerCase());
+  let filteredUsers =
+    allUsers &&
+    allUsers
+      .filter((user) => user.id !== auth.currentUser.uid)
+      .filter((user) => user.email.toLowerCase() === searchTerm.toLowerCase());
   const navigate = useNavigate();
 
   const handleSearchTermChange = (e) => setSearchTerm(e.target.value);
@@ -74,7 +76,10 @@ const Sidebar = () => {
                 />
               ))
             ) : (
-              <p className="grey" style={{ textAlign: 'center' }}>
+              <p
+                className="grey"
+                style={{ textAlign: 'center', padding: '12px' }}
+              >
                 No user found...
               </p>
             )}

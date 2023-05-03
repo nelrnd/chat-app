@@ -4,4 +4,26 @@
   display: grid;
   grid-template-columns: auto 1fr auto;
   gap: 24px;
+  position: relative;
+}
+
+.ImagePreview {
+  position: absolute;
+  padding: 0 0 24px 24px;
+  bottom: 100%;
+}
+
+.ImagePreview > img {
+  display: block;
+  max-height: 200px;
+  width: auto;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+.ImagePreview > .IconButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
 }

@@ -9,6 +9,8 @@
   --grey: #808080;
   --dark-grey: #171717;
   --red: #e3474b;
+
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 }
 
 * {
@@ -105,6 +107,18 @@ img {
   padding: 24px;
   background-color: white;
   border-radius: 16px;
+}
+
+.chat-layout {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.chat-layout main {
+  max-height: 100%;
+  overflow-y: auto;
 }
 
 /*
