@@ -20,6 +20,22 @@
   text-overflow: ellipsis;
 }
 
+.ChatTab_message {
+  color: var(--grey);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ChatTab_message > .Icon {
+  width: 16px;
+  height: 16px;
+}
+
+.unread .ChatTab_message {
+  color: black;
+}
+
 .ChatTab.active {
   background-color: var(--ghost);
   border-right-color: var(--primary);

@@ -3,6 +3,7 @@ import { getOtherUserId } from '../../firebase';
 import useUserData from '../../hooks/useUserData';
 import { getFormattedElapsedTime } from '../../utils';
 import Avatar from '../Avatar/Avatar';
+import Icon from '../Icon/Icon';
 import './ChatTab.css';
 
 const ChatTab = ({
@@ -29,7 +30,11 @@ const ChatTab = ({
 
         <div className="ChatTab_text col gap-2">
           <h3>{userData.name}</h3>
-          <p className={unreadCount ? '' : 'grey'}>{lastMessage.text}</p>
+          <p className="ChatTab_message">
+            {lastMessage.imageURL && <Icon name="image" />}
+            {lastMessage.imageURL && !lastMessage.text && 'image'}
+            {lastMessage.text}
+          </p>
         </div>
 
         <div>
