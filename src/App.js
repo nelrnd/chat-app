@@ -10,7 +10,6 @@ import HomePage from './pages/HomePage';
 import SettingsPage from './pages/SettingsPage';
 import Layout from './components/Layout/Layout';
 import ChatPage from './pages/ChatPage';
-
 /*
 function App() {
   return (

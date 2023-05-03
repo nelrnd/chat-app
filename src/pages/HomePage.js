@@ -1,14 +1,5 @@
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '../firebase';
-import { Navigate } from 'react-router-dom';
+import withAuth from './withAuth';
 
-const HomePage = () => {
-  const [user, loading] = useAuthState(auth);
+const HomePage = () => <div></div>;
 
-  if (!user && !loading) {
-    return <Navigate to="/login" replace />;
-  }
-  return <div></div>;
-};
-
-export default HomePage;
+export default withAuth(HomePage);

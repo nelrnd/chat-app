@@ -4,26 +4,24 @@ import PageHeader from '../components/PageHeader/PageHeader';
 import Avatar from '../components/Avatar/Avatar';
 import { auth, updateUserInfo, uploadProfileImage } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { Navigate } from 'react-router-dom';
 import Icon from '../components/Icon/Icon';
 import Modal from '../components/Modal/Modal';
 import { useEffect, useState } from 'react';
 import TextInput from '../components/TextInput/TextInput';
 import FileInput from '../components/FileInput/FileInput';
 import { useRef } from 'react';
+import withAuth from './withAuth';
 
 const logout = () => signOut(auth);
 
 const SettingsPage = () => {
-  const [user, loading] = useAuthState(auth);
+  const [user] = useAuthState(auth);
   const [showModal, setShowModal] = useState(false);
 
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
 
-  if (!user && !loading) {
-    return <Navigate to="/login" replace />;
-  } else if (user) {
+  if (user) {
     return (
       <div>
         <PageHeader>
@@ -182,4 +180,4 @@ const EditProfileModal = ({ profileURL, name, show, handleClose }) => {
   );
 };
 
-export default SettingsPage;
+export default withAuth(SettingsPage);

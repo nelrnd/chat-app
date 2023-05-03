@@ -8,15 +8,16 @@ import Message from '../components/Message/Message';
 import IconButton from '../components/IconButton/IconButton';
 import ImageDisplay from '../components/ImageDisplay/ImageDisplay';
 import { useEffect, useRef, useState } from 'react';
+import withAuth from './withAuth';
 import useUserData from '../hooks/useUserData';
 
 const ChatPage = () => {
-  const [user, loading] = useAuthState(auth);
+  const [user] = useAuthState(auth);
   const params = useParams();
   const chatId = params.chatId;
   const [chatData] = useChatData(chatId);
-  const [otherUserData] = useUserData(user && getOtherUserId(chatId, user.uid));
   const [messagesLength, setMessagesLength] = useState();
+  const [otherUserData] = useUserData(getOtherUserId(chatId));
 
   const [showImageURL, setShowImageURL] = useState(null);
 
@@ -57,9 +58,7 @@ const ChatPage = () => {
     (async () => await readLastChatMessage(chatId, auth.currentUser.uid))();
   }, [chatId, messagesLength]);
 
-  if (!user && !loading) {
-    return <Navigate to="/login" replace />;
-  } else if (user && chatData && otherUserData) {
+  if (user && chatData && otherUserData) {
     return (
       <div className="chat-layout">
         <PageHeader>
@@ -89,4 +88,4 @@ const ChatPage = () => {
   }
 };
 
-export default ChatPage;
+export default withAuth(ChatPage);
