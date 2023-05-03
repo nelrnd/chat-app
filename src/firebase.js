@@ -60,6 +60,7 @@ export async function createUser(user) {
       name: user.displayName,
       email: user.email,
       profileURL: user.photoURL,
+      id: user.uid,
       chats: [],
     });
   } catch (err) {

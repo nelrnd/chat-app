@@ -154,7 +154,9 @@ const CreateAccountSection = ({
 
       {errMsg}
 
-      <Button size="large">Sign up</Button>
+      <Button size="large" submit={true}>
+        Sign up
+      </Button>
     </>
   );
 };

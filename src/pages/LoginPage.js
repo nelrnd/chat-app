@@ -65,7 +65,9 @@ const LoginPage = () => {
 
           {errMsg}
 
-          <Button size="large">Log in</Button>
+          <Button size="large" submit={true}>
+            Log in
+          </Button>
 
           <Divider />
 

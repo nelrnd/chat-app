@@ -1,0 +1,14 @@
+.ContactTab {
+  background-color: white;
+  padding: 16px 24px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.ContactTab:hover {
+  background-color: var(--ghost);
+}

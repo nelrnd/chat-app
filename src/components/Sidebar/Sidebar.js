@@ -9,23 +9,38 @@ import {
   useDocumentData,
 } from 'react-firebase-hooks/firestore';
 import { collection, doc, query, where } from 'firebase/firestore';
-import { db, auth } from '../../firebase';
+import { db, auth, createChat } from '../../firebase';
 import ChatTab from '../ChatTab/ChatTab';
+import ContactTab from '../ContactTab/ContactTab';
 
 const Sidebar = () => {
   const userRef = doc(db, 'users', auth.currentUser.uid);
   const [userData] = useDocumentData(userRef);
   const chatsRef = collection(db, 'chats');
   const chatsQuery =
-    userData && query(chatsRef, where('id', 'in', userData.chats));
+    userData &&
+    !!userData.chats.length &&
+    query(chatsRef, where('id', 'in', userData.chats));
   const [chats] = useCollectionData(chatsQuery);
   const [searchTerm, setSearchTerm] = useState('');
+  const allUsersRef = collection(db, 'users');
+  const [allUsers] = useCollectionData(allUsersRef);
+  let filteredUsers = allUsers
+    .filter((user) => user.id !== auth.currentUser.uid)
+    .filter((user) => user.email.toLowerCase() === searchTerm.toLowerCase());
   const navigate = useNavigate();
 
   const handleSearchTermChange = (e) => setSearchTerm(e.target.value);
 
   const goToHome = () => navigate('/');
   const goToSettings = () => navigate('/settings');
+
+  const handleTabClick = async (uid) => {
+    setSearchTerm('');
+    const userIds = [auth.currentUser.uid, uid];
+    const chatId = await createChat(userIds);
+    navigate(`/chats/${chatId}`);
+  };
 
   return (
     <div className="Sidebar">
@@ -46,6 +61,25 @@ const Sidebar = () => {
           value={searchTerm}
           handleChange={handleSearchTermChange}
         />
+
+        {searchTerm && (
+          <>
+            <p>Search results:</p>
+            {filteredUsers.length ? (
+              filteredUsers.map((user) => (
+                <ContactTab
+                  key={user.id}
+                  userId={user.id}
+                  handleClick={() => handleTabClick(user.id)}
+                />
+              ))
+            ) : (
+              <p className="grey" style={{ textAlign: 'center' }}>
+                No user found...
+              </p>
+            )}
+          </>
+        )}
       </section>
 
       {chats && !searchTerm && (
