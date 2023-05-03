@@ -1,0 +1,33 @@
+.Modal_wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.25);
+  display: grid;
+  place-content: center;
+}
+
+.Modal {
+  background-color: white;
+  width: 600px;
+  max-width: 100%;
+  border-radius: 16px;
+}
+
+.Modal_header {
+  padding: 32px;
+}
+
+.Modal_section {
+  padding: 0 32px;
+}
+
+.Modal_footer {
+  padding: 32px;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 16px;
+}

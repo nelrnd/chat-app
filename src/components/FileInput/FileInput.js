@@ -1,15 +1,32 @@
-import Icon from '../Icon/Icon';
+import { forwardRef } from 'react';
 import './FileInput.css';
 
-const FileInput = ({ id, type = 'image/*' }) => {
+const FileInput = forwardRef(function FileInput(
+  {
+    type = 'primary',
+    size = 'medium',
+    id,
+    children,
+    accept = 'image/*',
+    handleChange,
+  },
+  ref
+) {
   return (
     <>
-      <label className="FileInput" htmlFor={id}>
-        <Icon name="image" />
+      <label className={`FileInput ${type} ${size}`} htmlFor={id}>
+        {children}
       </label>
-      <input id={id} type="file" accept="image/*" style={{ display: 'none' }} />
+      <input
+        id={id}
+        type="file"
+        accept={accept}
+        ref={ref}
+        style={{ display: 'none' }}
+        onChange={handleChange}
+      />
     </>
   );
-};
+});
 
 export default FileInput;

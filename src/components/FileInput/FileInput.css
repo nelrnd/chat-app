@@ -1,13 +1,31 @@
 .FileInput {
   display: block;
-  padding: 15px;
   border-radius: 16px;
-  color: var(--grey);
-  background-color: var(--ghost);
   cursor: pointer;
   transition: all 0.2s ease-in-out;
 }
 
-.FileInput:hover {
+.FileInput.medium {
+  padding: 15px;
+}
+
+.FileInput.small {
+  padding: 12px 24px;
+  font-size: 14px;
+}
+
+.FileInput.primary {
+  color: white;
+  background-color: black;
+}
+.FileInput.primary:hover {
+  background-color: var(--dark-grey);
+}
+
+.FileInput.secondary {
+  color: var(--grey);
+  background-color: var(--ghost);
+}
+.FileInput.secondary:hover {
   background-color: var(--light-grey);
 }

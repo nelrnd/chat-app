@@ -7,7 +7,9 @@ import './ChatInput.css';
 const ChatInput = () => {
   return (
     <div className="ChatInput">
-      <FileInput id="image" />
+      <FileInput id="image" type="secondary">
+        <Icon name="image" />
+      </FileInput>
 
       <TextInput placeholder="Type in something..." />
 
