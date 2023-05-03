@@ -6,9 +6,7 @@ const ImageDisplay = ({ imageURL, handleClose }) => {
 
   return (
     <div className="ImageDisplay">
-      <div className="ImageDisplay_img-wrapper">
-        <img src={imageURL} alt="preview" />
-      </div>
+      <img src={imageURL} alt="preview" />
 
       <IconButton
         name="close"
@@ -16,6 +14,8 @@ const ImageDisplay = ({ imageURL, handleClose }) => {
         size="large"
         handleClick={handleClose}
       />
+
+      <div className="ImageDisplay_backdrop" onClick={handleClose} />
     </div>
   );
 };
