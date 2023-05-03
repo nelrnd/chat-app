@@ -1,0 +1,46 @@
+.Message_wrapper {
+  padding: 24px;
+}
+
+.Message {
+  padding: 16px 24px;
+  width: fit-content;
+  line-height: 150%;
+  max-width: 600px;
+}
+
+.received > .Message {
+  color: black;
+  background-color: white;
+  border-radius: 16px 16px 16px 0;
+}
+
+.sent > .Message {
+  color: white;
+  background-color: var(--primary-50);
+  border-radius: 16px 16px 0 16px;
+  margin-left: auto;
+}
+
+.Message_date {
+  font-size: 14px;
+  color: var(--grey);
+  margin-top: 8px;
+}
+
+.sent > .Message_date {
+  text-align: right;
+}
+
+.Message_image {
+  display: block;
+  max-width: 600px;
+  max-height: 400px;
+  margin-bottom: 12px;
+  border-radius: 16px;
+  cursor: pointer;
+}
+
+.sent > .Message_image {
+  margin-left: auto;
+}
