@@ -3,8 +3,11 @@
   height: 100px;
   padding: 24px;
   background-color: white;
-  border-bottom: solid 1px var(--light-grey);
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.PageHeader.border {
+  border-bottom: solid 1px var(--light-grey);
 }

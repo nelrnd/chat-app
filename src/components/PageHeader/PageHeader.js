@@ -1,7 +1,11 @@
 import './PageHeader.css';
 
-const PageHeader = ({ children }) => {
-  return <header className="PageHeader">{children}</header>;
+const PageHeader = ({ children, withBorder = true }) => {
+  return (
+    <header className={`PageHeader ${withBorder ? 'border' : ''}`}>
+      {children}
+    </header>
+  );
 };
 
 export default PageHeader;

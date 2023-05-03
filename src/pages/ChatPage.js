@@ -10,6 +10,7 @@ import ImageDisplay from '../components/ImageDisplay/ImageDisplay';
 import { useEffect, useRef, useState } from 'react';
 import withAuth from './withAuth';
 import useUserData from '../hooks/useUserData';
+import ContactInfo from '../components/ContactInfo/ContactInfo';
 
 const ChatPage = () => {
   const [user] = useAuthState(auth);
@@ -20,9 +21,13 @@ const ChatPage = () => {
   const [otherUserData] = useUserData(getOtherUserId(chatId));
 
   const [showImageURL, setShowImageURL] = useState(null);
+  const [showInfo, setShowInfo] = useState(false);
 
   const handleOpenImage = (url) => setShowImageURL(url);
   const handleCloseImage = () => setShowImageURL(null);
+
+  const handleOpenInfo = () => setShowInfo(true);
+  const handleCloseInfo = () => setShowInfo(false);
 
   const enteringRoom = useRef(true);
   const bottomRef = useRef(null);
@@ -63,7 +68,7 @@ const ChatPage = () => {
       <div className="chat-layout">
         <PageHeader>
           <h1>{otherUserData.name}</h1>
-          <IconButton name="info" />
+          <IconButton name="info" handleClick={handleOpenInfo} />
         </PageHeader>
 
         <main>
@@ -82,6 +87,13 @@ const ChatPage = () => {
 
         <ChatInput chatId={chatId} isFirstMessage={messagesLength === 0} />
 
+        <ContactInfo
+          name={otherUserData.name}
+          email={otherUserData.email}
+          profileURL={otherUserData.profileURL}
+          show={showInfo}
+          handleClose={handleCloseInfo}
+        />
         <ImageDisplay imageURL={showImageURL} handleClose={handleCloseImage} />
       </div>
     );
