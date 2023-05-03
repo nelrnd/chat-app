@@ -1,5 +1,8 @@
 .Message_wrapper {
-  padding: 24px;
+  margin-bottom: 24px;
+}
+.Message_wrapper.follow-up {
+  margin-bottom: 12px;
 }
 
 .Message {

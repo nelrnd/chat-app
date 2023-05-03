@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from 'react';
 import withAuth from './withAuth';
 import useUserData from '../hooks/useUserData';
 import ContactInfo from '../components/ContactInfo/ContactInfo';
+import { getFormattedDate } from '../utils';
 
 const ChatPage = () => {
   const [user] = useAuthState(auth);
@@ -72,16 +73,24 @@ const ChatPage = () => {
         </PageHeader>
 
         <main>
-          {chatData.messages.map((msg) => (
-            <Message
-              key={msg.date}
-              text={msg.text}
-              imageURL={msg.imageURL}
-              date={msg.date}
-              isSent={msg.from === auth.currentUser.uid}
-              handleImageClick={handleOpenImage}
-            />
-          ))}
+          {chatData.messages.map((msg, id) => {
+            const followUp =
+              chatData.messages[id + 1] &&
+              chatData.messages[id + 1].from === msg.from &&
+              getFormattedDate(chatData.messages[id + 1].date) ===
+                getFormattedDate(msg.date);
+            return (
+              <Message
+                key={msg.date}
+                text={msg.text}
+                imageURL={msg.imageURL}
+                date={msg.date}
+                isSent={msg.from === auth.currentUser.uid}
+                followUp={followUp}
+                handleImageClick={handleOpenImage}
+              />
+            );
+          })}
           <div ref={bottomRef}></div>
         </main>
 

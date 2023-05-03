@@ -121,6 +121,7 @@ img {
 .chat-layout main {
   max-height: 100%;
   overflow-y: auto;
+  padding: 24px;
 }
 
 /*
