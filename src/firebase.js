@@ -89,6 +89,7 @@ export async function createChat(userIds) {
   try {
     const chatId = getChatId(userIds);
     const chatRef = doc(db, 'chats', chatId);
+    if (await checkIfDocExists(chatRef)) return chatId;
     await setDoc(chatRef, {
       members: [...userIds],
       messages: [],
