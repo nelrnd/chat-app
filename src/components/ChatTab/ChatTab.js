@@ -5,7 +5,13 @@ import { getFormattedElapsedTime } from '../../utils';
 import Avatar from '../Avatar/Avatar';
 import './ChatTab.css';
 
-const ChatTab = ({ chatId, lastMessage, unreadCount, isActive }) => {
+const ChatTab = ({
+  chatId,
+  lastMessage,
+  unreadCount,
+  isActive,
+  currentTime,
+}) => {
   const otherUid = getOtherUserId(chatId);
   const [userData] = useUserData(otherUid);
   const navigate = useNavigate();
@@ -29,7 +35,7 @@ const ChatTab = ({ chatId, lastMessage, unreadCount, isActive }) => {
         <div>
           {!!unreadCount && <UnreadLabel count={unreadCount} />}
           <div className={`sml-txt ${unreadCount ? '' : 'grey'}`}>
-            {getFormattedElapsedTime(lastMessage.date, Date.now())}
+            {getFormattedElapsedTime(lastMessage.date, currentTime)}
           </div>
         </div>
       </div>

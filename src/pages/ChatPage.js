@@ -1,4 +1,4 @@
-import { Navigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { auth, getOtherUserId, readLastChatMessage } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import PageHeader from '../components/PageHeader/PageHeader';

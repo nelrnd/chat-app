@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logoImg from '../../assets/images/logo.png';
 import IconButton from '../IconButton/IconButton';
@@ -31,6 +31,13 @@ const Sidebar = () => {
       .filter((user) => user.id !== auth.currentUser.uid)
       .filter((user) => user.email.toLowerCase() === searchTerm.toLowerCase());
   const navigate = useNavigate();
+
+  const [currentTime, setCurrentTime] = useState(Date.now());
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(Date.now()), 5000);
+    return () => clearInterval(timer);
+  });
 
   const handleSearchTermChange = (e) => setSearchTerm(e.target.value);
 
@@ -89,14 +96,17 @@ const Sidebar = () => {
 
       {chats && !searchTerm && (
         <section className="chats">
-          {chats.map((chat) => (
-            <ChatTab
-              key={chat.id}
-              chatId={chat.id}
-              lastMessage={chat.lastMessage}
-              unreadCount={chat.unreadCount[auth.currentUser.uid]}
-            />
-          ))}
+          {chats
+            .sort((a, b) => b.lastMessage.date - a.lastMessage.date)
+            .map((chat) => (
+              <ChatTab
+                key={chat.id}
+                chatId={chat.id}
+                lastMessage={chat.lastMessage}
+                unreadCount={chat.unreadCount[auth.currentUser.uid]}
+                currentTime={currentTime}
+              />
+            ))}
         </section>
       )}
     </div>
