@@ -14,7 +14,7 @@ import {
   updateProfile,
 } from 'firebase/auth';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-import { getChatId, getUserIds } from './utils';
+import { createGroupChatId, getChatId, getUserIds } from './utils';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -208,6 +208,26 @@ export async function uploadProfileImage(imageFile, userId) {
     const path = `/profiles/${userId}`;
     const imageURL = await uploadFile(imageFile, path);
     return imageURL;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function getChatData(chatId) {
+  try {
+    const chatRef = doc(db, 'chats', chatId);
+    const chatDoc = await getDoc(chatRef);
+    const chatData = chatDoc.data();
+    return chatData;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function getChatMembers(chatId) {
+  try {
+    const chatData = await getChatData(chatId);
+    return chatData.members;
   } catch (err) {
     console.error(err);
   }
