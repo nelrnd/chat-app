@@ -87,19 +87,21 @@ export async function updateUserInfo(user, updatedInfo) {
 // Create chat document in Firestore
 export async function createChat(userIds) {
   try {
-    const chatId = getChatId(userIds);
+    const chatId =
+      userIds.length === 2 ? getChatId(userIds) : createGroupChatId();
     const chatRef = doc(db, 'chats', chatId);
     if (await checkIfDocExists(chatRef)) return chatId;
-    await setDoc(chatRef, {
+    const chatDoc = {
+      id: chatId,
       members: [...userIds],
       messages: [],
-      lastMessage: { text: null, date: null },
-      id: chatId,
-      unreadCount: {
-        [userIds[0]]: 0,
-        [userIds[1]]: 0,
-      },
-    });
+      lastMessage: { text: null, imageURL: null, date: null, from: null },
+      unreadCount: {},
+    };
+    for (const user of userIds) {
+      chatDoc.unreadCount[user] = 0;
+    }
+    await setDoc(chatRef, chatDoc);
     return chatId;
   } catch (err) {
     console.error(err);
