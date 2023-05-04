@@ -137,17 +137,18 @@ export async function createChatMessage(chatId, message) {
 export async function updateLastChatMessage(chatId, senderId, message) {
   try {
     const chatRef = doc(db, 'chats', chatId);
-    await updateDoc(chatRef, {
-      lastMessage: {
-        text: message.text || '',
-        imageURL: message.imageURL || '',
-        date: message.date,
-        read: {
-          [senderId]: true,
-          [getOtherUserId(chatId)]: false,
-        },
-      },
-    });
+    const lastMessage = {
+      text: message.text || '',
+      imageURL: message.imageURL || '',
+      date: message.date,
+      from: senderId,
+      read: {},
+    };
+    const userIds = await getChatMembers(chatId);
+    for (const user of userIds) {
+      lastMessage.read[user] = user === senderId;
+    }
+    await updateDoc(chatRef, lastMessage);
   } catch (err) {
     console.error(err);
   }
