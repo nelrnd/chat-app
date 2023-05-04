@@ -14,7 +14,7 @@ import {
   updateProfile,
 } from 'firebase/auth';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-import { getChatId, getUserIds } from './utils';
+import { createChatId, getUserIds } from './utils';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -85,21 +85,22 @@ export async function updateUserInfo(user, updatedInfo) {
 }
 
 // Create chat document in Firestore
-export async function createChat(userIds) {
+export async function createChat(memberIds) {
   try {
-    const chatId = getChatId(userIds);
+    const chatId = createChatId();
     const chatRef = doc(db, 'chats', chatId);
     if (await checkIfDocExists(chatRef)) return chatId;
-    await setDoc(chatRef, {
-      members: [...userIds],
-      messages: [],
-      lastMessage: { text: null, date: null },
+    const chatDoc = {
       id: chatId,
-      unreadCount: {
-        [userIds[0]]: 0,
-        [userIds[1]]: 0,
-      },
-    });
+      members: memberIds,
+      messages: [],
+      lastMessage: { text: null, imageURL: null, date: null, from: null },
+      unreadCount: {},
+    };
+    for (let member of memberIds) {
+      chatDoc.unreadCount[member] = 0;
+    }
+    await setDoc(chatRef, chatDoc);
     return chatId;
   } catch (err) {
     console.error(err);
@@ -107,7 +108,7 @@ export async function createChat(userIds) {
 }
 
 // Create a chat reference for each user's document in Firestore
-export async function createChatRefs(userIds, chatId) {
+export async function createChatRefs(chatId) {
   try {
     const createRef = async (userId) => {
       const userRef = doc(db, 'users', userId);
@@ -115,7 +116,8 @@ export async function createChatRefs(userIds, chatId) {
         chats: arrayUnion(chatId),
       });
     };
-    userIds.forEach(createRef);
+    const members = await getChatMembers(chatId);
+    members.forEach(createRef);
   } catch (err) {
     console.error(err);
   }
@@ -208,6 +210,35 @@ export async function uploadProfileImage(imageFile, userId) {
     const path = `/profiles/${userId}`;
     const imageURL = await uploadFile(imageFile, path);
     return imageURL;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function getChatData(chatId) {
+  try {
+    const chatRef = doc(db, 'chats', chatId);
+    const chatDoc = await getDoc(chatRef);
+    const chatData = chatDoc.data();
+    return chatData;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function getChatMembers(chatId) {
+  try {
+    const chatData = await getChatData(chatId);
+    return chatData.members;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function getOtherChatMembers(chatId, userId) {
+  try {
+    const chatMembers = await getChatMembers(chatId);
+    return chatMembers.filter((member) => member !== userId);
   } catch (err) {
     console.error(err);
   }

@@ -49,8 +49,8 @@ const ChatInput = ({ chatId, isFirstMessage }) => {
       handleClearImage();
     }
     if (isFirstMessage) {
-      const userIds = getUserIds(chatId);
-      createChatRefs(userIds, chatId);
+      console.log('first message');
+      createChatRefs(chatId);
     }
 
     await incrementUnreadCount(chatId, auth.currentUser.uid);

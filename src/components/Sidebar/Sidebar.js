@@ -9,9 +9,18 @@ import {
   useDocumentData,
 } from 'react-firebase-hooks/firestore';
 import { collection, doc, query, where } from 'firebase/firestore';
-import { db, auth, createChat } from '../../firebase';
+import { db, auth, createChat, getOtherUserId } from '../../firebase';
 import ChatTab from '../ChatTab/ChatTab';
 import ContactTab from '../ContactTab/ContactTab';
+import Modal from '../Modal/Modal';
+import Button from '../Button/Button';
+import ContactTag from '../ContactTag/ContactTag';
+
+const filterUsers = (users, searchTerm) => {
+  return users
+    .filter((user) => user.id !== auth.currentUser.uid)
+    .filter((user) => user.email.toLowerCase() === searchTerm.toLowerCase());
+};
 
 const Sidebar = () => {
   const params = useParams();
@@ -27,11 +36,6 @@ const Sidebar = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const allUsersRef = collection(db, 'users');
   const [allUsers] = useCollectionData(allUsersRef);
-  let filteredUsers =
-    allUsers &&
-    allUsers
-      .filter((user) => user.id !== auth.currentUser.uid)
-      .filter((user) => user.email.toLowerCase() === searchTerm.toLowerCase());
   const navigate = useNavigate();
 
   const [currentTime, setCurrentTime] = useState(Date.now());
@@ -46,6 +50,11 @@ const Sidebar = () => {
   const goToHome = () => navigate('/');
   const goToSettings = () => navigate('/settings');
 
+  const [showNewModal, setShowNewModal] = useState(false);
+
+  const handleOpenNewModal = () => setShowNewModal(true);
+  const handleCloseNewModal = () => setShowNewModal(false);
+
   const handleTabClick = async (uid) => {
     setSearchTerm('');
     const userIds = [auth.currentUser.uid, uid];
@@ -59,7 +68,7 @@ const Sidebar = () => {
         <img src={logoImg} alt="BooChat logo" onClick={goToHome} />
 
         <div className="row gap-16">
-          <IconButton name="new" />
+          <IconButton name="new" handleClick={handleOpenNewModal} />
           <IconButton name="settings" handleClick={goToSettings} />
         </div>
       </header>
@@ -76,8 +85,8 @@ const Sidebar = () => {
         {searchTerm && (
           <>
             <p>Search results:</p>
-            {filteredUsers.length ? (
-              filteredUsers.map((user) => (
+            {filterUsers(allUsers, searchTerm).length ? (
+              filterUsers(allUsers, searchTerm).map((user) => (
                 <ContactTab
                   key={user.id}
                   userId={user.id}
@@ -112,7 +121,133 @@ const Sidebar = () => {
             ))}
         </section>
       )}
+
+      <NewModal
+        chats={chats}
+        allUsers={allUsers}
+        show={showNewModal}
+        handleNext={handleTabClick}
+        handleClose={handleCloseNewModal}
+      />
     </div>
+  );
+};
+
+const NewModal = ({ chats, allUsers, show, handleNext, handleClose }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedUsers, setSelectedUsers] = useState([]);
+
+  const handleSearchTermChange = (e) => setSearchTerm(e.target.value);
+
+  const handleTabClick = (uid) => {
+    const selectedUsersCopy = [...selectedUsers];
+    if (!selectedUsersCopy.includes(uid)) {
+      selectedUsersCopy.push(uid);
+      setSelectedUsers(selectedUsersCopy);
+    } else {
+      removeUserFromSelected(uid);
+    }
+  };
+
+  const removeUserFromSelected = (uid) => {
+    const selectedUsersCopy = [...selectedUsers];
+    selectedUsersCopy.splice(selectedUsersCopy.indexOf(uid), 1);
+    setSelectedUsers(selectedUsersCopy);
+  };
+
+  const handleSubmit = () => {
+    if (selectedUsers.length === 1) {
+      handleNext(selectedUsers[0]);
+    }
+    handleClose();
+    setSelectedUsers([]);
+  };
+
+  if (!chats || !allUsers) return null;
+
+  return (
+    <Modal show={show}>
+      <header className="Modal_header">
+        <h2>New {selectedUsers.length > 1 ? 'group' : 'message'}</h2>
+      </header>
+
+      <section className="Modal_section">
+        <TextInput
+          type="search"
+          icon="search"
+          placeholder="Search for users"
+          id="new-modal-search"
+          value={searchTerm}
+          handleChange={handleSearchTermChange}
+        />
+
+        <div className="tags-row">
+          {!!selectedUsers.length &&
+            selectedUsers.map((uid) => (
+              <ContactTag
+                key={uid}
+                userId={uid}
+                handleClick={() => removeUserFromSelected(uid)}
+              />
+            ))}
+        </div>
+
+        {searchTerm && (
+          <>
+            <p>Search results:</p>
+            {filterUsers(allUsers, searchTerm).length ? (
+              filterUsers(allUsers, searchTerm).map((user) => (
+                <ContactTab
+                  key={user.id}
+                  userId={user.id}
+                  handleClick={() => handleTabClick(user.id)}
+                />
+              ))
+            ) : (
+              <p
+                className="grey"
+                style={{ textAlign: 'center', padding: '12px' }}
+              >
+                No user found...
+              </p>
+            )}
+          </>
+        )}
+
+        {!searchTerm &&
+          chats
+            .filter((chat) => chat.members.length === 2)
+            .map((chat) => {
+              const uid = getOtherUserId(chat.id);
+              return (
+                <ContactTab
+                  key={chat.id}
+                  userId={uid}
+                  handleClick={() => handleTabClick(uid)}
+                  check={selectedUsers.includes(uid)}
+                />
+              );
+            })}
+      </section>
+
+      <footer className="Modal_footer">
+        <Button
+          handleClick={handleSubmit}
+          disabled={selectedUsers.length === 0}
+        >
+          Next
+        </Button>
+        <Button
+          type="secondary"
+          handleClick={() => {
+            handleClose();
+            setSelectedUsers([]);
+          }}
+        >
+          Cancel
+        </Button>
+      </footer>
+    </Modal>
   );
 };
 

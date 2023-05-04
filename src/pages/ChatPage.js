@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { auth, getOtherUserId, readLastChatMessage } from '../firebase';
+import { auth, db, getOtherUserId, readLastChatMessage } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import PageHeader from '../components/PageHeader/PageHeader';
 import ChatInput from '../components/ChatInput/ChatInput';
@@ -12,14 +12,20 @@ import withAuth from './withAuth';
 import useUserData from '../hooks/useUserData';
 import ContactInfo from '../components/ContactInfo/ContactInfo';
 import { getFormattedDate } from '../utils';
+import { collection, query, where } from 'firebase/firestore';
+import { useCollectionData } from 'react-firebase-hooks/firestore';
 
 const ChatPage = () => {
   const [user] = useAuthState(auth);
   const params = useParams();
   const chatId = params.chatId;
   const [chatData] = useChatData(chatId);
+  const usersRef = collection(db, 'users');
+  const usersQuery =
+    chatData && query(usersRef, where('id', 'in', chatData.members));
+  const [usersData] = useCollectionData(usersQuery);
   const [messagesLength, setMessagesLength] = useState();
-  const [otherUserData] = useUserData(getOtherUserId(chatId));
+  //const [otherUserData] = useUserData(getOtherUserId(chatId));
 
   const [showImageURL, setShowImageURL] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
@@ -64,11 +70,11 @@ const ChatPage = () => {
     (async () => await readLastChatMessage(chatId, auth.currentUser.uid))();
   }, [chatId, messagesLength]);
 
-  if (user && chatData && otherUserData) {
+  if (user && chatData && usersData) {
     return (
       <div className="chat-layout">
         <PageHeader>
-          <h1>{otherUserData.name}</h1>
+          <h1>{usersData[0].name}</h1>
           <IconButton name="info" handleClick={handleOpenInfo} />
         </PageHeader>
 
@@ -96,6 +102,7 @@ const ChatPage = () => {
 
         <ChatInput chatId={chatId} isFirstMessage={messagesLength === 0} />
 
+        {/**
         <ContactInfo
           name={otherUserData.name}
           email={otherUserData.email}
@@ -103,6 +110,7 @@ const ChatPage = () => {
           show={showInfo}
           handleClose={handleCloseInfo}
         />
+        */}
         <ImageDisplay imageURL={showImageURL} handleClose={handleCloseImage} />
       </div>
     );

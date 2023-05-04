@@ -124,6 +124,13 @@ img {
   padding: 24px;
 }
 
+.tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 12px 0;
+}
+
 /*
 body {
   font-family: 'Inter', 'Roboto', Arial, Helvetica, sans-serif;

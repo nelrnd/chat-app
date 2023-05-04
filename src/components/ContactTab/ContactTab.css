@@ -1,6 +1,6 @@
 .ContactTab {
   background-color: white;
-  padding: 16px 24px;
+  padding: 12px 24px;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -11,4 +11,8 @@
 
 .ContactTab:hover {
   background-color: var(--ghost);
+}
+
+.ContactTab > .Icon {
+  color: var(--primary);
 }

@@ -61,3 +61,14 @@ export function validateEmail(email) {
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     );
 }
+
+export function createChatId() {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  const time = Date.now().toString().slice(-10);
+  let chatId = '';
+  for (let i = 0; i < 10; i++) {
+    chatId += chars[Math.floor(Math.random() * chars.length)];
+    chatId += time[i];
+  }
+  return chatId;
+}
