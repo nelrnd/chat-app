@@ -15,6 +15,7 @@ import ContactTab from '../ContactTab/ContactTab';
 import Modal from '../Modal/Modal';
 import Button from '../Button/Button';
 import ContactTag from '../ContactTag/ContactTag';
+import GroupChatTab from '../ChatTab/GroupChatTab';
 
 const filterUsers = (users, searchTerm) => {
   return users
@@ -109,16 +110,27 @@ const Sidebar = () => {
         <section className="chats">
           {chats
             .sort((a, b) => b.lastMessage.date - a.lastMessage.date)
-            .map((chat) => (
-              <ChatTab
-                key={chat.id}
-                chatId={chat.id}
-                lastMessage={chat.lastMessage}
-                unreadCount={chat.unreadCount[auth.currentUser.uid]}
-                isActive={chat.id === chatId}
-                currentTime={currentTime}
-              />
-            ))}
+            .map((chat) =>
+              chat.members.length === 2 ? (
+                <ChatTab
+                  key={chat.id}
+                  chatId={chat.id}
+                  lastMessage={chat.lastMessage}
+                  unreadCount={chat.unreadCount[auth.currentUser.uid]}
+                  isActive={chat.id === chatId}
+                  currentTime={currentTime}
+                />
+              ) : (
+                <GroupChatTab
+                  key={chat.id}
+                  chatId={chat.id}
+                  lastMessage={chat.lastMessage}
+                  unreadCount={chat.unreadCount[auth.currentUser.uid]}
+                  isActive={chat.id === chatId}
+                  currentTime={currentTime}
+                />
+              )
+            )}
         </section>
       )}
 

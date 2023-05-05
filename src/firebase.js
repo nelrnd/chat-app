@@ -239,7 +239,7 @@ export async function getChatMembers(chatId) {
   }
 }
 
-export async function getOtherChatMembers(members, userId) {
+export function getOtherChatMembers(members, userId) {
   try {
     return members.filter((member) => member !== userId);
   } catch (err) {

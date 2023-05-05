@@ -4,6 +4,7 @@ import useUserData from '../../hooks/useUserData';
 import { getFormattedElapsedTime } from '../../utils';
 import Avatar from '../Avatar/Avatar';
 import Icon from '../Icon/Icon';
+import UnreadLabel from './UnreadLabel';
 import './ChatTab.css';
 
 const ChatTab = ({
@@ -46,10 +47,6 @@ const ChatTab = ({
       </div>
     );
   }
-};
-
-const UnreadLabel = ({ count }) => {
-  return <div className="UnreadLabel">{count < 10 ? count : '9+'}</div>;
 };
 
 export default ChatTab;
