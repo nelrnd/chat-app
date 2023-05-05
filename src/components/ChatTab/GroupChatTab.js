@@ -5,11 +5,13 @@ import { auth, db, getChatMembers, getOtherChatMembers } from '../../firebase';
 import { useEffect, useState } from 'react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
-import { getFormattedElapsedTime } from '../../utils';
+import { getFormattedElapsedTime, getGroupNameFromMembers } from '../../utils';
 import Icon from '../Icon/Icon';
 
 const GroupChatTab = ({
   chatId,
+  groupName,
+  profileURL,
   lastMessage,
   unreadCount,
   isActive,
@@ -21,8 +23,6 @@ const GroupChatTab = ({
   const className = `ChatTab ${isActive ? 'active' : ''} ${
     unreadCount ? 'unread' : ''
   }`;
-
-  const groupName = !!usersData && 'Group Name';
 
   useEffect(() => {
     const fetchUsersData = async () => {
@@ -50,7 +50,7 @@ const GroupChatTab = ({
         <GroupAvatar imageURLs={usersData.map((user) => user.profileURL)} />
 
         <div className="ChatTab_text col gap-2">
-          <h3>{groupName}</h3>
+          <h3>{groupName || getGroupNameFromMembers(usersData)}</h3>
           <div className="ChatTab_message">
             {`${lastUserName}: `}
             {lastMessage.imageURL && <Icon name="image" />}

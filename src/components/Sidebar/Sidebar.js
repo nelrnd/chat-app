@@ -124,6 +124,8 @@ const Sidebar = () => {
                 <GroupChatTab
                   key={chat.id}
                   chatId={chat.id}
+                  groupName={chat.groupName}
+                  profileURL={chat.profileURL}
                   lastMessage={chat.lastMessage}
                   unreadCount={chat.unreadCount[auth.currentUser.uid]}
                   isActive={chat.id === chatId}

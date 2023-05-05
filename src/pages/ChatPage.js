@@ -11,7 +11,7 @@ import { useEffect, useRef, useState } from 'react';
 import withAuth from './withAuth';
 import ContactInfo from '../components/ContactInfo/ContactInfo';
 import GroupInfo from '../components/GroupInfo/GroupInfo';
-import { getFormattedDate } from '../utils';
+import { getFormattedDate, getGroupNameFromMembers } from '../utils';
 import { collection, query, where } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import GroupMessage from '../components/Message/GroupMessage';
@@ -80,7 +80,10 @@ const ChatPage = () => {
     return (
       <div className="chat-layout">
         <PageHeader>
-          <h1>{usersData && usersData.map((user) => user.name).join(', ')}</h1>
+          <h1>
+            {chatData.groupName ||
+              (usersData && getGroupNameFromMembers(usersData))}
+          </h1>
           <IconButton name="info" handleClick={handleOpenInfo} />
         </PageHeader>
 
@@ -129,6 +132,9 @@ const ChatPage = () => {
             />
           ) : (
             <GroupInfo
+              groupName={
+                chatData.groupName || getGroupNameFromMembers(usersData)
+              }
               imageURLs={usersData && usersData.map((user) => user.profileURL)}
               show={showInfo}
               handleClose={handleCloseInfo}
