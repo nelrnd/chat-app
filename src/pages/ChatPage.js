@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { auth, db, getOtherUserId, readLastChatMessage } from '../firebase';
+import { auth, db, readLastChatMessage } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import PageHeader from '../components/PageHeader/PageHeader';
 import ChatInput from '../components/ChatInput/ChatInput';
@@ -9,8 +9,8 @@ import IconButton from '../components/IconButton/IconButton';
 import ImageDisplay from '../components/ImageDisplay/ImageDisplay';
 import { useEffect, useRef, useState } from 'react';
 import withAuth from './withAuth';
-import useUserData from '../hooks/useUserData';
 import ContactInfo from '../components/ContactInfo/ContactInfo';
+import GroupInfo from '../components/GroupInfo/GroupInfo';
 import { getFormattedDate } from '../utils';
 import { collection, query, where } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
@@ -23,7 +23,12 @@ const ChatPage = () => {
   const [chatData] = useChatData(chatId);
   const usersRef = collection(db, 'users');
   const usersQuery =
-    chatData && query(usersRef, where('id', 'in', chatData.members));
+    chatData &&
+    query(
+      usersRef,
+      where('id', 'in', chatData.members),
+      where('id', '!=', auth.currentUser.uid)
+    );
   const [usersData] = useCollectionData(usersQuery);
   const [messagesLength, setMessagesLength] = useState();
   //const [otherUserData] = useUserData(getOtherUserId(chatId));
@@ -50,14 +55,14 @@ const ChatPage = () => {
 
   // Handle bottom scroll
   useEffect(() => {
-    if (!messagesLength) return;
+    if (!messagesLength || !usersData) return;
     if (enteringRoom.current === true) {
       scrollToBottom('instant');
       enteringRoom.current = false;
     } else {
       scrollToBottom('smooth');
     }
-  }, [messagesLength, enteringRoom]);
+  }, [messagesLength, enteringRoom, usersData]);
 
   // Update messagesLength
   useEffect(() => {
@@ -75,7 +80,7 @@ const ChatPage = () => {
     return (
       <div className="chat-layout">
         <PageHeader>
-          <h1>{usersData && usersData[0].name}</h1>
+          <h1>{usersData && usersData.map((user) => user.name).join(', ')}</h1>
           <IconButton name="info" handleClick={handleOpenInfo} />
         </PageHeader>
 
@@ -113,15 +118,23 @@ const ChatPage = () => {
 
         <ChatInput chatId={chatId} isFirstMessage={messagesLength === 0} />
 
-        {/*
-        <ContactInfo
-          name={otherUserData.name}
-          email={otherUserData.email}
-          profileURL={otherUserData.profileURL}
-          show={showInfo}
-          handleClose={handleCloseInfo}
-        />
-        */}
+        {usersData ? (
+          chatData.members.length === 2 ? (
+            <ContactInfo
+              name={usersData && usersData[0].name}
+              email={usersData && usersData[0].email}
+              profileURL={usersData && usersData[0].profileURL}
+              show={showInfo}
+              handleClose={handleCloseInfo}
+            />
+          ) : (
+            <GroupInfo
+              imageURLs={usersData && usersData.map((user) => user.profileURL)}
+              show={showInfo}
+              handleClose={handleCloseInfo}
+            />
+          )
+        ) : null}
         <ImageDisplay imageURL={showImageURL} handleClose={handleCloseImage} />
       </div>
     );
