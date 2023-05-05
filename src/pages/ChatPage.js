@@ -23,13 +23,9 @@ const ChatPage = () => {
   const [chatData] = useChatData(chatId);
   const usersRef = collection(db, 'users');
   const usersQuery =
-    chatData &&
-    query(
-      usersRef,
-      where('id', 'in', chatData.members),
-      where('id', '!=', auth.currentUser.uid)
-    );
+    chatData && query(usersRef, where('id', 'in', chatData.members));
   const [usersData] = useCollectionData(usersQuery);
+  const otherUsers = usersData && usersData.filter((u) => u.id !== user.uid);
   const [messagesLength, setMessagesLength] = useState();
   //const [otherUserData] = useUserData(getOtherUserId(chatId));
 
@@ -51,6 +47,7 @@ const ChatPage = () => {
   // Set enteringRoom to true when entering new chat
   useEffect(() => {
     enteringRoom.current = true;
+    handleCloseInfo();
   }, [chatId]);
 
   // Handle bottom scroll
@@ -81,8 +78,11 @@ const ChatPage = () => {
       <div className="chat-layout">
         <PageHeader>
           <h1>
-            {chatData.groupName ||
-              (usersData && getGroupNameFromMembers(usersData))}
+            {usersData
+              ? chatData.members.length === 2
+                ? usersData[0].name
+                : chatData.groupName || getGroupNameFromMembers(otherUsers)
+              : null}
           </h1>
           <IconButton name="info" handleClick={handleOpenInfo} />
         </PageHeader>
@@ -136,6 +136,7 @@ const ChatPage = () => {
                 chatData.groupName || getGroupNameFromMembers(usersData)
               }
               imageURLs={usersData && usersData.map((user) => user.profileURL)}
+              members={usersData}
               show={showInfo}
               handleClose={handleCloseInfo}
             />

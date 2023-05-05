@@ -17,10 +17,21 @@
   padding: 24px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 16px;
+}
+
+.ContactInfo > section:first-of-type {
+  align-items: center;
 }
 
 .ContactInfo h2 {
   text-align: center;
+}
+
+.ContactInfo .ContactTab {
+  margin: 0 -24px;
+}
+
+.ContactInfo .ContactTab:first-of-type {
+  margin-top: 12px;
 }
