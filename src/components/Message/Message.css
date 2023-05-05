@@ -47,3 +47,19 @@
 .sent > .Message_image {
   margin-left: auto;
 }
+
+.GroupMessage {
+  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: 48px auto;
+  align-items: end;
+  gap: 12px;
+}
+
+.GroupMessage.follow-up {
+  margin-bottom: 0;
+}
+
+.GroupMessage .Message_wrapper {
+  margin-bottom: 8px;
+}

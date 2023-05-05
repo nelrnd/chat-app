@@ -14,6 +14,7 @@ import ContactInfo from '../components/ContactInfo/ContactInfo';
 import { getFormattedDate } from '../utils';
 import { collection, query, where } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
+import GroupMessage from '../components/Message/GroupMessage';
 
 const ChatPage = () => {
   const [user] = useAuthState(auth);
@@ -85,7 +86,17 @@ const ChatPage = () => {
               chatData.messages[id + 1].from === msg.from &&
               getFormattedDate(chatData.messages[id + 1].date) ===
                 getFormattedDate(msg.date);
-            return (
+            return chatData.members.length > 2 && msg.from !== user.uid ? (
+              <GroupMessage
+                key={msg.date}
+                text={msg.text}
+                imageURL={msg.imageURL}
+                date={msg.date}
+                from={msg.from}
+                followUp={followUp}
+                handleImageClick={handleOpenImage}
+              />
+            ) : (
               <Message
                 key={msg.date}
                 text={msg.text}
