@@ -62,13 +62,13 @@ export function validateEmail(email) {
     );
 }
 
-export function createChatId() {
+export function createGroupChatId() {
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
   const time = Date.now().toString().slice(-10);
-  let chatId = '';
+  let groupChatId = '';
   for (let i = 0; i < 10; i++) {
-    chatId += chars[Math.floor(Math.random() * chars.length)];
-    chatId += time[i];
+    groupChatId += chars[Math.floor(Math.random() * chars.length)];
+    groupChatId += time[i];
   }
-  return chatId;
+  return groupChatId;
 }

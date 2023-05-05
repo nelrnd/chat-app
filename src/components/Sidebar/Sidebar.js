@@ -136,6 +136,7 @@ const Sidebar = () => {
 const NewModal = ({ chats, allUsers, show, handleNext, handleClose }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const navigate = useNavigate();
 
   const handleSearchTermChange = (e) => setSearchTerm(e.target.value);
 
@@ -155,11 +156,16 @@ const NewModal = ({ chats, allUsers, show, handleNext, handleClose }) => {
     setSelectedUsers(selectedUsersCopy);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (selectedUsers.length === 1) {
       handleNext(selectedUsers[0]);
+    } else {
+      const userIds = [auth.currentUser.uid, ...selectedUsers];
+      const chatId = await createChat(userIds);
+      navigate(`/chats/${chatId}`);
     }
     handleClose();
+    setSearchTerm('');
     setSelectedUsers([]);
   };
 
@@ -241,6 +247,7 @@ const NewModal = ({ chats, allUsers, show, handleNext, handleClose }) => {
           type="secondary"
           handleClick={() => {
             handleClose();
+            setSearchTerm('');
             setSelectedUsers([]);
           }}
         >

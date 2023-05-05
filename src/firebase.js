@@ -14,7 +14,7 @@ import {
   updateProfile,
 } from 'firebase/auth';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-import { createChatId, getUserIds } from './utils';
+import { createGroupChatId, getChatId, getUserIds } from './utils';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -85,20 +85,21 @@ export async function updateUserInfo(user, updatedInfo) {
 }
 
 // Create chat document in Firestore
-export async function createChat(memberIds) {
+export async function createChat(userIds) {
   try {
-    const chatId = createChatId();
+    const chatId =
+      userIds.length === 2 ? getChatId(userIds) : createGroupChatId();
     const chatRef = doc(db, 'chats', chatId);
     if (await checkIfDocExists(chatRef)) return chatId;
     const chatDoc = {
       id: chatId,
-      members: memberIds,
+      members: [...userIds],
       messages: [],
       lastMessage: { text: null, imageURL: null, date: null, from: null },
       unreadCount: {},
     };
-    for (let member of memberIds) {
-      chatDoc.unreadCount[member] = 0;
+    for (const user of userIds) {
+      chatDoc.unreadCount[user] = 0;
     }
     await setDoc(chatRef, chatDoc);
     return chatId;
@@ -137,16 +138,19 @@ export async function createChatMessage(chatId, message) {
 export async function updateLastChatMessage(chatId, senderId, message) {
   try {
     const chatRef = doc(db, 'chats', chatId);
+    const lastMessage = {
+      text: message.text || '',
+      imageURL: message.imageURL || '',
+      date: message.date,
+      from: senderId,
+      read: {},
+    };
+    const userIds = await getChatMembers(chatId);
+    for (const user of userIds) {
+      lastMessage.read[user] = user === senderId;
+    }
     await updateDoc(chatRef, {
-      lastMessage: {
-        text: message.text || '',
-        imageURL: message.imageURL || '',
-        date: message.date,
-        read: {
-          [senderId]: true,
-          [getOtherUserId(chatId)]: false,
-        },
-      },
+      lastMessage: lastMessage,
     });
   } catch (err) {
     console.error(err);
@@ -235,10 +239,9 @@ export async function getChatMembers(chatId) {
   }
 }
 
-export async function getOtherChatMembers(chatId, userId) {
+export async function getOtherChatMembers(members, userId) {
   try {
-    const chatMembers = await getChatMembers(chatId);
-    return chatMembers.filter((member) => member !== userId);
+    return members.filter((member) => member !== userId);
   } catch (err) {
     console.error(err);
   }

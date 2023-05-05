@@ -70,11 +70,11 @@ const ChatPage = () => {
     (async () => await readLastChatMessage(chatId, auth.currentUser.uid))();
   }, [chatId, messagesLength]);
 
-  if (user && chatData && usersData) {
+  if (user && chatData) {
     return (
       <div className="chat-layout">
         <PageHeader>
-          <h1>{usersData[0].name}</h1>
+          <h1>{usersData && usersData[0].name}</h1>
           <IconButton name="info" handleClick={handleOpenInfo} />
         </PageHeader>
 
@@ -102,7 +102,7 @@ const ChatPage = () => {
 
         <ChatInput chatId={chatId} isFirstMessage={messagesLength === 0} />
 
-        {/**
+        {/*
         <ContactInfo
           name={otherUserData.name}
           email={otherUserData.email}
