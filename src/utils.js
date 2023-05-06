@@ -73,12 +73,14 @@ export function createGroupChatId() {
   return groupChatId;
 }
 
-export function getGroupNameFromMembers(members) {
-  const names = members.map((member) => member.name);
-  if (members.length > 3) {
-    return `${names.slice(0, 3).join(', ')} and ${members.length - 3} more`;
+export function getChatName(userNames) {
+  let chatName;
+  if (userNames.length > 3) {
+    chatName =
+      userNames.slice(0, 3).join(', ') + ` and ${userNames.length - 3} more`;
   } else {
-    const last = names.pop();
-    return names.join(', ') + ' and ' + last;
+    const lastName = userNames.pop();
+    chatName = userNames.join(', ') + ' and ' + lastName;
   }
+  return chatName;
 }

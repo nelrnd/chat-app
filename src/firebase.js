@@ -209,9 +209,9 @@ export async function uploadImage(imageFile, userId) {
   }
 }
 
-export async function uploadProfileImage(imageFile, userId) {
+export async function uploadProfileImage(imageFile, id) {
   try {
-    const path = `/profiles/${userId}`;
+    const path = `/profiles/${id}`;
     const imageURL = await uploadFile(imageFile, path);
     return imageURL;
   } catch (err) {
@@ -242,6 +242,17 @@ export async function getChatMembers(chatId) {
 export function getOtherChatMembers(members, userId) {
   try {
     return members.filter((member) => member !== userId);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function updateGroupChatInfo(chatId, updatedInfo) {
+  try {
+    const chatRef = doc(db, 'chats', chatId);
+    await updateDoc(chatRef, {
+      ...updatedInfo,
+    });
   } catch (err) {
     console.error(err);
   }

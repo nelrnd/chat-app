@@ -15,7 +15,7 @@ import ContactTab from '../ContactTab/ContactTab';
 import Modal from '../Modal/Modal';
 import Button from '../Button/Button';
 import ContactTag from '../ContactTag/ContactTag';
-import GroupChatTab from '../ChatTab/GroupChatTab';
+import useUserData from '../../hooks/useUserData';
 
 const filterUsers = (users, searchTerm) => {
   return users
@@ -24,29 +24,12 @@ const filterUsers = (users, searchTerm) => {
 };
 
 const Sidebar = () => {
-  const params = useParams();
-  const chatId = params.chatId;
-  const userRef = doc(db, 'users', auth.currentUser.uid);
-  const [userData] = useDocumentData(userRef);
-  const chatsRef = collection(db, 'chats');
-  const chatsQuery =
-    userData &&
-    !!userData.chats.length &&
-    query(chatsRef, where('id', 'in', userData.chats));
-  const [chats] = useCollectionData(chatsQuery);
+  const [user] = useUserData(auth.currentUser.uid);
   const [searchTerm, setSearchTerm] = useState('');
+
   const allUsersRef = collection(db, 'users');
   const [allUsers] = useCollectionData(allUsersRef);
   const navigate = useNavigate();
-
-  const [currentTime, setCurrentTime] = useState(Date.now());
-
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(Date.now()), 5000);
-    return () => clearInterval(timer);
-  });
-
-  const handleSearchTermChange = (e) => setSearchTerm(e.target.value);
 
   const goToHome = () => navigate('/');
   const goToSettings = () => navigate('/settings');
@@ -73,6 +56,15 @@ const Sidebar = () => {
           <IconButton name="settings" handleClick={goToSettings} />
         </div>
       </header>
+
+      <SidebarSearchSection
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+      />
+
+      {user && !searchTerm && <SidebarChatsSection chatIds={user.chats} />}
+
+      {/* 
 
       <section className="search">
         <TextInput
@@ -104,46 +96,120 @@ const Sidebar = () => {
             )}
           </>
         )}
-      </section>
-
-      {chats && !searchTerm && (
-        <section className="chats">
-          {chats
-            .sort((a, b) => b.lastMessage.date - a.lastMessage.date)
-            .map((chat) =>
-              chat.members.length === 2 ? (
-                <ChatTab
-                  key={chat.id}
-                  chatId={chat.id}
-                  lastMessage={chat.lastMessage}
-                  unreadCount={chat.unreadCount[auth.currentUser.uid]}
-                  isActive={chat.id === chatId}
-                  currentTime={currentTime}
-                />
-              ) : (
-                <GroupChatTab
-                  key={chat.id}
-                  chatId={chat.id}
-                  groupName={chat.groupName}
-                  profileURL={chat.profileURL}
-                  lastMessage={chat.lastMessage}
-                  unreadCount={chat.unreadCount[auth.currentUser.uid]}
-                  isActive={chat.id === chatId}
-                  currentTime={currentTime}
-                />
-              )
-            )}
+        {chats && !searchTerm && (
+          <section className="chats">
+            {chats
+              .sort((a, b) => b.lastMessage.date - a.lastMessage.date)
+              .map((chat) =>
+                chat.members.length === 2 ? (
+                  <ChatTab
+                    key={chat.id}
+                    chatId={chat.id}
+                    lastMessage={chat.lastMessage}
+                    unreadCount={chat.unreadCount[auth.currentUser.uid]}
+                    isActive={chat.id === chatId}
+                    currentTime={currentTime}
+                  />
+                ) : (
+                  <GroupChatTab
+                    key={chat.id}
+                    chatId={chat.id}
+                    groupName={chat.groupName}
+                    profileURL={chat.profileURL}
+                    lastMessage={chat.lastMessage}
+                    unreadCount={chat.unreadCount[auth.currentUser.uid]}
+                    isActive={chat.id === chatId}
+                    currentTime={currentTime}
+                  />
+                )
+              )}
+          </section>
+        )}
         </section>
-      )}
-
-      <NewModal
-        chats={chats}
-        allUsers={allUsers}
-        show={showNewModal}
-        handleNext={handleTabClick}
-        handleClose={handleCloseNewModal}
-      />
+        
+              <NewModal
+                chats={chats}
+                allUsers={allUsers}
+                show={showNewModal}
+                handleNext={handleTabClick}
+                handleClose={handleCloseNewModal}
+              />
+      */}
     </div>
+  );
+};
+
+const SidebarSearchSection = ({ searchTerm, setSearchTerm }) => {
+  const usersCollection = collection(db, 'users');
+  /*
+  const searchQuery = query(
+    searchTerm && usersCollection,
+    where(searchTerm, '==', 'email')
+  );
+  */
+  const [results, loading] = useCollectionData(usersCollection);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => setSearchTerm(e.target.value);
+
+  const handleClick = async (userId) => {
+    setSearchTerm('');
+    const userIds = [userId, auth.currentUser.uid];
+    const chatId = await createChat(userIds);
+    navigate('/chats/' + chatId);
+  };
+
+  return (
+    <section className="search">
+      <TextInput
+        type="search"
+        placeholder="Search for users"
+        icon="search"
+        value={searchTerm}
+        handleChange={handleChange}
+      />
+
+      {searchTerm && (
+        <>
+          <p>Search results:</p>
+          {results ? (
+            results.map((user) => (
+              <ContactTab
+                key={user.id}
+                userId={user.id}
+                handleClick={() => handleClick(user.id)}
+              />
+            ))
+          ) : (
+            <p>No user founds...</p>
+          )}
+        </>
+      )}
+    </section>
+  );
+};
+
+const SidebarChatsSection = ({ chatIds }) => {
+  const params = useParams();
+  const currentChat = params.chatId;
+  const chatsCollection = collection(db, 'chats');
+  const chatsQuery = query(chatsCollection, where('id', 'in', chatIds));
+  const [chats] = useCollectionData(chatsQuery);
+
+  if (!chats) return;
+
+  return (
+    <section className="chats">
+      {chats
+        .sort((a, b) => b.lastMessage.date - a.lastMessage.date)
+        .map((chat) => (
+          <ChatTab
+            key={chat.id}
+            chat={chat}
+            isActive={chat.id === currentChat}
+          />
+        ))}
+    </section>
   );
 };
 
