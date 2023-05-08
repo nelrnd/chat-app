@@ -1,24 +1,21 @@
 import Message from './Message';
 import Avatar from '../Avatar/Avatar';
-import useUserData from '../../hooks/useUserData';
 import { getFormattedDate } from '../../utils';
 
 const GroupMessage = ({
   text,
   imageURL,
   date,
-  from,
+  user,
   followUp,
   handleImageClick,
 }) => {
-  const [userData] = useUserData(from);
-
-  if (!userData) return null;
+  if (!user) return null;
 
   return (
     <div className={`GroupMessage ${followUp ? 'follow-up' : ''}`}>
       <div>
-        {!followUp && <Avatar imageURL={userData.profileURL} size="small" />}
+        {!followUp && <Avatar imageURL={user.profileURL} size="small" />}
       </div>
       <div>
         <Message
@@ -30,7 +27,7 @@ const GroupMessage = ({
         />
         {!followUp && (
           <p className="sml-txt">
-            <span className="bold">{userData.name}</span>{' '}
+            <span className="bold">{user.name}</span>{' '}
             <span className="grey">{getFormattedDate(date)}</span>
           </p>
         )}
