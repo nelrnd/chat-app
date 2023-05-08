@@ -29,3 +29,9 @@
 .Sidebar > section.search .ContactTab {
   margin: 0 -24px;
 }
+
+.Sidebar > section.search .no-result {
+  color: var(--grey);
+  text-align: center;
+  padding: 12px;
+}

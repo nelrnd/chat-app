@@ -5,7 +5,7 @@ import Avatar from '../components/Avatar/Avatar';
 import { auth, updateUserInfo, uploadProfileImage } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import Icon from '../components/Icon/Icon';
-import Modal from '../components/Modal/Modal';
+import Modal from '../components/Modals/Modal';
 import { useEffect, useState } from 'react';
 import TextInput from '../components/TextInput/TextInput';
 import FileInput from '../components/FileInput/FileInput';

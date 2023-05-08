@@ -42,14 +42,14 @@ const GroupInfo = (props) => {
       <section>
         <p>
           Members <span className="sml-txt grey">{props.members.length}</span>
-          {props.members.map((member) => (
-            <ContactTab
-              key={member.id}
-              userId={member.id}
-              handleClick={() => handleTabClick(member.id)}
-            />
-          ))}
         </p>
+        {props.members.map((member) => (
+          <ContactTab
+            key={member.id}
+            userId={member.id}
+            handleClick={() => handleTabClick(member.id)}
+          />
+        ))}
       </section>
     </div>
   );

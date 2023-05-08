@@ -98,7 +98,7 @@ const GroupChatTab = ({ chat, isActive, handleClick }) => {
       />
 
       <div>
-        <h3>{getChatName(otherUsers.map((user) => user.name))}</h3>
+        <h3>{chat.name || getChatName(otherUsers.map((user) => user.name))}</h3>
         <div className="message">
           {(otherUsers.map((user) => user.id).includes(lastMessage.from)
             ? otherUsers
