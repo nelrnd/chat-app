@@ -1,44 +1,90 @@
-import { getChatName } from '../../utils';
+import { useNavigate } from 'react-router-dom';
+import { capitalize, getChatName } from '../../utils';
 import Avatar from '../Avatar/Avatar';
+import ContactTab from '../ContactTab/ContactTab';
 import GroupAvatar from '../GroupAvatar/GroupAvatar';
 import IconButton from '../IconButton/IconButton';
 import PageHeader from '../PageHeader/PageHeader';
 import './ChatInfo.css';
+import { createChat } from '../../firebase';
 
-const ChatInfo = (props) => {
+const ChatInfo = ({ chat, users, userId, show, handleClose }) => {
+  let type = users.length === 2 ? 'contact' : 'group';
+  let otherUsers = users.filter((u) => u.id !== userId);
+
   return (
-    <aside className="ChatInfo">
-      <PageHeader>
-        <h2>{type} info</h2>
-        <IconButton name="close" />
-      </PageHeader>
+    <>
+      <aside className={`ChatInfo ${show ? 'show' : ''}`}>
+        <PageHeader withBorder={false}>
+          <h2>{capitalize(type)} info</h2>
+          <IconButton name="close" handleClick={handleClose} />
+        </PageHeader>
 
-      {type === 'contact' ? <ContactInfo /> : <GroupInfo />}
-    </aside>
+        {type === 'contact' ? (
+          <ContactInfo user={otherUsers[0]} />
+        ) : (
+          <GroupInfo
+            chat={chat}
+            users={users}
+            userId={userId}
+            handleClose={handleClose}
+          />
+        )}
+      </aside>
+      <div className="ChatInfo_backdrop" onClick={handleClose} />
+    </>
   );
 };
 
-const ContactInfo = (props) => {
+const ContactInfo = ({ user }) => {
   return (
     <>
-      <section>
-        <Avatar imageURL={props.profileURL} size="large" />
-        <h2>{props.name}</h2>
+      <section className="info">
+        <Avatar imageURL={user.profileURL} size="large" />
+        <h2>{user.name}</h2>
+        <p className="grey">{user.email}</p>
       </section>
     </>
   );
 };
 
-const GroupInfo = (props) => {
+const GroupInfo = ({ chat, users, userId, handleClose }) => {
+  const navigate = useNavigate();
+  let otherUsers = users.filter((u) => u.id !== userId);
+
+  const handleClick = async (uid) => {
+    const userIds = [uid, userId];
+    const chatId = await createChat(userIds);
+    handleClose();
+    navigate('/chats/' + chatId);
+  };
+
   return (
     <>
-      <section>
-        {props.profileURL ? (
-          <Avatar imageURL={props.profileURL} size="large" />
+      <section className="info">
+        {chat.profileURL ? (
+          <Avatar imageURL={chat.profileURL} size="large" />
         ) : (
-          <GroupAvatar size="large" />
+          <GroupAvatar
+            imageURLs={otherUsers.map((u) => u.profileURL)}
+            size="large"
+          />
         )}
-        <h2>{props.name || getChatName(props.member)}</h2>
+        <h2>{chat.name || getChatName(otherUsers.map((u) => u.name))}</h2>
+      </section>
+
+      <section className="members">
+        <p>
+          Members <span className="sml-txt grey">{users.length}</span>
+        </p>
+        {otherUsers.concat(users.find((u) => u.id === userId)).map((user) => (
+          <ContactTab
+            key={user.id}
+            userId={user.id}
+            disabled={user.id === userId}
+            handleClick={() => handleClick(user.id)}
+          />
+        ))}
       </section>
     </>
   );

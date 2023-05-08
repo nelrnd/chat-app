@@ -67,9 +67,9 @@ const SidebarSearchSection = ({ searchTerm, setSearchTerm, userId }) => {
 
   const handleChange = (e) => setSearchTerm(e.target.value);
 
-  const handleClick = async (userId) => {
+  const handleClick = async (uid) => {
     setSearchTerm('');
-    const userIds = [userId, auth.currentUser.uid];
+    const userIds = [uid, userId];
     const chatId = await createChat(userIds);
     navigate('/chats/' + chatId);
   };

@@ -16,3 +16,12 @@
 .ContactTab > .Icon {
   color: var(--primary);
 }
+
+.ContactTab.disabled {
+  opacity: 0.75;
+}
+
+.ContactTab.disabled:hover {
+  cursor: default;
+  background-color: white;
+}

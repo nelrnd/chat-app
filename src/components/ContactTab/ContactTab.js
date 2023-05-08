@@ -3,13 +3,16 @@ import Avatar from '../Avatar/Avatar';
 import Icon from '../Icon/Icon';
 import './ContactTab.css';
 
-const ContactTab = ({ userId, check, handleClick }) => {
+const ContactTab = ({ userId, check, disabled, handleClick }) => {
   const [userData, loading] = useUserData(userId);
 
   if (loading) return null;
 
   return (
-    <div className="ContactTab" onClick={handleClick}>
+    <div
+      className={`ContactTab ${disabled ? 'disabled' : ''}`}
+      onClick={!disabled ? handleClick : null}
+    >
       <Avatar imageURL={userData.profileURL} size="small" />
 
       <div className="col gap-2">

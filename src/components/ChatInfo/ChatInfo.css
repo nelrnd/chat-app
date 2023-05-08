@@ -1,0 +1,52 @@
+.ChatInfo {
+  width: 400px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: -400px;
+  background-color: white;
+  border-left: solid 1px var(--light-grey);
+  transition: all 0.4s ease-in-out;
+  z-index: 1;
+}
+
+.ChatInfo.show {
+  right: 0;
+}
+
+.ChatInfo_backdrop {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.show + .ChatInfo_backdrop {
+  display: block;
+}
+
+.ChatInfo > section {
+  padding: 24px;
+}
+
+.ChatInfo > section.info {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.ChatInfo > section.info .Avatar,
+.ChatInfo > section.info .GroupAvatar {
+  margin-bottom: 16px;
+}
+
+.ChatInfo > section.members > p {
+  margin-bottom: 12px;
+}
+
+.ChatInfo > section.members > .ContactTab {
+  margin: 0 -24px;
+}
