@@ -43,6 +43,10 @@
   margin-bottom: 16px;
 }
 
+.ChatInfo > section.info Button {
+  margin-top: 16px;
+}
+
 .ChatInfo > section.members > p {
   margin-bottom: 12px;
 }

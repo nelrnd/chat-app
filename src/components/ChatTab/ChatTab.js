@@ -93,9 +93,13 @@ const GroupChatTab = ({ chat, isActive, handleClick }) => {
 
   return (
     <div className={className} onClick={handleClick}>
-      <GroupAvatar
-        imageURLs={otherUsers.slice(-4).map((user) => user.profileURL)}
-      />
+      {chat.profileURL ? (
+        <Avatar imageURL={chat.profileURL} />
+      ) : (
+        <GroupAvatar
+          imageURLs={otherUsers.slice(-4).map((user) => user.profileURL)}
+        />
+      )}
 
       <div>
         <h3>{chat.name || getChatName(otherUsers.map((user) => user.name))}</h3>

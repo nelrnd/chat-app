@@ -84,6 +84,17 @@ export async function updateUserInfo(user, updatedInfo) {
   }
 }
 
+export async function updateChatInfo(chatId, updatedInfo) {
+  try {
+    const chatRef = doc(db, 'chats', chatId);
+    await updateDoc(chatRef, {
+      ...updatedInfo,
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 // Create chat document in Firestore
 export async function createChat(userIds) {
   try {
@@ -199,9 +210,9 @@ export async function uploadFile(file, path) {
   }
 }
 
-export async function uploadImage(imageFile, userId) {
+export async function uploadImage(imageFile, id) {
   try {
-    const path = `/images/${userId}/${Date.now()}`;
+    const path = `/images/${id}/${Date.now()}`;
     const imageURL = await uploadFile(imageFile, path);
     return imageURL;
   } catch (err) {

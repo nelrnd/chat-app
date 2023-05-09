@@ -39,3 +39,7 @@
   align-items: center;
   gap: 16px;
 }
+
+.Modal_section + .Modal_section {
+  margin-top: 24px;
+}

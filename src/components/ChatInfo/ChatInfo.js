@@ -7,8 +7,17 @@ import IconButton from '../IconButton/IconButton';
 import PageHeader from '../PageHeader/PageHeader';
 import './ChatInfo.css';
 import { createChat } from '../../firebase';
+import Button from '../Button/Button';
+import Icon from '../Icon/Icon';
 
-const ChatInfo = ({ chat, users, userId, show, handleClose }) => {
+const ChatInfo = ({
+  chat,
+  users,
+  userId,
+  show,
+  handleClose,
+  openEditModal,
+}) => {
   let type = users.length === 2 ? 'contact' : 'group';
   let otherUsers = users.filter((u) => u.id !== userId);
 
@@ -28,6 +37,7 @@ const ChatInfo = ({ chat, users, userId, show, handleClose }) => {
             users={users}
             userId={userId}
             handleClose={handleClose}
+            openEditModal={openEditModal}
           />
         )}
       </aside>
@@ -48,7 +58,7 @@ const ContactInfo = ({ user }) => {
   );
 };
 
-const GroupInfo = ({ chat, users, userId, handleClose }) => {
+const GroupInfo = ({ chat, users, userId, handleClose, openEditModal }) => {
   const navigate = useNavigate();
   let otherUsers = users.filter((u) => u.id !== userId);
 
@@ -71,6 +81,10 @@ const GroupInfo = ({ chat, users, userId, handleClose }) => {
           />
         )}
         <h2>{chat.name || getChatName(otherUsers.map((u) => u.name))}</h2>
+        <Button type="secondary" size="large" handleClick={openEditModal}>
+          <Icon name="edit">Edit</Icon>
+          Edit
+        </Button>
       </section>
 
       <section className="members">
