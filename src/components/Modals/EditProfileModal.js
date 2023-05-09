@@ -1,18 +1,17 @@
+import { useEffect, useRef, useState } from 'react';
+import { updateUserInfo, uploadProfileImage } from '../../firebase';
 import Modal from './Modal';
+import Avatar from '../Avatar/Avatar';
+import FileInput from '../FileInput/FileInput';
 import Button from '../Button/Button';
 import TextInput from '../TextInput/TextInput';
-import { useEffect, useRef, useState } from 'react';
-import Avatar from '../Avatar/Avatar';
-import GroupAvatar from '../GroupAvatar/GroupAvatar';
-import FileInput from '../FileInput/FileInput';
-import { updateChatInfo, uploadImage } from '../../firebase.js';
 
-const EditGroupModal = ({ chat, userProfiles, show, handleClose }) => {
-  const [newName, setNewName] = useState(chat.name || '');
+const EditProfileModal = ({ user, show, handleClose }) => {
+  const [newName, setNewName] = useState(user.displayName || '');
   const handleNameChange = (e) => setNewName(e.target.value);
 
   const [newProfileFile, setNewProfileFile] = useState(null);
-  const [newProfileURL, setNewProfileURL] = useState(chat.profileURL || '');
+  const [newProfileURL, setNewProfileURL] = useState(user.photoURL);
   const profileInput = useRef(null);
   const handleProfileChange = (e) => {
     const [file] = e.target.files;
@@ -37,17 +36,17 @@ const EditGroupModal = ({ chat, userProfiles, show, handleClose }) => {
     try {
       const updatedInfo = {};
       if (newProfileFile) {
-        const imageURL = await uploadImage(newProfileFile, chat.id);
-        updatedInfo.profileURL = imageURL;
+        const imageURL = await uploadProfileImage(newProfileFile, user.uid);
+        updatedInfo.photoURL = imageURL;
         setNewProfileURL(imageURL);
       }
       if (newProfileURL === null) {
-        updatedInfo.profileURL = '';
+        updatedInfo.photoURL = '';
       }
-      if (newName !== chat.name) {
-        updatedInfo.name = newName;
+      if (newName !== user.displayName) {
+        updatedInfo.displayName = newName;
       }
-      await updateChatInfo(chat.id, updatedInfo);
+      await updateUserInfo(user, updatedInfo);
       handleCancel();
     } catch (err) {
       console.error(err);
@@ -56,24 +55,20 @@ const EditGroupModal = ({ chat, userProfiles, show, handleClose }) => {
 
   useEffect(() => {
     if (show) {
-      setNewName(chat.name || '');
-      setNewProfileURL(chat.profileURL || '');
+      setNewName(user.displayName || '');
+      setNewProfileURL(user.photoURL || '');
     }
-  }, [show, chat]);
+  }, [show, user]);
 
   return (
     <Modal show={show}>
       <form onSubmit={handleSubmit}>
         <header className="Modal_header">
-          <h2>Edit group</h2>
+          <h2>Edit profile</h2>
         </header>
 
         <section className="Modal_section row gap-24 align">
-          {newProfileURL ? (
-            <Avatar imageURL={newProfileURL} size="large" />
-          ) : (
-            <GroupAvatar imageURLs={userProfiles} size="large" />
-          )}
+          <Avatar imageURL={newProfileURL} size="large" />
 
           <div className="col gap-6">
             <FileInput
@@ -95,7 +90,7 @@ const EditGroupModal = ({ chat, userProfiles, show, handleClose }) => {
         <section className="Modal_section">
           <TextInput
             id="name"
-            label="Group name"
+            label="Name"
             value={newName}
             handleChange={handleNameChange}
           />
@@ -112,4 +107,4 @@ const EditGroupModal = ({ chat, userProfiles, show, handleClose }) => {
   );
 };
 
-export default EditGroupModal;
+export default EditProfileModal;
