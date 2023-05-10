@@ -8,6 +8,7 @@ import Button from '../Button/Button';
 import TextInput from '../TextInput/TextInput';
 import ContactTab from '../ContactTab/ContactTab';
 import ContactTag from '../ContactTag/ContactTag';
+import Icon from '../Icon/Icon';
 
 const NewChatModal = ({ userId, userChats, show, handleClose }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -95,7 +96,9 @@ const NewChatModal = ({ userId, userChats, show, handleClose }) => {
                 userId={user.id}
                 handleClick={() => handleClick(user.id)}
                 check={selectedUsers.includes(user.id)}
-              />
+              >
+                {selectedUsers.includes(user.id) && <Icon name="check" />}
+              </ContactTab>
             ))
           ) : (
             <p>No results</p>
@@ -112,7 +115,9 @@ const NewChatModal = ({ userId, userChats, show, handleClose }) => {
                   userId={otherUserId}
                   handleClick={() => handleClick(otherUserId)}
                   check={selectedUsers.includes(otherUserId)}
-                />
+                >
+                  {selectedUsers.includes(otherUserId) && <Icon name="check" />}
+                </ContactTab>
               );
             })
         )}

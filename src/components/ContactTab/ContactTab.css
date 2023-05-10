@@ -9,19 +9,17 @@
   cursor: pointer;
 }
 
+.ContactTab.off {
+  cursor: default;
+}
+.ContactTab.off:hover {
+  background-color: white;
+}
+
 .ContactTab:hover {
   background-color: var(--ghost);
 }
 
 .ContactTab > .Icon {
   color: var(--primary);
-}
-
-.ContactTab.disabled {
-  opacity: 0.75;
-}
-
-.ContactTab.disabled:hover {
-  cursor: default;
-  background-color: white;
 }

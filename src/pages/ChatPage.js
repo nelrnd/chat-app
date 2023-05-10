@@ -15,6 +15,7 @@ import withAuth from './withAuth';
 import GroupMessage from '../components/Message/GroupMessage';
 import ChatInfo from '../components/ChatInfo/ChatInfo';
 import EditGroupModal from '../components/Modals/EditGroupModal';
+import ManageUsersModal from '../components/Modals/ManageUsersModal';
 
 // Check if a message is followed by another of same user and date
 const checkFollowUp = (msg1, msg2) => {
@@ -41,6 +42,7 @@ const ChatPage = () => {
   const [showImage, setShowImage] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showManageModal, setShowManageModal] = useState(false);
 
   const openImage = (url) => setShowImage(url);
   const closeImage = () => setShowImage(null);
@@ -50,6 +52,9 @@ const ChatPage = () => {
 
   const openEditModal = () => setShowEditModal(true);
   const closeEditModal = () => setShowEditModal(false);
+
+  const openManageModal = () => setShowManageModal(true);
+  const closeManageModal = () => setShowManageModal(false);
 
   const enteringChat = useRef(true);
   const bottomRef = useRef(null);
@@ -140,16 +145,25 @@ const ChatPage = () => {
         show={showInfo}
         handleClose={closeInfo}
         openEditModal={openEditModal}
+        openManageModal={openManageModal}
       />
       <ImageDisplay imageURL={showImage} handleClose={closeImage} />
 
       {users.length > 2 && (
-        <EditGroupModal
-          chat={chat}
-          userProfiles={otherUsers.map((user) => user.profileURL)}
-          show={showEditModal}
-          handleClose={closeEditModal}
-        />
+        <>
+          <EditGroupModal
+            chat={chat}
+            userProfiles={otherUsers.map((user) => user.profileURL)}
+            show={showEditModal}
+            handleClose={closeEditModal}
+          />
+          <ManageUsersModal
+            users={users}
+            userId={user.uid}
+            show={showManageModal}
+            handleClose={closeManageModal}
+          />
+        </>
       )}
     </div>
   );

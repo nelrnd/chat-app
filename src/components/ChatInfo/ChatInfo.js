@@ -17,6 +17,7 @@ const ChatInfo = ({
   show,
   handleClose,
   openEditModal,
+  openManageModal,
 }) => {
   let type = users.length === 2 ? 'contact' : 'group';
   let otherUsers = users.filter((u) => u.id !== userId);
@@ -38,6 +39,7 @@ const ChatInfo = ({
             userId={userId}
             handleClose={handleClose}
             openEditModal={openEditModal}
+            openManageModal={openManageModal}
           />
         )}
       </aside>
@@ -58,7 +60,14 @@ const ContactInfo = ({ user }) => {
   );
 };
 
-const GroupInfo = ({ chat, users, userId, handleClose, openEditModal }) => {
+const GroupInfo = ({
+  chat,
+  users,
+  userId,
+  handleClose,
+  openEditModal,
+  openManageModal,
+}) => {
   const navigate = useNavigate();
   let otherUsers = users.filter((u) => u.id !== userId);
 
@@ -96,9 +105,12 @@ const GroupInfo = ({ chat, users, userId, handleClose, openEditModal }) => {
             key={user.id}
             userId={user.id}
             disabled={user.id === userId}
-            handleClick={() => handleClick(user.id)}
+            handleClick={user.id !== userId ? () => handleClick(user.id) : null}
           />
         ))}
+        <Button type="secondary" size="large" handleClick={openManageModal}>
+          Manage users
+        </Button>
       </section>
     </>
   );

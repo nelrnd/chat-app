@@ -1,17 +1,16 @@
 import useUserData from '../../hooks/useUserData';
 import Avatar from '../Avatar/Avatar';
-import Icon from '../Icon/Icon';
 import './ContactTab.css';
 
-const ContactTab = ({ userId, check, disabled, handleClick }) => {
+const ContactTab = ({ userId, handleClick, children }) => {
   const [userData, loading] = useUserData(userId);
 
   if (loading) return null;
 
   return (
     <div
-      className={`ContactTab ${disabled ? 'disabled' : ''}`}
-      onClick={!disabled ? handleClick : null}
+      className={`ContactTab ${!handleClick ? 'off' : ''}`}
+      onClick={handleClick || null}
     >
       <Avatar imageURL={userData.profileURL} size="small" />
 
@@ -20,7 +19,7 @@ const ContactTab = ({ userId, check, disabled, handleClick }) => {
         <p className="sml-txt grey">{userData.email}</p>
       </div>
 
-      {check && <Icon name="check" size="small" />}
+      {children}
     </div>
   );
 };
