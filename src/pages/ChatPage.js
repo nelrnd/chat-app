@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { collection, query, where } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import { auth, db, readLastChatMessage } from '../firebase';
 import { getChatName, getFormattedDate } from '../utils';
 import PageHeader from '../components/PageHeader/PageHeader';
@@ -68,7 +68,7 @@ const ChatPage = () => {
   }, [chatId]);
 
   useEffect(() => {
-    if (!users || !messagesLength) return;
+    if (!users || !messagesLength || !bottomRef.current) return;
     if (enteringChat.current) {
       scrollToBottom('instant');
       enteringChat.current = false;
@@ -92,6 +92,10 @@ const ChatPage = () => {
   }, [chatId, user.uid, messagesLength]);
 
   if (!user || !chat || !users) return null;
+
+  if (!chat.members.includes(user.uid)) {
+    return <Navigate to="/" replace />;
+  }
 
   const otherUsers = users.filter((u) => u.id !== user.uid);
 
@@ -158,8 +162,9 @@ const ChatPage = () => {
             handleClose={closeEditModal}
           />
           <ManageUsersModal
-            users={users}
+            users={chat.members}
             userId={user.uid}
+            chatId={chatId}
             show={showManageModal}
             handleClose={closeManageModal}
           />
