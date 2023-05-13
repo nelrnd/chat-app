@@ -24,7 +24,9 @@ const EditGroupModal = ({ chat, userProfiles, show, handleClose }) => {
   const removeProfile = () => {
     setNewProfileFile(null);
     setNewProfileURL(null);
-    profileInput.current.value = null;
+    if (profileInput.current) {
+      profileInput.current.value = null;
+    }
   };
 
   const handleCancel = () => {

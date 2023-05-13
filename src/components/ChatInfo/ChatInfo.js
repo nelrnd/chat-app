@@ -104,9 +104,12 @@ const GroupInfo = ({
           <ContactTab
             key={user.id}
             userId={user.id}
-            disabled={user.id === userId}
             handleClick={user.id !== userId ? () => handleClick(user.id) : null}
-          />
+          >
+            {chat.members.find((u) => u.id === user.id).isAdmin && (
+              <p className="sml-txt grey">admin</p>
+            )}
+          </ContactTab>
         ))}
         <Button type="secondary" size="large" handleClick={openManageModal}>
           Manage users

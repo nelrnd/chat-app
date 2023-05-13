@@ -10,7 +10,7 @@ import GroupAvatar from '../GroupAvatar/GroupAvatar';
 import Icon from '../Icon/Icon';
 import './ChatTab.css';
 
-const filterNotCurrentUser = (id) => id !== auth.currentUser.uid;
+const filterNotCurrentUser = (user) => user.id !== auth.currentUser.uid;
 
 const getUserUnreadCount = (unreadCount) => unreadCount[auth.currentUser.uid];
 
@@ -29,7 +29,7 @@ const ChatTab = ({ chat, isActive }) => {
 const PrivateChatTab = ({ chat, isActive, handleClick }) => {
   const { lastMessage } = chat;
   const unreadCount = getUserUnreadCount(chat.unreadCount);
-  const otherUserId = chat.members.filter(filterNotCurrentUser)[0];
+  const otherUserId = chat.members.filter(filterNotCurrentUser)[0].id;
   const [otherUser] = useUserData(otherUserId);
 
   const [currentTime, setCurrentTime] = useState(Date.now());
@@ -72,8 +72,9 @@ const PrivateChatTab = ({ chat, isActive, handleClick }) => {
 const GroupChatTab = ({ chat, isActive, handleClick }) => {
   const { lastMessage } = chat;
   const unreadCount = getUserUnreadCount(chat.unreadCount);
-
-  const otherUserIds = chat.members.filter(filterNotCurrentUser);
+  const otherUserIds = chat.members
+    .filter(filterNotCurrentUser)
+    .map((u) => u.id);
   const usersCollection = collection(db, 'users');
   const usersQuery = query(usersCollection, where('id', 'in', otherUserIds));
   const [otherUsers] = useCollectionData(usersQuery);

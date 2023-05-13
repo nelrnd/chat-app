@@ -36,7 +36,16 @@ const ChatPage = () => {
   const [messagesLength, setMessagesLength] = useState(0);
   // get chat members info
   const usersRef = collection(db, 'users');
-  const usersQuery = chat && query(usersRef, where('id', 'in', chat.members));
+  const usersQuery =
+    chat &&
+    query(
+      usersRef,
+      where(
+        'id',
+        'in',
+        chat.members.map((u) => u.id)
+      )
+    );
   const [users] = useCollectionData(usersQuery);
 
   const [showImage, setShowImage] = useState(null);
@@ -92,10 +101,6 @@ const ChatPage = () => {
   }, [chatId, user.uid, messagesLength]);
 
   if (!user || !chat || !users) return null;
-
-  if (!chat.members.includes(user.uid)) {
-    return <Navigate to="/" replace />;
-  }
 
   const otherUsers = users.filter((u) => u.id !== user.uid);
 

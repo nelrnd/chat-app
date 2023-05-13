@@ -18,7 +18,8 @@ const NewChatModal = ({ userId, userChats, show, handleClose }) => {
 
   // get chats
   const chatsCollection = collection(db, 'chats');
-  const chatsQuery = query(chatsCollection, where('id', 'in', userChats));
+  const chatsQuery =
+    userChats.length && query(chatsCollection, where('id', 'in', userChats));
   const [chats] = useCollectionData(chatsQuery);
 
   // get users
@@ -50,7 +51,7 @@ const NewChatModal = ({ userId, userChats, show, handleClose }) => {
   const handleSubmit = async () => {
     if (!selectedUsers.length) return;
     const userIds = [...selectedUsers, userId];
-    const chatId = await createChat(userIds);
+    const chatId = await createChat(userIds, userId);
     navigate('/chats/' + chatId);
     handleCancelClick();
   };

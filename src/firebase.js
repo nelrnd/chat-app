@@ -6,6 +6,7 @@ import {
   setDoc,
   updateDoc,
   arrayUnion,
+  arrayRemove,
 } from 'firebase/firestore';
 import {
   getAuth,
@@ -14,7 +15,7 @@ import {
   updateProfile,
 } from 'firebase/auth';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-import { createGroupChatId, getChatId, getUserIds } from './utils';
+import { createChatId, getUserIds } from './utils';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -96,21 +97,30 @@ export async function updateChatInfo(chatId, updatedInfo) {
 }
 
 // Create chat document in Firestore
-export async function createChat(userIds) {
+export async function createChat(userIds, userId) {
   try {
-    const chatId =
-      userIds.length === 2 ? getChatId(userIds) : createGroupChatId();
+    const chatType = userIds.length > 2 ? 'group' : 'private';
+    const chatId = createChatId(userIds, chatType);
     const chatRef = doc(db, 'chats', chatId);
     if (await checkIfDocExists(chatRef)) return chatId;
     const chatDoc = {
       id: chatId,
-      members: [...userIds],
+      type: chatType,
+      members: userIds.map((id) => ({ id: id })),
       messages: [],
       lastMessage: { text: null, imageURL: null, date: null, from: null },
       unreadCount: {},
     };
-    for (const user of userIds) {
-      chatDoc.unreadCount[user] = 0;
+    if (chatType === 'group') {
+      chatDoc.actions = [];
+      for (const user of chatDoc.members) {
+        user.joined = Date.now();
+        user.left = null;
+        user.isAdmin = user.id === userId;
+      }
+    }
+    for (const user of chatDoc.members) {
+      chatDoc.unreadCount[user.id] = 0;
     }
     await setDoc(chatRef, chatDoc);
     return chatId;
@@ -122,14 +132,36 @@ export async function createChat(userIds) {
 // Create a chat reference for each user's document in Firestore
 export async function createChatRefs(chatId) {
   try {
-    const createRef = async (userId) => {
-      const userRef = doc(db, 'users', userId);
+    const createRef = async (user) => {
+      const userRef = doc(db, 'users', user.id);
       await updateDoc(userRef, {
         chats: arrayUnion(chatId),
       });
     };
     const members = await getChatMembers(chatId);
     members.forEach(createRef);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function createChatRef(userId, chatId) {
+  try {
+    const userRef = doc(db, 'users', userId);
+    await updateDoc(userRef, {
+      chats: arrayUnion(chatId),
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function removeChatRef(userId, chatId) {
+  try {
+    const userRef = doc(db, 'users', userId);
+    await updateDoc(userRef, {
+      chats: arrayRemove(chatId),
+    });
   } catch (err) {
     console.error(err);
   }
@@ -158,7 +190,7 @@ export async function updateLastChatMessage(chatId, senderId, message) {
     };
     const userIds = await getChatMembers(chatId);
     for (const user of userIds) {
-      lastMessage.read[user] = user === senderId;
+      lastMessage.read[user.id] = user.id === senderId;
     }
     await updateDoc(chatRef, {
       lastMessage: lastMessage,

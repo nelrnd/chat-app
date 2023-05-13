@@ -49,6 +49,7 @@ const ChatInput = ({ chatId, isFirstMessage }) => {
     }
     if (isFirstMessage) {
       createChatRefs(chatId);
+      console.log('called');
     }
 
     await incrementUnreadCount(chatId, auth.currentUser.uid);
