@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { capitalize, getChatName } from '../../utils';
+import { getChatName } from '../../utils';
 import Avatar from '../Avatar/Avatar';
 import ContactTab from '../ContactTab/ContactTab';
 import GroupAvatar from '../GroupAvatar/GroupAvatar';
@@ -19,18 +19,17 @@ const ChatInfo = ({
   openEditModal,
   openManageModal,
 }) => {
-  let type = users.length === 2 ? 'contact' : 'group';
   let otherUsers = users.filter((u) => u.id !== userId);
 
   return (
     <>
       <aside className={`ChatInfo ${show ? 'show' : ''}`}>
         <PageHeader withBorder={false}>
-          <h2>{capitalize(type)} info</h2>
+          <h2>{chat.type === 'private' ? 'Contact' : 'Group'} info</h2>
           <IconButton name="close" handleClick={handleClose} />
         </PageHeader>
 
-        {type === 'contact' ? (
+        {chat.type === 'private' ? (
           <ContactInfo user={otherUsers[0]} />
         ) : (
           <GroupInfo
@@ -78,6 +77,8 @@ const GroupInfo = ({
     navigate('/chats/' + chatId);
   };
 
+  let isAdmin = chat.members.find((u) => u.id === userId).isAdmin;
+
   return (
     <>
       <section className="info">
@@ -90,10 +91,12 @@ const GroupInfo = ({
           />
         )}
         <h2>{chat.name || getChatName(otherUsers.map((u) => u.name))}</h2>
-        <Button type="secondary" size="large" handleClick={openEditModal}>
-          <Icon name="edit">Edit</Icon>
-          Edit
-        </Button>
+        {isAdmin && (
+          <Button type="secondary" size="large" handleClick={openEditModal}>
+            <Icon name="edit">Edit</Icon>
+            Edit
+          </Button>
+        )}
       </section>
 
       <section className="members">
@@ -111,9 +114,11 @@ const GroupInfo = ({
             )}
           </ContactTab>
         ))}
-        <Button type="secondary" size="large" handleClick={openManageModal}>
-          Manage users
-        </Button>
+        {isAdmin && (
+          <Button type="secondary" size="large" handleClick={openManageModal}>
+            Manage users
+          </Button>
+        )}
       </section>
     </>
   );

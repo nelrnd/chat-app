@@ -4,13 +4,12 @@ import Button from '../Button/Button';
 import ContactTab from '../ContactTab/ContactTab';
 import { useEffect, useState } from 'react';
 import { collection, query, where } from 'firebase/firestore';
-import {
-  createChatRef,
-  db,
-  removeChatRef,
-  updateChatInfo,
-} from '../../firebase';
+import { createChatRef, db, removeChatRef } from '../../firebase';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
+import {
+  addUser as addUserToChat,
+  removeUser as removeUserFromChat,
+} from '../../firebase';
 
 const ManageUsersModal = ({ users, userId, chatId, show, handleClose }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -37,10 +36,15 @@ const ManageUsersModal = ({ users, userId, chatId, show, handleClose }) => {
     const addedUsers = currentUsers.filter((u) => users.indexOf(u) === -1);
     const removedUsers = users.filter((u) => currentUsers.indexOf(u) === -1);
 
-    addedUsers.forEach((user) => createChatRef(user, chatId));
-    removedUsers.forEach((user) => removeChatRef(user, chatId));
+    addedUsers.forEach((user) => {
+      addUserToChat(user.id, chatId);
+      createChatRef(user.id, chatId);
+    });
 
-    await updateChatInfo(chatId, { members: currentUsers });
+    removedUsers.forEach((user) => {
+      removeUserFromChat(user.id, chatId);
+      removeChatRef(user.id, chatId);
+    });
 
     handleCancel();
   };
@@ -95,8 +99,8 @@ const ManageUsersModal = ({ users, userId, chatId, show, handleClose }) => {
           currentUsers
             .sort((a) => (a === userId ? 1 : -1))
             .map((user) => (
-              <ContactTab key={user} userId={user}>
-                {user !== userId && (
+              <ContactTab key={user.id} userId={user.id}>
+                {user.id !== userId && (
                   <Button size="small" handleClick={() => removeUser(user)}>
                     Remove
                   </Button>

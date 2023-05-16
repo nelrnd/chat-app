@@ -300,3 +300,33 @@ export async function updateGroupChatInfo(chatId, updatedInfo) {
     console.error(err);
   }
 }
+
+export async function addUser(userId, chatId) {
+  try {
+    const user = {
+      id: userId,
+      joined: Date.now(),
+      left: null,
+      isAdmin: false,
+    };
+    const chatRef = doc(db, 'chats', chatId);
+    await updateDoc(chatRef, {
+      members: arrayUnion(user),
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function removeUser(userId, chatId) {
+  try {
+    const chatRef = doc(db, 'chats', chatId);
+    const chatDoc = await getDoc(chatRef);
+    const members = chatDoc.data().members;
+    members.find((u) => u.id === userId).left = Date.now();
+    await updateDoc(chatRef, { members });
+    console.log('Bingo');
+  } catch (err) {
+    console.error(err);
+  }
+}

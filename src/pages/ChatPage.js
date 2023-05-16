@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { collection, query, where } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { Navigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { auth, db, readLastChatMessage } from '../firebase';
 import { getChatName, getFormattedDate } from '../utils';
 import PageHeader from '../components/PageHeader/PageHeader';
@@ -36,16 +36,8 @@ const ChatPage = () => {
   const [messagesLength, setMessagesLength] = useState(0);
   // get chat members info
   const usersRef = collection(db, 'users');
-  const usersQuery =
-    chat &&
-    query(
-      usersRef,
-      where(
-        'id',
-        'in',
-        chat.members.map((u) => u.id)
-      )
-    );
+  const userIds = chat && chat.members.map((u) => u.id);
+  const usersQuery = userIds && query(usersRef, where('id', 'in', userIds));
   const [users] = useCollectionData(usersQuery);
 
   const [showImage, setShowImage] = useState(null);
@@ -104,12 +96,14 @@ const ChatPage = () => {
 
   const otherUsers = users.filter((u) => u.id !== user.uid);
 
+  if (!otherUsers.length) return null;
+
   return (
     <div className="chat-layout">
       <PageHeader>
         <h1>
           {chat.name ||
-            (otherUsers.length === 1
+            (chat.type === 'private'
               ? otherUsers[0].name
               : getChatName(otherUsers.map((u) => u.name)))}
         </h1>
@@ -119,7 +113,7 @@ const ChatPage = () => {
       <main>
         {chat.messages.map((msg, id) => {
           const followUp = checkFollowUp(msg, chat.messages[id + 1]);
-          return users.length === 2 || msg.from === user.uid ? (
+          return chat.type === 'private' || msg.from === user.uid ? (
             <Message
               key={msg.date}
               text={msg.text}
@@ -158,7 +152,7 @@ const ChatPage = () => {
       />
       <ImageDisplay imageURL={showImage} handleClose={closeImage} />
 
-      {users.length > 2 && (
+      {chat.type === 'group' && (
         <>
           <EditGroupModal
             chat={chat}

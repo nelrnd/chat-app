@@ -19,7 +19,7 @@ const ChatTab = ({ chat, isActive }) => {
 
   const handleClick = () => navigate('/chats/' + chat.id);
 
-  return chat.members.length <= 2 ? (
+  return chat.type === 'private' ? (
     <PrivateChatTab chat={chat} isActive={isActive} handleClick={handleClick} />
   ) : (
     <GroupChatTab chat={chat} isActive={isActive} handleClick={handleClick} />
@@ -72,12 +72,10 @@ const PrivateChatTab = ({ chat, isActive, handleClick }) => {
 const GroupChatTab = ({ chat, isActive, handleClick }) => {
   const { lastMessage } = chat;
   const unreadCount = getUserUnreadCount(chat.unreadCount);
-  const otherUserIds = chat.members
-    .filter(filterNotCurrentUser)
-    .map((u) => u.id);
   const usersCollection = collection(db, 'users');
-  const usersQuery = query(usersCollection, where('id', 'in', otherUserIds));
-  const [otherUsers] = useCollectionData(usersQuery);
+  const userIds = chat.members.map((u) => u.id);
+  const usersQuery = query(usersCollection, where('id', 'in', userIds));
+  const [users] = useCollectionData(usersQuery);
 
   const [currentTime, setCurrentTime] = useState(Date.now());
 
@@ -90,7 +88,9 @@ const GroupChatTab = ({ chat, isActive, handleClick }) => {
     return () => clearInterval(timer);
   }, [chat]);
 
-  if (!otherUsers) return null;
+  if (!users) return null;
+
+  const otherUsers = users.filter(filterNotCurrentUser);
 
   return (
     <div className={className} onClick={handleClick}>
