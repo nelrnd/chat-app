@@ -134,7 +134,7 @@ const ChatPage = () => {
               text={msg.text}
               imageURL={msg.imageURL}
               date={msg.date}
-              user={users.find((u) => u.id === msg.from)}
+              userId={msg.from}
               followUp={followUp}
               handleImageClick={openImage}
             />

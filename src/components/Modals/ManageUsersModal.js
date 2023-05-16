@@ -23,7 +23,8 @@ const ManageUsersModal = ({ users, userId, chatId, show, handleClose }) => {
   const handleChange = (e) => setSearchTerm(e.target.value);
 
   const addUser = (userId) => {
-    setCurrentUsers([...currentUsers, userId]);
+    setCurrentUsers([...currentUsers, { id: userId }]);
+    console.log(currentUsers);
   };
 
   const removeUser = (userId) => {
@@ -37,8 +38,8 @@ const ManageUsersModal = ({ users, userId, chatId, show, handleClose }) => {
     const removedUsers = users.filter((u) => currentUsers.indexOf(u) === -1);
 
     addedUsers.forEach((user) => {
-      addUserToChat(user, chatId);
-      createChatRef(user, chatId);
+      addUserToChat(user.id, chatId);
+      createChatRef(user.id, chatId);
     });
 
     removedUsers.forEach((user) => {
@@ -81,7 +82,7 @@ const ManageUsersModal = ({ users, userId, chatId, show, handleClose }) => {
           filteredResults && filteredResults.length ? (
             filteredResults.map((user) => (
               <ContactTab key={user.id} userId={user.id}>
-                {currentUsers.includes(user.id) ? (
+                {currentUsers.find((u) => u.id === user.id) ? (
                   <Button size="small" handleClick={() => removeUser(user.id)}>
                     Remove
                   </Button>

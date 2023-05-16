@@ -1,15 +1,18 @@
 import Message from './Message';
 import Avatar from '../Avatar/Avatar';
 import { getFormattedDate } from '../../utils';
+import useUserData from '../../hooks/useUserData';
 
 const GroupMessage = ({
   text,
   imageURL,
   date,
-  user,
+  userId,
   followUp,
   handleImageClick,
 }) => {
+  const [user] = useUserData(userId);
+
   if (!user) return null;
 
   return (
