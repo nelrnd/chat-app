@@ -73,7 +73,7 @@ const GroupChatTab = ({ chat, isActive, handleClick }) => {
   const { lastMessage } = chat;
   const unreadCount = getUserUnreadCount(chat.unreadCount);
   const usersCollection = collection(db, 'users');
-  const userIds = chat.members.map((u) => u.id);
+  const userIds = chat.members.filter((u) => !u.left).map((u) => u.id);
   const usersQuery = query(usersCollection, where('id', 'in', userIds));
   const [users] = useCollectionData(usersQuery);
 

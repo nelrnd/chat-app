@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { collection, query, where } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import { auth, db, readLastChatMessage } from '../firebase';
 import { getChatName, getFormattedDate } from '../utils';
 import PageHeader from '../components/PageHeader/PageHeader';
@@ -36,7 +36,7 @@ const ChatPage = () => {
   const [messagesLength, setMessagesLength] = useState(0);
   // get chat members info
   const usersRef = collection(db, 'users');
-  const userIds = chat && chat.members.map((u) => u.id);
+  const userIds = chat && chat.members.filter((u) => !u.left).map((u) => u.id);
   const usersQuery = userIds && query(usersRef, where('id', 'in', userIds));
   const [users] = useCollectionData(usersQuery);
 
@@ -96,7 +96,12 @@ const ChatPage = () => {
 
   const otherUsers = users.filter((u) => u.id !== user.uid);
 
-  if (!otherUsers.length) return null;
+  if (
+    !chat.members.find((u) => u.id === user.uid) ||
+    chat.members.find((u) => u.id === user.uid).left
+  ) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <div className="chat-layout">
@@ -161,7 +166,7 @@ const ChatPage = () => {
             handleClose={closeEditModal}
           />
           <ManageUsersModal
-            users={chat.members}
+            users={users}
             userId={user.uid}
             chatId={chatId}
             show={showManageModal}

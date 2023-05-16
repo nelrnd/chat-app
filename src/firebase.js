@@ -303,15 +303,25 @@ export async function updateGroupChatInfo(chatId, updatedInfo) {
 
 export async function addUser(userId, chatId) {
   try {
-    const user = {
-      id: userId,
-      joined: Date.now(),
-      left: null,
-      isAdmin: false,
-    };
     const chatRef = doc(db, 'chats', chatId);
+    const chatDoc = await getDoc(chatRef);
+    const members = chatDoc.data().members;
+    let user = members.find((u) => u.id === userId);
+    if (user) {
+      user.joined = Date.now();
+      user.left = null;
+    } else {
+      user = {
+        id: userId,
+        joined: Date.now(),
+        left: null,
+        isAdmin: false,
+      };
+      members.push(user);
+    }
+
     await updateDoc(chatRef, {
-      members: arrayUnion(user),
+      members: members,
     });
   } catch (err) {
     console.error(err);
@@ -325,7 +335,6 @@ export async function removeUser(userId, chatId) {
     const members = chatDoc.data().members;
     members.find((u) => u.id === userId).left = Date.now();
     await updateDoc(chatRef, { members });
-    console.log('Bingo');
   } catch (err) {
     console.error(err);
   }

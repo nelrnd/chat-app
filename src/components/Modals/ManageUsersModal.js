@@ -37,8 +37,8 @@ const ManageUsersModal = ({ users, userId, chatId, show, handleClose }) => {
     const removedUsers = users.filter((u) => currentUsers.indexOf(u) === -1);
 
     addedUsers.forEach((user) => {
-      addUserToChat(user.id, chatId);
-      createChatRef(user.id, chatId);
+      addUserToChat(user, chatId);
+      createChatRef(user, chatId);
     });
 
     removedUsers.forEach((user) => {

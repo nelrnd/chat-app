@@ -82,13 +82,14 @@ export function validateEmail(email) {
 }
 
 export function getChatName(userNames) {
-  let chatName;
+  const userNamesCopy = [...userNames];
+  if (userNames.length === 1) return userNames[0];
   if (userNames.length > 3) {
-    chatName =
-      userNames.slice(0, 3).join(', ') + ` and ${userNames.length - 3} more`;
+    return (
+      userNames.slice(0, 3).join(',') + ` and ${userNames.length - 3} more`
+    );
   } else {
-    const lastName = userNames.pop();
-    chatName = userNames.join(', ') + ' and ' + lastName;
+    const lastUserName = userNamesCopy.pop();
+    return userNamesCopy.join(', ') + ' and ' + lastUserName;
   }
-  return chatName;
 }
