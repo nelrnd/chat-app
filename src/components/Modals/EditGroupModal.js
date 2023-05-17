@@ -5,7 +5,12 @@ import { useEffect, useRef, useState } from 'react';
 import Avatar from '../Avatar/Avatar';
 import GroupAvatar from '../GroupAvatar/GroupAvatar';
 import FileInput from '../FileInput/FileInput';
-import { updateChatInfo, uploadImage } from '../../firebase.js';
+import {
+  addAction,
+  auth,
+  updateChatInfo,
+  uploadImage,
+} from '../../firebase.js';
 
 const EditGroupModal = ({ chat, userProfiles, show, handleClose }) => {
   const [newName, setNewName] = useState(chat.name || '');
@@ -50,6 +55,12 @@ const EditGroupModal = ({ chat, userProfiles, show, handleClose }) => {
         updatedInfo.name = newName;
       }
       await updateChatInfo(chat.id, updatedInfo);
+      if (updatedInfo.name || updatedInfo.name === '') {
+        addAction('updateName', [auth.currentUser.uid], chat.id);
+      }
+      if (updatedInfo.profileURL || updatedInfo.profileURL === '') {
+        addAction('updateProfile', [auth.currentUser.uid], chat.id);
+      }
       handleCancel();
     } catch (err) {
       console.error(err);

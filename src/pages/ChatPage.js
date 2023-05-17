@@ -16,6 +16,7 @@ import GroupMessage from '../components/Message/GroupMessage';
 import ChatInfo from '../components/ChatInfo/ChatInfo';
 import EditGroupModal from '../components/Modals/EditGroupModal';
 import ManageUsersModal from '../components/Modals/ManageUsersModal';
+import ChatAction from '../components/ChatAction/ChatAction';
 
 // Check if a message is followed by another of same user and date
 const checkFollowUp = (msg1, msg2) => {
@@ -113,30 +114,39 @@ const ChatPage = () => {
       </PageHeader>
 
       <main>
-        {chat.messages.map((msg, id) => {
-          const followUp = checkFollowUp(msg, chat.messages[id + 1]);
-          return chat.type === 'private' || msg.from === user.uid ? (
-            <Message
-              key={msg.date}
-              text={msg.text}
-              imageURL={msg.imageURL}
-              date={msg.date}
-              isSent={msg.from === user.uid}
-              followUp={followUp}
-              handleImageClick={openImage}
-            />
-          ) : (
-            <GroupMessage
-              key={msg.date}
-              text={msg.text}
-              imageURL={msg.imageURL}
-              date={msg.date}
-              userId={msg.from}
-              followUp={followUp}
-              handleImageClick={openImage}
-            />
-          );
-        })}
+        {chat.messages
+          .concat(chat.actions || [])
+          .sort((a, b) => a.date - b.date)
+          .map((itm, id) => {
+            if (itm.type) {
+              return (
+                <ChatAction key={itm.date} type={itm.type} users={itm.users} />
+              );
+            } else {
+              const followUp = checkFollowUp(itm, chat.messages[id + 1]);
+              return chat.type === 'private' || itm.from === user.uid ? (
+                <Message
+                  key={itm.date}
+                  text={itm.text}
+                  imageURL={itm.imageURL}
+                  date={itm.date}
+                  isSent={itm.from === user.uid}
+                  followUp={followUp}
+                  handleImageClick={openImage}
+                />
+              ) : (
+                <GroupMessage
+                  key={itm.date}
+                  text={itm.text}
+                  imageURL={itm.imageURL}
+                  date={itm.date}
+                  userId={itm.from}
+                  followUp={followUp}
+                  handleImageClick={openImage}
+                />
+              );
+            }
+          })}
 
         <div ref={bottomRef} />
       </main>

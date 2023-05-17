@@ -4,7 +4,7 @@ import Button from '../Button/Button';
 import ContactTab from '../ContactTab/ContactTab';
 import { useEffect, useState } from 'react';
 import { collection, query, where } from 'firebase/firestore';
-import { createChatRef, db, removeChatRef } from '../../firebase';
+import { addAction, createChatRef, db, removeChatRef } from '../../firebase';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import {
   addUser as addUserToChat,
@@ -39,11 +39,13 @@ const ManageUsersModal = ({ users, userId, chatId, show, handleClose }) => {
     addedUsers.forEach((user) => {
       addUserToChat(user.id, chatId);
       createChatRef(user.id, chatId);
+      addAction('add', [userId, user.id], chatId);
     });
 
     removedUsers.forEach((user) => {
       removeUserFromChat(user.id, chatId);
       removeChatRef(user.id, chatId);
+      addAction('remove', [userId, user.id], chatId);
     });
 
     handleCancel();

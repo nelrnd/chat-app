@@ -339,3 +339,29 @@ export async function removeUser(userId, chatId) {
     console.error(err);
   }
 }
+
+export async function addAction(type, users, chatId) {
+  try {
+    const action = {
+      type: type,
+      users: [...users],
+      date: Date.now(),
+    };
+    const chatRef = doc(db, 'chats', chatId);
+    await updateDoc(chatRef, {
+      actions: arrayUnion(action),
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function getUserName(userId) {
+  try {
+    const userRef = doc(db, 'users', userId);
+    const chatDoc = await getDoc(userRef);
+    return chatDoc.data().name;
+  } catch (err) {
+    console.error(err);
+  }
+}
