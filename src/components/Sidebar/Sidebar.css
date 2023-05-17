@@ -2,6 +2,10 @@
   width: 400px;
   background-color: white;
   border-right: solid 1px var(--light-grey);
+  height: 100%;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
 }
 
 .Sidebar > header {
@@ -28,4 +32,14 @@
 
 .Sidebar > section.search .ContactTab {
   margin: 0 -24px;
+}
+
+.Sidebar > section.search .no-result {
+  color: var(--grey);
+  text-align: center;
+  padding: 12px;
+}
+
+.Sidebar > section.chats {
+  overflow-y: auto;
 }

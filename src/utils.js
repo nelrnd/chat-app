@@ -6,6 +6,25 @@ export function getUserIds(chatId) {
   return chatId.split('-');
 }
 
+export function createChatId(userIds, type) {
+  if (type === 'private') {
+    return getChatId(userIds);
+  } else if (type === 'group') {
+    return createRandomChatId();
+  }
+}
+
+function createRandomChatId() {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  const time = Date.now().toString().slice(-10);
+  let groupChatId = '';
+  for (let i = 0; i < 10; i++) {
+    groupChatId += chars[Math.floor(Math.random() * chars.length)];
+    groupChatId += time[i];
+  }
+  return groupChatId;
+}
+
 export function getFormattedElapsedTime(time, currentTime) {
   const elapsedTimeInSeconds = Math.floor((currentTime - time) / 1000);
   const SECS_IN_YEAR = 31540000;
@@ -62,13 +81,16 @@ export function validateEmail(email) {
     );
 }
 
-export function createGroupChatId() {
-  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-  const time = Date.now().toString().slice(-10);
-  let groupChatId = '';
-  for (let i = 0; i < 10; i++) {
-    groupChatId += chars[Math.floor(Math.random() * chars.length)];
-    groupChatId += time[i];
+export function getChatName(userNames) {
+  const userNamesCopy = [...userNames];
+  if (userNames.length === 1) return userNames[0];
+  if (userNames.length === 0) return 'You';
+  if (userNames.length > 3) {
+    return (
+      userNames.slice(0, 3).join(',') + ` and ${userNames.length - 3} more`
+    );
+  } else {
+    const lastUserName = userNamesCopy.pop();
+    return userNamesCopy.join(', ') + ' and ' + lastUserName;
   }
-  return groupChatId;
 }

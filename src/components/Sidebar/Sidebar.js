@@ -1,118 +1,132 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useCollectionData } from 'react-firebase-hooks/firestore';
+import { collection, query, where } from 'firebase/firestore';
+import { db, auth, createChat } from '../../firebase';
 import logoImg from '../../assets/images/logo.png';
 import IconButton from '../IconButton/IconButton';
 import TextInput from '../TextInput/TextInput';
-import './Sidebar.css';
-import {
-  useCollectionData,
-  useDocumentData,
-} from 'react-firebase-hooks/firestore';
-import { collection, doc, query, where } from 'firebase/firestore';
-import { db, auth, createChat } from '../../firebase';
 import ChatTab from '../ChatTab/ChatTab';
 import ContactTab from '../ContactTab/ContactTab';
+import useUserData from '../../hooks/useUserData';
+import NewChatModal from '../Modals/NewChatModal';
+import './Sidebar.css';
 
 const Sidebar = () => {
-  const params = useParams();
-  const chatId = params.chatId;
-  const userRef = doc(db, 'users', auth.currentUser.uid);
-  const [userData] = useDocumentData(userRef);
-  const chatsRef = collection(db, 'chats');
-  const chatsQuery =
-    userData &&
-    !!userData.chats.length &&
-    query(chatsRef, where('id', 'in', userData.chats));
-  const [chats] = useCollectionData(chatsQuery);
+  const [user] = useUserData(auth.currentUser.uid);
   const [searchTerm, setSearchTerm] = useState('');
-  const allUsersRef = collection(db, 'users');
-  const [allUsers] = useCollectionData(allUsersRef);
-  let filteredUsers =
-    allUsers &&
-    allUsers
-      .filter((user) => user.id !== auth.currentUser.uid)
-      .filter((user) => user.email.toLowerCase() === searchTerm.toLowerCase());
   const navigate = useNavigate();
-
-  const [currentTime, setCurrentTime] = useState(Date.now());
-
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(Date.now()), 5000);
-    return () => clearInterval(timer);
-  });
-
-  const handleSearchTermChange = (e) => setSearchTerm(e.target.value);
 
   const goToHome = () => navigate('/');
   const goToSettings = () => navigate('/settings');
 
-  const handleTabClick = async (uid) => {
-    setSearchTerm('');
-    const userIds = [auth.currentUser.uid, uid];
-    const chatId = await createChat(userIds);
-    navigate(`/chats/${chatId}`);
-  };
+  const [showNewModal, setShowNewModal] = useState(false);
+  const openNewModal = () => setShowNewModal(true);
+  const closeNewModal = () => setShowNewModal(false);
 
   return (
-    <div className="Sidebar">
+    <aside className="Sidebar">
       <header>
         <img src={logoImg} alt="BooChat logo" onClick={goToHome} />
 
         <div className="row gap-16">
-          <IconButton name="new" />
+          <IconButton name="new" handleClick={openNewModal} />
           <IconButton name="settings" handleClick={goToSettings} />
         </div>
       </header>
 
-      <section className="search">
-        <TextInput
-          type="search"
-          icon="search"
-          placeholder="Search"
-          value={searchTerm}
-          handleChange={handleSearchTermChange}
+      {user && (
+        <SidebarSearchSection
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          userId={user.id}
         />
+      )}
 
-        {searchTerm && (
-          <>
-            <p>Search results:</p>
-            {filteredUsers.length ? (
-              filteredUsers.map((user) => (
+      {user && !!user.chats.length && !searchTerm && (
+        <SidebarChatsSection chatIds={user.chats} />
+      )}
+
+      {user && (
+        <NewChatModal
+          userId={user.id}
+          userChats={user.chats}
+          show={showNewModal}
+          handleClose={closeNewModal}
+        />
+      )}
+    </aside>
+  );
+};
+
+const SidebarSearchSection = ({ searchTerm, setSearchTerm, userId }) => {
+  const usersCollection = collection(db, 'users');
+  const searchQuery = query(usersCollection, where('email', '==', searchTerm));
+  const [results] = useCollectionData(searchQuery);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => setSearchTerm(e.target.value);
+
+  const handleClick = async (uid) => {
+    setSearchTerm('');
+    const userIds = [uid, userId];
+    const chatId = await createChat(userIds);
+    navigate('/chats/' + chatId);
+  };
+
+  return (
+    <section className="search">
+      <TextInput
+        type="search"
+        placeholder="Search for users"
+        icon="search"
+        value={searchTerm}
+        handleChange={handleChange}
+      />
+
+      {searchTerm && (
+        <>
+          <p>Search results:</p>
+          {results && results.length ? (
+            results
+              .filter((user) => user.id !== userId)
+              .map((user) => (
                 <ContactTab
                   key={user.id}
                   userId={user.id}
-                  handleClick={() => handleTabClick(user.id)}
+                  handleClick={() => handleClick(user.id)}
                 />
               ))
-            ) : (
-              <p
-                className="grey"
-                style={{ textAlign: 'center', padding: '12px' }}
-              >
-                No user found...
-              </p>
-            )}
-          </>
-        )}
-      </section>
-
-      {chats && !searchTerm && (
-        <section className="chats">
-          {chats
-            .sort((a, b) => b.lastMessage.date - a.lastMessage.date)
-            .map((chat) => (
-              <ChatTab
-                key={chat.id}
-                chatId={chat.id}
-                lastMessage={chat.lastMessage}
-                unreadCount={chat.unreadCount[auth.currentUser.uid]}
-                isActive={chat.id === chatId}
-                currentTime={currentTime}
-              />
-            ))}
-        </section>
+          ) : (
+            <p className="no-result">No user founds...</p>
+          )}
+        </>
       )}
-    </div>
+    </section>
+  );
+};
+
+const SidebarChatsSection = ({ chatIds }) => {
+  const params = useParams();
+  const currentChat = params.chatId;
+  const chatsCollection = collection(db, 'chats');
+  const chatsQuery = query(chatsCollection, where('id', 'in', chatIds));
+  const [chats] = useCollectionData(chatsQuery);
+
+  if (!chats) return;
+
+  return (
+    <section className="chats">
+      {chats
+        .sort((a, b) => b.lastMessage.date - a.lastMessage.date)
+        .map((chat) => (
+          <ChatTab
+            key={chat.id}
+            chat={chat}
+            isActive={chat.id === currentChat}
+          />
+        ))}
+    </section>
   );
 };
 

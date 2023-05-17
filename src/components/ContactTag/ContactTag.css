@@ -1,6 +1,7 @@
 .ContactTag {
   width: fit-content;
   padding: 8px 10px;
+  border: solid 1px var(--ghost);
   border-radius: 1000px;
   display: flex;
   align-items: center;
@@ -9,7 +10,7 @@
   transition: all 0.2s ease-in-out;
 }
 
-.ContactTab > .Icon {
+.ContactTag > .Icon {
   color: var(--primary);
 }
 

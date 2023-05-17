@@ -124,6 +124,29 @@ img {
   padding: 24px;
 }
 
+.tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 12px 0;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #aaaaaa;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
+
 /*
 body {
   font-family: 'Inter', 'Roboto', Arial, Helvetica, sans-serif;

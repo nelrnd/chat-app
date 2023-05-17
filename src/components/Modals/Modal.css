@@ -7,6 +7,7 @@
   background-color: rgba(0, 0, 0, 0.25);
   display: grid;
   place-content: center;
+  z-index: 1;
 }
 
 .Modal {
@@ -14,6 +15,9 @@
   width: 600px;
   max-width: 100%;
   border-radius: 16px;
+
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .Modal_header {
@@ -24,10 +28,18 @@
   padding: 0 32px;
 }
 
+.Modal_section > .ContactTab {
+  margin: 0 -24px;
+}
+
 .Modal_footer {
   padding: 32px;
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
   gap: 16px;
+}
+
+.Modal_section + .Modal_section {
+  margin-top: 24px;
 }

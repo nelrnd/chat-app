@@ -10,31 +10,36 @@
   transition: all 0.2s ease-in-out;
 }
 
-.ChatTab_text {
+.ChatTab > div:nth-of-type(2) {
   overflow: hidden;
 }
-
-.ChatTab_text > * {
+.ChatTab > div:nth-of-type(2) > * {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-.ChatTab_message {
+.ChatTab .message {
   color: var(--grey);
 }
 
-.ChatTab_message > .Icon {
+.ChatTab .date {
+  font-size: 14px;
+  color: var(--grey);
+}
+
+.ChatTab.unread .message,
+.ChatTab.unread .date {
+  color: black !important;
+}
+
+.ChatTab .message > .Icon {
   width: 16px;
   height: 16px;
   margin-right: 6px;
   display: inline-block;
   position: relative;
   top: 2px;
-}
-
-.unread .ChatTab_message {
-  color: black;
 }
 
 .ChatTab.active {

@@ -13,7 +13,6 @@ import {
   updateLastChatMessage,
   uploadImage,
 } from '../../firebase';
-import { getUserIds } from '../../utils';
 
 const ChatInput = ({ chatId, isFirstMessage }) => {
   const [text, setText] = useState('');
@@ -49,8 +48,7 @@ const ChatInput = ({ chatId, isFirstMessage }) => {
       handleClearImage();
     }
     if (isFirstMessage) {
-      const userIds = getUserIds(chatId);
-      createChatRefs(userIds, chatId);
+      createChatRefs(chatId);
     }
 
     await incrementUnreadCount(chatId, auth.currentUser.uid);

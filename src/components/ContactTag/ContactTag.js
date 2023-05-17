@@ -1,12 +1,17 @@
+import useUserData from '../../hooks/useUserData';
 import Avatar from '../Avatar/Avatar';
 import Icon from '../Icon/Icon';
 import './ContactTag.css';
 
-const ContactTag = (props) => {
+const ContactTag = ({ userId, handleClick }) => {
+  const [userData] = useUserData(userId);
+
+  if (!userData) return null;
+
   return (
-    <div className="ContactTag" onClick={props.handleClick}>
-      <Avatar imageURL={props.imageURL} size="mini" />
-      <h3>{props.name}</h3>
+    <div className="ContactTag" onClick={handleClick}>
+      <Avatar imageURL={userData.profileURL} size="mini" />
+      <h3>{userData.name}</h3>
       <Icon name="close" size="small" />
     </div>
   );
