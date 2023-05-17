@@ -77,6 +77,8 @@ const GroupChatTab = ({ chat, isActive, handleClick }) => {
   const usersQuery = query(usersCollection, where('id', 'in', userIds));
   const [users] = useCollectionData(usersQuery);
 
+  const [lastUser] = useUserData(chat.lastMessage.from);
+
   const [currentTime, setCurrentTime] = useState(Date.now());
 
   const className = `ChatTab ${isActive ? 'active' : ''} ${
@@ -96,20 +98,20 @@ const GroupChatTab = ({ chat, isActive, handleClick }) => {
     <div className={className} onClick={handleClick}>
       {chat.profileURL ? (
         <Avatar imageURL={chat.profileURL} />
-      ) : (
+      ) : otherUsers.length ? (
         <GroupAvatar
           imageURLs={otherUsers.slice(-4).map((user) => user.profileURL)}
         />
+      ) : (
+        <Avatar imageURL={auth.currentUser.photoURL} />
       )}
 
       <div>
         <h3>{chat.name || getChatName(otherUsers.map((user) => user.name))}</h3>
         <div className="message">
-          {(otherUsers.map((user) => user.id).includes(lastMessage.from)
-            ? otherUsers
-                .find((user) => user.id === lastMessage.from)
-                .name.split(' ')[0]
-            : 'You') + ': '}
+          {lastMessage.from === auth.currentUser.uid
+            ? 'You: '
+            : lastUser && lastUser.name.split(' ')[0] + ': '}
           {lastMessage.imageURL && <Icon name="image" />}
           {lastMessage.imageURL && !lastMessage.text && 'image'}
           {lastMessage.text}

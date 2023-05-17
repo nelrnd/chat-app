@@ -24,7 +24,6 @@ const ManageUsersModal = ({ users, userId, chatId, show, handleClose }) => {
 
   const addUser = (userId) => {
     setCurrentUsers([...currentUsers, { id: userId }]);
-    console.log(currentUsers);
   };
 
   const removeUser = (userId) => {

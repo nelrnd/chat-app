@@ -84,6 +84,7 @@ export function validateEmail(email) {
 export function getChatName(userNames) {
   const userNamesCopy = [...userNames];
   if (userNames.length === 1) return userNames[0];
+  if (userNames.length === 0) return 'You';
   if (userNames.length > 3) {
     return (
       userNames.slice(0, 3).join(',') + ` and ${userNames.length - 3} more`

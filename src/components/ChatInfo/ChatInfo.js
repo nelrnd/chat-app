@@ -6,7 +6,7 @@ import GroupAvatar from '../GroupAvatar/GroupAvatar';
 import IconButton from '../IconButton/IconButton';
 import PageHeader from '../PageHeader/PageHeader';
 import './ChatInfo.css';
-import { createChat } from '../../firebase';
+import { auth, createChat } from '../../firebase';
 import Button from '../Button/Button';
 import Icon from '../Icon/Icon';
 
@@ -84,11 +84,17 @@ const GroupInfo = ({
       <section className="info">
         {chat.profileURL ? (
           <Avatar imageURL={chat.profileURL} size="large" />
+        ) : otherUsers.length ? (
+          otherUsers.length === 1 ? (
+            <Avatar imageURL={otherUsers[0].profileURL} size="large" />
+          ) : (
+            <GroupAvatar
+              imageURLs={otherUsers.slice(-4).map((user) => user.profileURL)}
+              size="large"
+            />
+          )
         ) : (
-          <GroupAvatar
-            imageURLs={otherUsers.map((u) => u.profileURL)}
-            size="large"
-          />
+          <Avatar imageURL={auth.currentUser.photoURL} size="large" />
         )}
         <h2>{chat.name || getChatName(otherUsers.map((u) => u.name))}</h2>
         {isAdmin && (
