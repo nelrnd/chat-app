@@ -69,14 +69,14 @@ const ChatPage = () => {
   }, [chatId]);
 
   useEffect(() => {
-    if (!users || !messagesLength || !bottomRef.current) return;
+    if (!users || !chat || !bottomRef.current) return;
     if (enteringChat.current) {
-      scrollToBottom('instant');
+      setTimeout(() => scrollToBottom('instant'), 10);
       enteringChat.current = false;
     } else {
       scrollToBottom('smooth');
     }
-  }, [users, messagesLength, enteringChat]);
+  }, [users, chat]);
 
   useEffect(() => {
     if (!chat) return;
@@ -96,10 +96,7 @@ const ChatPage = () => {
 
   const otherUsers = users.filter((u) => u.id !== user.uid);
 
-  if (
-    !chat.members.find((u) => u.id === user.uid) ||
-    chat.members.find((u) => u.id === user.uid).left
-  ) {
+  if (!chat.members.some((u) => u.id === user.uid && !u.left)) {
     return <Navigate to="/" replace />;
   }
 
