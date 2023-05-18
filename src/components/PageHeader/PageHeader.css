@@ -4,10 +4,16 @@
   padding: 24px;
   background-color: white;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
+  gap: 16px;
 }
 
 .PageHeader.border {
   border-bottom: solid 1px var(--light-grey);
+}
+
+.PageHeader h1,
+.PageHeader h2 {
+  flex: 1;
 }

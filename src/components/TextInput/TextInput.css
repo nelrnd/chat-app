@@ -50,3 +50,29 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+input[type='search'] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+@media screen and (max-width: 900px) {
+  .TextInput > label {
+    font-size: 12px;
+    margin-left: 12px;
+  }
+
+  .TextInput > input {
+    font-size: 16px;
+    padding: 12px;
+  }
+
+  .TextInput > .Icon {
+    bottom: 14px;
+  }
+
+  .TextInput > input.withIcon {
+    padding-left: 44px;
+  }
+}

@@ -19,6 +19,8 @@ const ChatTab = ({ chat, isActive }) => {
 
   const handleClick = () => navigate('/chats/' + chat.id);
 
+  if (!chat.lastMessage.from) return null;
+
   return chat.type === 'private' ? (
     <PrivateChatTab chat={chat} isActive={isActive} handleClick={handleClick} />
   ) : (
@@ -90,7 +92,7 @@ const GroupChatTab = ({ chat, isActive, handleClick }) => {
     return () => clearInterval(timer);
   }, [chat]);
 
-  if (!users) return null;
+  if (!users || !lastUser) return null;
 
   const otherUsers = users.filter(filterNotCurrentUser);
 

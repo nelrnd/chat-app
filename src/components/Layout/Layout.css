@@ -4,3 +4,9 @@
   grid-template-columns: auto 1fr;
   grid-template-rows: 1fr;
 }
+
+@media screen and (max-width: 900px) {
+  .Layout {
+    grid-template-columns: 1fr;
+  }
+}

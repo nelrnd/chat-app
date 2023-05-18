@@ -43,3 +43,15 @@
 .Modal_section + .Modal_section {
   margin-top: 24px;
 }
+
+@media screen and (max-width: 900px) {
+  .Modal {
+    width: 90vw;
+  }
+
+  .Modal_header,
+  .Modal_section,
+  .Modal_footer {
+    padding: 24px;
+  }
+}

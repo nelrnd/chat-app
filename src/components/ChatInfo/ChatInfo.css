@@ -2,16 +2,17 @@
   width: 400px;
   position: absolute;
   top: 0;
-  bottom: 0;
-  right: -400px;
+  height: 100%;
+  right: 0;
   background-color: white;
+  transform: translateX(100%);
   border-left: solid 1px var(--light-grey);
   transition: all 0.4s ease-in-out;
   z-index: 1;
 }
 
 .ChatInfo.show {
-  right: 0;
+  transform: translateX(0);
 }
 
 .ChatInfo_backdrop {
@@ -53,4 +54,10 @@
 
 .ChatInfo > section.members > .ContactTab {
   margin: 0 -24px;
+}
+
+@media screen and (max-width: 900px) {
+  .ChatInfo {
+    max-width: 100%;
+  }
 }

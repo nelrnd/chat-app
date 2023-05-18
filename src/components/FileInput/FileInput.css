@@ -30,3 +30,10 @@
 .FileInput.secondary:hover {
   background-color: var(--light-grey);
 }
+
+@media screen and (max-width: 900px) {
+  .FileInput .Icon {
+    width: 16px;
+    height: 16px;
+  }
+}

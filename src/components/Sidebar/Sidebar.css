@@ -43,3 +43,9 @@
 .Sidebar > section.chats {
   overflow-y: auto;
 }
+
+@media screen and (max-width: 900px) {
+  .Sidebar {
+    width: 100%;
+  }
+}

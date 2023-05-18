@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { collection, query, where } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { auth, db, readLastChatMessage } from '../firebase';
 import { getChatName, getFormattedDate } from '../utils';
 import PageHeader from '../components/PageHeader/PageHeader';
@@ -41,6 +41,8 @@ const ChatPage = () => {
   const usersQuery = userIds && query(usersRef, where('id', 'in', userIds));
   const [users] = useCollectionData(usersQuery);
 
+  const navigate = useNavigate();
+
   const [showImage, setShowImage] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -62,7 +64,7 @@ const ChatPage = () => {
   const bottomRef = useRef(null);
 
   const scrollToBottom = (type) => {
-    bottomRef.current.scrollIntoView({ type });
+    bottomRef.current.scrollIntoView({ block: 'end', behavior: type });
   };
 
   useEffect(() => {
@@ -72,7 +74,7 @@ const ChatPage = () => {
   useEffect(() => {
     if (!users || !chat || !bottomRef.current) return;
     if (enteringChat.current) {
-      setTimeout(() => scrollToBottom('instant'), 10);
+      setTimeout(() => scrollToBottom('instant'), 50);
       enteringChat.current = false;
     } else {
       scrollToBottom('smooth');
@@ -101,13 +103,20 @@ const ChatPage = () => {
     return <Navigate to="/" replace />;
   }
 
+  if (chat.type === 'private' && !otherUsers.length) return null;
+
   return (
     <div className="chat-layout">
       <PageHeader>
+        <IconButton
+          name="back"
+          handleClick={() => navigate('/')}
+          hideOnBig={true}
+        />
         <h1>
           {chat.name ||
             (chat.type === 'private'
-              ? otherUsers[0].name
+              ? otherUsers[0] && otherUsers[0].name
               : getChatName(otherUsers.map((u) => u.name)))}
         </h1>
         <IconButton name="info" handleClick={openInfo} />

@@ -8,20 +8,28 @@ import Button from '../components/Button/Button';
 import Icon from '../components/Icon/Icon';
 import EditProfileModal from '../components/Modals/EditProfileModal';
 import withAuth from './withAuth';
+import IconButton from '../components/IconButton/IconButton';
+import { useNavigate } from 'react-router-dom';
 
 const logout = () => signOut(auth);
 
 const SettingsPage = () => {
   const [user] = useAuthState(auth);
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
 
   if (user) {
     return (
-      <div>
+      <div className="auto-scroll">
         <PageHeader>
+          <IconButton
+            name="back"
+            handleClick={() => navigate('/')}
+            hideOnBig={true}
+          />
           <h1>Settings</h1>
         </PageHeader>
 

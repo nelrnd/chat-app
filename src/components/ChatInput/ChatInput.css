@@ -27,3 +27,15 @@
   right: 0;
   transform: translate(50%, -50%);
 }
+
+@media screen and (max-width: 900px) {
+  .ChatInput {
+    padding: 24px 16px;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .ChatInput > .Button.primary {
+    padding: 16px 20px;
+  }
+}

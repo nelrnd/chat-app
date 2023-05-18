@@ -30,7 +30,7 @@ function App() {
             path="/chats/:chatId"
             element={
               <Layout>
-                {user && <Sidebar />}
+                {user && <Sidebar hideOnSmall={true} />}
                 <ChatPage />
               </Layout>
             }
@@ -39,7 +39,7 @@ function App() {
             path="/settings"
             element={
               <Layout>
-                {user && <Sidebar />}
+                {user && <Sidebar hideOnSmall={true} />}
                 <SettingsPage />
               </Layout>
             }

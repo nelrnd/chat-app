@@ -6,10 +6,11 @@ const IconButton = ({
   type = 'secondary',
   size = 'small',
   handleClick,
+  hideOnBig = false,
 }) => {
   return (
     <button
-      className={`IconButton ${type} ${size}`}
+      className={`IconButton ${type} ${size} ${hideOnBig ? 'hide-on-big' : ''}`}
       onClick={handleClick}
       type="button"
     >

@@ -65,3 +65,31 @@
   width: 16px;
   height: 16px;
 }
+
+@media screen and (max-width: 900px) {
+  .Button.large {
+    font-size: 16px;
+    padding: 16px 32px;
+  }
+
+  .Button.medium {
+    font-size: 16px;
+    padding: 16px 32px;
+  }
+
+  .Button.small {
+    font-size: 12px;
+    padding: 12px 24px;
+  }
+
+  .Button.large > .Icon,
+  .Button.medium > .Icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .Button.small > .Icon {
+    width: 14px;
+    height: 14px;
+  }
+}

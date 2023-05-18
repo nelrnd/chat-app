@@ -79,7 +79,7 @@ const ChatInput = ({ chatId, isFirstMessage }) => {
 
       <Button submit={true}>
         <Icon name="send" />
-        Send
+        <span className="hide-on-small">Send</span>
       </Button>
     </form>
   );

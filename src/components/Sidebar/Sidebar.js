@@ -12,7 +12,7 @@ import useUserData from '../../hooks/useUserData';
 import NewChatModal from '../Modals/NewChatModal';
 import './Sidebar.css';
 
-const Sidebar = () => {
+const Sidebar = ({ hideOnSmall = false }) => {
   const [user] = useUserData(auth.currentUser.uid);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ const Sidebar = () => {
   const closeNewModal = () => setShowNewModal(false);
 
   return (
-    <aside className="Sidebar">
+    <aside className={`Sidebar ${hideOnSmall ? 'hide-on-small' : ''}`}>
       <header>
         <img src={logoImg} alt="BooChat logo" onClick={goToHome} />
 

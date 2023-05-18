@@ -63,3 +63,21 @@
 .GroupMessage .Message_wrapper {
   margin-bottom: 8px;
 }
+
+@media screen and (max-width: 900px) {
+  .Message_date {
+    font-size: 12px;
+  }
+
+  .Message {
+    padding: 12px 20px;
+  }
+
+  .received > .Message {
+    border-radius: 12px 12px 12px 0;
+  }
+
+  .sent > .Message {
+    border-radius: 12px 12px 0 12px;
+  }
+}

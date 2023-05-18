@@ -23,7 +23,7 @@ const ChatInfo = ({
 
   return (
     <>
-      <aside className={`ChatInfo ${show ? 'show' : ''}`}>
+      <aside className={`ChatInfo ${show ? 'show' : ''} auto-scroll`}>
         <PageHeader withBorder={false}>
           <h2>{chat.type === 'private' ? 'Contact' : 'Group'} info</h2>
           <IconButton name="close" handleClick={handleClose} />
