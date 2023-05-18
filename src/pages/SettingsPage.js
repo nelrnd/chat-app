@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { auth } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { signOut } from 'firebase/auth';
+import { ThemeContext } from '../contexts/theme-context';
 import PageHeader from '../components/PageHeader/PageHeader';
 import Avatar from '../components/Avatar/Avatar';
 import Button from '../components/Button/Button';
@@ -18,8 +19,14 @@ const SettingsPage = () => {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
+  const { theme, setTheme } = useContext(ThemeContext);
+
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
+
+  const handleThemeClick = (theme) => {
+    setTheme(theme);
+  };
 
   if (user) {
     return (
@@ -45,6 +52,32 @@ const SettingsPage = () => {
             <Icon name="edit" />
             Edit
           </Button>
+        </section>
+
+        <section className="Settings_section">
+          <h2>Theme</h2>
+
+          <div className="theme-options">
+            <input
+              type="radio"
+              name="theme"
+              id="light"
+              value="light"
+              onChange={(e) => handleThemeClick(e.target.value)}
+              checked={theme === 'light'}
+            />
+            <label htmlFor="light">Light</label>
+
+            <input
+              type="radio"
+              name="theme"
+              id="dark"
+              value="dark"
+              onChange={(e) => handleThemeClick(e.target.value)}
+              checked={theme === 'dark'}
+            />
+            <label htmlFor="dark">Dark</label>
+          </div>
         </section>
 
         <section className="Settings_section">

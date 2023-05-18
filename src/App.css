@@ -7,6 +7,7 @@
   --ghost: #f7f7f7;
   --light-grey: #e6e6e6;
   --grey: #808080;
+  --charcoal: #242424;
   --dark-grey: #171717;
   --red: #e3474b;
 
@@ -132,6 +133,70 @@ img {
   padding: 12px 0;
 }
 
+.theme-options {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.theme-options input[type='radio'] {
+  display: none;
+}
+
+.theme-options label {
+  position: relative;
+  padding: 24px;
+  padding-left: 50px;
+  border: solid 2px var(--grey);
+  border-radius: 16px;
+  cursor: pointer;
+}
+
+.theme-options label::before {
+  content: '';
+  vertical-align: baseline;
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  margin-right: 12px;
+  border-radius: 1000px;
+  border: solid 2px var(--grey);
+  box-sizing: border-box;
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.theme-options label::after {
+  content: '';
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 1000px;
+  background-color: var(--primary);
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+}
+
+.theme-options input:checked + label::after {
+  opacity: 1;
+}
+
+.theme-options input:checked + label,
+.theme-options input:checked + label::before {
+  border-color: var(--primary);
+}
+
+.theme-options input#dark + label {
+  color: white;
+  background-color: black;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -202,4 +267,25 @@ img {
   .hide-on-big {
     display: none;
   }
+}
+
+.dark {
+  color: white;
+  background-color: black;
+}
+
+.dark .Settings_section {
+  background-color: var(--dark-grey);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #2c2c2c;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
 }

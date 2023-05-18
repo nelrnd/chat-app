@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { ThemeContext } from './contexts/theme-context';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from './firebase';
@@ -12,43 +14,46 @@ import './App.css';
 
 function App() {
   const [user] = useAuthState(auth);
+  const [theme, setTheme] = useState('light');
 
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <Layout>
-                {user && <Sidebar />}
-                <HomePage />
-              </Layout>
-            }
-          />
-          <Route
-            path="/chats/:chatId"
-            element={
-              <Layout>
-                {user && <Sidebar hideOnSmall={true} />}
-                <ChatPage />
-              </Layout>
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <Layout>
-                {user && <Sidebar hideOnSmall={true} />}
-                <SettingsPage />
-              </Layout>
-            }
-          />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      <div className="App">
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Layout theme={theme}>
+                  {user && <Sidebar />}
+                  <HomePage />
+                </Layout>
+              }
+            />
+            <Route
+              path="/chats/:chatId"
+              element={
+                <Layout theme={theme}>
+                  {user && <Sidebar hideOnSmall={true} />}
+                  <ChatPage />
+                </Layout>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <Layout theme={theme}>
+                  {user && <Sidebar hideOnSmall={true} />}
+                  <SettingsPage />
+                </Layout>
+              }
+            />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+          </Routes>
+        </BrowserRouter>
+      </div>
+    </ThemeContext.Provider>
   );
 }
 
