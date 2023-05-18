@@ -37,3 +37,17 @@
     height: 16px;
   }
 }
+
+.dark .FileInput.primary {
+  background-color: var(--primary-75);
+}
+.dark .FileInput.primary:hover {
+  background-color: var(--primary-50);
+}
+
+.dark .FileInput.secondary {
+  background-color: var(--charcoal);
+}
+.dark .FileInput.secondary:hover {
+  background-color: var(--dark-grey);
+}

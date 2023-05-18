@@ -129,13 +129,17 @@ const ChatPage = () => {
           .map((itm, id) => {
             if (itm.type) {
               return (
-                <ChatAction key={itm.date} type={itm.type} users={itm.users} />
+                <ChatAction
+                  key={itm.date + Math.floor(Math.random() * 100)}
+                  type={itm.type}
+                  users={itm.users}
+                />
               );
             } else {
               const followUp = checkFollowUp(itm, chat.messages[id + 1]);
               return chat.type === 'private' || itm.from === user.uid ? (
                 <Message
-                  key={itm.date}
+                  key={itm.date + Math.floor(Math.random() * 10)}
                   text={itm.text}
                   imageURL={itm.imageURL}
                   date={itm.date}
@@ -145,7 +149,7 @@ const ChatPage = () => {
                 />
               ) : (
                 <GroupMessage
-                  key={itm.date}
+                  key={itm.date + Math.floor(Math.random() * 10)}
                   text={itm.text}
                   imageURL={itm.imageURL}
                   date={itm.date}

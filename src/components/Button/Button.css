@@ -93,3 +93,24 @@
     height: 14px;
   }
 }
+
+.dark .Button.primary {
+  background-color: var(--primary-75);
+}
+.dark .Button.primary:hover {
+  background-color: var(--primary-50);
+}
+
+.dark .Button.secondary {
+  background-color: var(--charcoal);
+}
+.dark .Button.secondary:hover {
+  background-color: var(--dark-grey);
+}
+
+.dark .Button.primary:disabled:hover {
+  background-color: var(--primary-75);
+}
+.dark .Button.secondary:disabled:hover {
+  background-color: var(--charcoal);
+}

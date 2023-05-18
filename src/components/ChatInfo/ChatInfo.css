@@ -61,3 +61,8 @@
     max-width: 100%;
   }
 }
+
+.dark .ChatInfo {
+  background-color: var(--dark-grey);
+  border-left-color: var(--charcoal);
+}

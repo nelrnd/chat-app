@@ -39,3 +39,7 @@
     padding: 16px 20px;
   }
 }
+
+.dark .ChatInput {
+  background-color: var(--dark-grey);
+}

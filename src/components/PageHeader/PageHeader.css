@@ -17,3 +17,11 @@
 .PageHeader h2 {
   flex: 1;
 }
+
+.dark .PageHeader {
+  background-color: var(--dark-grey);
+}
+
+.dark .PageHeader.border {
+  border-bottom: solid 1px var(--charcoal);
+}

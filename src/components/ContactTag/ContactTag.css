@@ -17,3 +17,11 @@
 .ContactTag:hover {
   background-color: var(--ghost);
 }
+
+.dark .ContactTag {
+  border-color: var(--charcoal);
+}
+
+.dark .ContactTag:hover {
+  background-color: var(--charcoal);
+}

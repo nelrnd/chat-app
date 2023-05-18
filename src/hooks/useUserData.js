@@ -3,7 +3,6 @@ import { db } from '../firebase';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 
 export default function useUserData(userId) {
-  console.log(userId);
   const userRef = doc(db, 'users', userId);
   const [user, loading] = useDocumentData(userRef);
   if (!user && !loading) return null;

@@ -63,3 +63,21 @@
   margin-left: auto;
   margin-bottom: 6px;
 }
+
+.dark .ChatTab {
+  background-color: var(--dark-grey);
+}
+
+.dark .ChatTab.unread .message,
+.dark .ChatTab.unread .date {
+  color: white !important;
+}
+
+.dark .ChatTab.active {
+  background-color: var(--charcoal);
+  border-right-color: var(--primary-75);
+}
+
+.dark .ChatTab:hover {
+  background-color: var(--charcoal);
+}

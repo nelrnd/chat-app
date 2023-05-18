@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { collection, query, where } from 'firebase/firestore';
 import { db, auth, createChat } from '../../firebase';
-import logoImg from '../../assets/images/logo.png';
+import { ThemeContext } from '../../contexts/theme-context';
+import logoLight from '../../assets/images/logo-light.png';
+import logoDark from '../../assets/images/logo-dark.png';
 import IconButton from '../IconButton/IconButton';
 import TextInput from '../TextInput/TextInput';
 import ChatTab from '../ChatTab/ChatTab';
@@ -17,6 +19,8 @@ const Sidebar = ({ hideOnSmall = false }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
+  const { theme } = useContext(ThemeContext);
+
   const goToHome = () => navigate('/');
   const goToSettings = () => navigate('/settings');
 
@@ -27,7 +31,11 @@ const Sidebar = ({ hideOnSmall = false }) => {
   return (
     <aside className={`Sidebar ${hideOnSmall ? 'hide-on-small' : ''}`}>
       <header>
-        <img src={logoImg} alt="BooChat logo" onClick={goToHome} />
+        <img
+          src={theme === 'light' ? logoLight : logoDark}
+          alt="BooChat logo"
+          onClick={goToHome}
+        />
 
         <div className="row gap-16">
           <IconButton name="new" handleClick={openNewModal} />

@@ -40,3 +40,10 @@
   width: 24px;
   height: 24px;
 }
+
+.dark .IconButton.secondary {
+  background-color: var(--dark-grey);
+}
+.dark .IconButton.secondary:hover {
+  background-color: black;
+}

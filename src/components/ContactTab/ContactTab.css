@@ -23,3 +23,10 @@
 .ContactTab > .Icon {
   color: var(--primary);
 }
+
+.dark .ContactTab {
+  background-color: var(--dark-grey);
+}
+.dark .ContactTab:hover {
+  background-color: var(--charcoal);
+}

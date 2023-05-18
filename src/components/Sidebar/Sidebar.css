@@ -49,3 +49,8 @@
     width: 100%;
   }
 }
+
+.dark .Sidebar {
+  background-color: var(--dark-grey);
+  border-right-color: var(--charcoal);
+}

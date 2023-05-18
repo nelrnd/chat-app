@@ -55,3 +55,7 @@
     padding: 24px;
   }
 }
+
+.dark .Modal {
+  background-color: var(--dark-grey);
+}

@@ -1,7 +1,7 @@
 import './Layout.css';
 
-const Layout = ({ children }) => {
-  return <div className="Layout">{children}</div>;
+const Layout = ({ theme, children }) => {
+  return <div className={`Layout ${theme}`}>{children}</div>;
 };
 
 export default Layout;

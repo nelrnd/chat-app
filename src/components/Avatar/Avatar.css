@@ -3,7 +3,6 @@
   background-position: center;
   image-rendering: -webkit-optimize-contrast;
   border-radius: 1000px;
-  outline: solid 1px var(--ghost);
 }
 
 .Avatar.large {

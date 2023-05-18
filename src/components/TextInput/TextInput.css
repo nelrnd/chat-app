@@ -76,3 +76,12 @@ input[type='search'] {
     padding-left: 44px;
   }
 }
+
+.dark .TextInput > input {
+  color: white;
+  background-color: var(--charcoal);
+}
+
+.dark .TextInput > input:focus {
+  outline-color: var(--primary-75);
+}
