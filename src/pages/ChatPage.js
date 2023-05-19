@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { collection, query, where } from 'firebase/firestore';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { auth, db, readLastChatMessage } from '../firebase';
+import { auth, readLastChatMessage } from '../firebase';
 import { getChatName, getFormattedDate } from '../utils';
+import useMembersData from '../hooks/useMembersData';
 import PageHeader from '../components/PageHeader/PageHeader';
 import ChatInput from '../components/ChatInput/ChatInput';
 import useChatData from '../hooks/useChatData';
@@ -20,26 +19,26 @@ import ChatAction from '../components/ChatAction/ChatAction';
 
 // Check if a message is followed by another of same user and date
 const checkFollowUp = (msg1, msg2) => {
-  if (!msg2) return false;
   return (
+    msg2 &&
     msg1.from === msg2.from &&
     getFormattedDate(msg1.date) === getFormattedDate(msg2.date)
   );
 };
 
-const ChatPage = () => {
-  // get user info
-  const [user] = useAuthState(auth);
+// ChatPagePre allows ChatPage to get chat data from the start
+const ChatPagePre = () => {
   // get chat data
   const params = useParams();
   const chatId = params.chatId;
   const [chat] = useChatData(chatId);
-  const [messagesLength, setMessagesLength] = useState(0);
-  // get chat members info
-  const usersRef = collection(db, 'users');
-  const userIds = chat && chat.members.filter((u) => !u.left).map((u) => u.id);
-  const usersQuery = userIds && query(usersRef, where('id', 'in', userIds));
-  const [users] = useCollectionData(usersQuery);
+
+  return chat ? <ChatPage chat={chat} /> : null;
+};
+
+const ChatPage = ({ chat }) => {
+  const [user] = useAuthState(auth);
+  const [members] = useMembersData(chat.members.map((m) => m.id));
 
   const navigate = useNavigate();
 
@@ -50,152 +49,145 @@ const ChatPage = () => {
 
   const openImage = (url) => setShowImage(url);
   const closeImage = () => setShowImage(null);
-
   const openInfo = () => setShowInfo(true);
   const closeInfo = () => setShowInfo(false);
-
   const openEditModal = () => setShowEditModal(true);
   const closeEditModal = () => setShowEditModal(false);
-
   const openManageModal = () => setShowManageModal(true);
   const closeManageModal = () => setShowManageModal(false);
+
+  const scrollToBottom = (type) => {
+    setTimeout(() => {
+      if (bottomRef.current) {
+        bottomRef.current.scrollIntoView({ block: 'end', behavior: type });
+      }
+    }, 100);
+  };
 
   const enteringChat = useRef(true);
   const bottomRef = useRef(null);
 
-  const scrollToBottom = (type) => {
-    bottomRef.current.scrollIntoView({ block: 'end', behavior: type });
-  };
-
   useEffect(() => {
-    enteringChat.current = true;
-  }, [chatId]);
-
-  useEffect(() => {
-    if (!users || !chat || !bottomRef.current) return;
-    if (enteringChat.current) {
-      setTimeout(() => scrollToBottom('instant'), 50);
+    if (enteringChat.current === true) {
+      scrollToBottom('instant');
       enteringChat.current = false;
     } else {
       scrollToBottom('smooth');
     }
-  }, [users, chat]);
+  }, [chat.id, chat.messages, chat.actions]);
 
   useEffect(() => {
-    if (!chat) return;
-    if (chat.messages.length !== messagesLength) {
-      setMessagesLength(chat.messages.length);
-    }
-  }, [chat, messagesLength]);
+    (async () => {
+      await readLastChatMessage(chat.id, user.uid);
+    })();
+  }, [chat.id, chat.messages, user.uid]);
 
-  useEffect(() => {
-    const readLast = async () => {
-      await readLastChatMessage(chatId, user.uid);
-    };
-    readLast();
-  }, [chatId, user.uid, messagesLength]);
+  if (!user || !members) return null;
 
-  if (!user || !chat || !users) return null;
+  const otherUsers = members.filter((u) => u.id !== user.uid);
 
-  const otherUsers = users.filter((u) => u.id !== user.uid);
+  // Chat members that are not current user and that are not left
+  const otherMembers = members.filter(
+    (m) => m.id !== user.uid && !chat.members.find((u) => u.id === m.id).left
+  );
 
+  let messagesAndActions = chat.messages
+    .map((msg) => ({ ...msg, type: 'message' }))
+    .concat(chat.actions || [])
+    .sort((a, b) => a.date - b.date);
+
+  if (chat.type === 'private' && !otherMembers.length) return null;
+
+  // If current user is not or is no longer a chat member
   if (!chat.members.some((u) => u.id === user.uid && !u.left)) {
+    // Redirect to home page
     return <Navigate to="/" replace />;
-  }
+  } else {
+    return (
+      <div className="chat-layout">
+        <PageHeader>
+          <IconButton
+            name="back"
+            handleClick={() => navigate('/')}
+            hideOnBig={true}
+          />
 
-  if (chat.type === 'private' && !otherUsers.length) return null;
+          <h1>{chat.name || getChatName(otherMembers.map((u) => u.name))}</h1>
 
-  return (
-    <div className="chat-layout">
-      <PageHeader>
-        <IconButton
-          name="back"
-          handleClick={() => navigate('/')}
-          hideOnBig={true}
-        />
-        <h1>
-          {chat.name ||
-            (chat.type === 'private'
-              ? otherUsers[0] && otherUsers[0].name
-              : getChatName(otherUsers.map((u) => u.name)))}
-        </h1>
-        <IconButton name="info" handleClick={openInfo} />
-      </PageHeader>
+          <IconButton name="info" handleClick={openInfo} />
+        </PageHeader>
 
-      <main>
-        {chat.messages
-          .concat(chat.actions || [])
-          .sort((a, b) => a.date - b.date)
-          .map((itm, id) => {
-            if (itm.type) {
-              return (
-                <ChatAction
-                  key={itm.date + Math.floor(Math.random() * 100)}
-                  type={itm.type}
-                  users={itm.users}
-                />
-              );
-            } else {
-              const followUp = checkFollowUp(itm, chat.messages[id + 1]);
-              return chat.type === 'private' || itm.from === user.uid ? (
+        <main>
+          {messagesAndActions.map((item, id) => {
+            if (item.type === 'message') {
+              const props = {
+                text: item.text,
+                imageURL: item.imageURL,
+                date: item.date,
+                followUp: checkFollowUp(item, messagesAndActions[id + 1]),
+                handleImageClick: openImage,
+              };
+
+              return chat.type === 'private' || item.from === user.uid ? (
                 <Message
-                  key={itm.date + Math.floor(Math.random() * 10)}
-                  text={itm.text}
-                  imageURL={itm.imageURL}
-                  date={itm.date}
-                  isSent={itm.from === user.uid}
-                  followUp={followUp}
-                  handleImageClick={openImage}
+                  key={item.date + id}
+                  isSent={item.from === user.uid}
+                  {...props}
                 />
               ) : (
                 <GroupMessage
-                  key={itm.date + Math.floor(Math.random() * 10)}
-                  text={itm.text}
-                  imageURL={itm.imageURL}
-                  date={itm.date}
-                  userId={itm.from}
-                  followUp={followUp}
-                  handleImageClick={openImage}
+                  key={item.date + id}
+                  userId={item.from}
+                  {...props}
+                />
+              );
+            } else {
+              return (
+                <ChatAction
+                  key={item.date + id}
+                  type={item.type}
+                  users={item.users}
                 />
               );
             }
           })}
 
-        <div ref={bottomRef} />
-      </main>
+          <div ref={bottomRef} />
+        </main>
 
-      <ChatInput chatId={chatId} isFirstMessage={!messagesLength} />
+        <ChatInput chatId={chat.id} isFirstMessage={!chat.messages.length} />
 
-      <ChatInfo
-        chat={chat}
-        users={users}
-        userId={user.uid}
-        show={showInfo}
-        handleClose={closeInfo}
-        openEditModal={openEditModal}
-        openManageModal={openManageModal}
-      />
-      <ImageDisplay imageURL={showImage} handleClose={closeImage} />
+        <ChatInfo
+          chat={chat}
+          users={members}
+          userId={user.uid}
+          show={showInfo}
+          handleClose={closeInfo}
+          openEditModal={openEditModal}
+          openManageModal={openManageModal}
+        />
+        <ImageDisplay imageURL={showImage} handleClose={closeImage} />
 
-      {chat.type === 'group' && (
-        <>
-          <EditGroupModal
-            chat={chat}
-            userProfiles={otherUsers.map((user) => user.profileURL)}
-            show={showEditModal}
-            handleClose={closeEditModal}
-          />
-          <ManageUsersModal
-            users={users}
-            userId={user.uid}
-            chatId={chatId}
-            show={showManageModal}
-            handleClose={closeManageModal}
-          />
-        </>
-      )}
-    </div>
-  );
+        {chat.type === 'group' && (
+          <>
+            <EditGroupModal
+              chat={chat}
+              userProfiles={otherUsers.map((user) => user.profileURL)}
+              show={showEditModal}
+              handleClose={closeEditModal}
+            />
+            <ManageUsersModal
+              users={members}
+              userId={user.uid}
+              chatId={chat.id}
+              show={showManageModal}
+              handleClose={closeManageModal}
+            />
+          </>
+        )}
+      </div>
+    );
+  }
 };
 
-export default withAuth(ChatPage);
+export default withAuth(ChatPagePre);
