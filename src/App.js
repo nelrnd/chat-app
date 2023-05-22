@@ -14,7 +14,7 @@ import './App.css';
 
 function App() {
   const [user] = useAuthState(auth);
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>

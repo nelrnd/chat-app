@@ -26,6 +26,7 @@ const SettingsPage = () => {
 
   const handleThemeClick = (theme) => {
     setTheme(theme);
+    localStorage.setItem('theme', theme);
   };
 
   if (user) {
