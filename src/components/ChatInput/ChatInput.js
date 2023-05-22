@@ -36,19 +36,19 @@ const ChatInput = ({ chatId, isFirstMessage }) => {
     e.preventDefault();
     setText((t) => t.trim());
     if (!text && !image) return;
-
     const message = { from: auth.currentUser.uid, date: Date.now() };
     if (text) {
       message.text = text;
       setText('');
     }
     if (image) {
-      const imageURL = await uploadImage(image, auth.currentUser.uid);
-      message.imageURL = imageURL;
+      const imageCopy = image;
       handleClearImage();
+      const imageURL = await uploadImage(imageCopy, auth.currentUser.uid);
+      message.imageURL = imageURL;
     }
     if (isFirstMessage) {
-      createChatRefs(chatId);
+      await createChatRefs(chatId);
     }
 
     await incrementUnreadCount(chatId, auth.currentUser.uid);
