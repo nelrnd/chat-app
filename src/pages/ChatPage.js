@@ -31,13 +31,19 @@ const ChatPagePre = () => {
   // get chat data
   const params = useParams();
   const chatId = params.chatId;
-  const [chat] = useChatData(chatId);
+  const [user, userLoading] = useAuthState(auth);
+  const [chat, chatLoading] = useChatData(chatId);
 
-  return chat ? <ChatPage chat={chat} /> : null;
+  if (userLoading || chatLoading) return <p>Loading...</p>;
+
+  return chat && chat.members.some((u) => u.id === user.uid && !u.left) ? (
+    <ChatPage chat={chat} user={user} />
+  ) : (
+    <Navigate to="/" replace />
+  );
 };
 
-const ChatPage = ({ chat }) => {
-  const [user] = useAuthState(auth);
+const ChatPage = ({ chat, user }) => {
   const [members] = useMembersData(chat.members.map((m) => m.id));
 
   const navigate = useNavigate();
@@ -98,103 +104,93 @@ const ChatPage = ({ chat }) => {
 
   if (chat.type === 'private' && !otherMembers.length) return null;
 
-  // If current user is not or is no longer a chat member
-  if (!chat.members.some((u) => u.id === user.uid && !u.left)) {
-    // Redirect to home page
-    return <Navigate to="/" replace />;
-  } else {
-    return (
-      <div className="chat-layout">
-        <PageHeader>
-          <IconButton
-            name="back"
-            handleClick={() => navigate('/')}
-            hideOnBig={true}
-          />
-
-          <h1>{chat.name || getChatName(otherMembers.map((u) => u.name))}</h1>
-
-          <IconButton name="info" handleClick={openInfo} />
-        </PageHeader>
-
-        <main>
-          {messagesAndActions.map((item, id) => {
-            if (item.type === 'message') {
-              const props = {
-                text: item.text,
-                imageURL: item.imageURL,
-                date: item.date,
-                followUp: checkFollowUp(item, messagesAndActions[id + 1]),
-                handleImageClick: openImage,
-              };
-
-              return chat.type === 'private' || item.from === user.uid ? (
-                <Message
-                  key={item.date + id}
-                  isSent={item.from === user.uid}
-                  {...props}
-                />
-              ) : (
-                <GroupMessage
-                  key={item.date + id}
-                  user={members.find((m) => m.id === item.from)}
-                  {...props}
-                />
-              );
-            } else {
-              const names = item.users.map(
-                (u) => members.find((m) => m.id === u).name
-              );
-              return (
-                <ChatAction
-                  key={item.date + id}
-                  type={item.type}
-                  names={names}
-                />
-              );
-            }
-          })}
-
-          <div ref={bottomRef} />
-        </main>
-
-        <ChatInput chatId={chat.id} isFirstMessage={!chat.messages.length} />
-
-        <ChatInfo
-          chat={chat}
-          users={members.filter(
-            (m) => !chat.members.find((u) => u.id === m.id).left
-          )}
-          userId={user.uid}
-          show={showInfo}
-          handleClose={closeInfo}
-          openEditModal={openEditModal}
-          openManageModal={openManageModal}
+  return (
+    <div className="chat-layout">
+      <PageHeader>
+        <IconButton
+          name="back"
+          handleClick={() => navigate('/')}
+          hideOnBig={true}
         />
-        <ImageDisplay imageURL={showImage} handleClose={closeImage} />
 
-        {chat.type === 'group' && (
-          <>
-            <EditGroupModal
-              chat={chat}
-              userProfiles={otherUsers.map((user) => user.profileURL)}
-              show={showEditModal}
-              handleClose={closeEditModal}
-            />
-            <ManageUsersModal
-              users={members.filter(
-                (m) => !chat.members.find((u) => u.id === m.id).left
-              )}
-              userId={user.uid}
-              chatId={chat.id}
-              show={showManageModal}
-              handleClose={closeManageModal}
-            />
-          </>
+        <h1>{chat.name || getChatName(otherMembers.map((u) => u.name))}</h1>
+
+        <IconButton name="info" handleClick={openInfo} />
+      </PageHeader>
+
+      <main>
+        {messagesAndActions.map((item, id) => {
+          if (item.type === 'message') {
+            const props = {
+              text: item.text,
+              imageURL: item.imageURL,
+              date: item.date,
+              followUp: checkFollowUp(item, messagesAndActions[id + 1]),
+              handleImageClick: openImage,
+            };
+
+            return chat.type === 'private' || item.from === user.uid ? (
+              <Message
+                key={item.date + id}
+                isSent={item.from === user.uid}
+                {...props}
+              />
+            ) : (
+              <GroupMessage
+                key={item.date + id}
+                user={members.find((m) => m.id === item.from)}
+                {...props}
+              />
+            );
+          } else {
+            const names = item.users.map(
+              (u) => members.find((m) => m.id === u).name
+            );
+            return (
+              <ChatAction key={item.date + id} type={item.type} names={names} />
+            );
+          }
+        })}
+
+        <div ref={bottomRef} />
+      </main>
+
+      <ChatInput chatId={chat.id} isFirstMessage={!chat.messages.length} />
+
+      <ChatInfo
+        chat={chat}
+        users={members.filter(
+          (m) => !chat.members.find((u) => u.id === m.id).left
         )}
-      </div>
-    );
-  }
+        userId={user.uid}
+        show={showInfo}
+        handleClose={closeInfo}
+        openEditModal={openEditModal}
+        openManageModal={openManageModal}
+      />
+      <ImageDisplay imageURL={showImage} handleClose={closeImage} />
+
+      {chat.type === 'group' && (
+        <>
+          <EditGroupModal
+            chat={chat}
+            userProfiles={otherUsers.map((user) => user.profileURL)}
+            show={showEditModal}
+            handleClose={closeEditModal}
+          />
+          <ManageUsersModal
+            users={members.filter(
+              (m) => !chat.members.find((u) => u.id === m.id).left
+            )}
+            userId={user.uid}
+            chatId={chat.id}
+            show={showManageModal}
+            handleClose={closeManageModal}
+          />
+        </>
+      )}
+    </div>
+  );
 };
 
 export default withAuth(ChatPagePre);
