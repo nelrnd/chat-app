@@ -82,7 +82,7 @@ const ChatPage = ({ chat }) => {
     })();
   }, [chat.id, chat.messages, user.uid]);
 
-  if (!user || !members) return null;
+  if (!user || !members || members.length !== chat.members.length) return null;
 
   const otherUsers = members.filter((u) => u.id !== user.uid);
 
@@ -137,16 +137,19 @@ const ChatPage = ({ chat }) => {
               ) : (
                 <GroupMessage
                   key={item.date + id}
-                  userId={item.from}
+                  user={members.find((m) => m.id === item.from)}
                   {...props}
                 />
               );
             } else {
+              const names = item.users.map(
+                (u) => members.find((m) => m.id === u).name
+              );
               return (
                 <ChatAction
                   key={item.date + id}
                   type={item.type}
-                  users={item.users}
+                  names={names}
                 />
               );
             }
@@ -159,7 +162,9 @@ const ChatPage = ({ chat }) => {
 
         <ChatInfo
           chat={chat}
-          users={members}
+          users={members.filter(
+            (m) => !chat.members.find((u) => u.id === m.id).left
+          )}
           userId={user.uid}
           show={showInfo}
           handleClose={closeInfo}
@@ -177,7 +182,9 @@ const ChatPage = ({ chat }) => {
               handleClose={closeEditModal}
             />
             <ManageUsersModal
-              users={members}
+              users={members.filter(
+                (m) => !chat.members.find((u) => u.id === m.id).left
+              )}
               userId={user.uid}
               chatId={chat.id}
               show={showManageModal}

@@ -24,7 +24,8 @@
   color: var(--primary);
 }
 
-.dark .ContactTab {
+.dark .ContactTab,
+.dark .ContactTab.off:hover {
   background-color: var(--dark-grey);
 }
 .dark .ContactTab:hover {

@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-import { getUserName } from '../../firebase';
 import './ChatAction.css';
 
 const actions = {
@@ -11,29 +9,8 @@ const actions = {
   remove: (name1, name2) => `${name1} removed ${name2} from the group.`,
 };
 
-const ChatAction = ({ type, users }) => {
-  const [names, setNames] = useState([]);
-
-  useEffect(() => {
-    if (names.length === users.length) return;
-
-    const getName = async (user) => {
-      return await getUserName(user);
-    };
-
-    setNames((n) => []);
-
-    users.forEach(async (u) => {
-      const name = await getName(u);
-      setNames((n) => [...n, name]);
-    });
-  }, [users, names.length]);
-
-  return (
-    <p className="ChatAction">
-      {names.length === users.length ? actions[type](...names) : null}
-    </p>
-  );
+const ChatAction = ({ type, names }) => {
+  return <p className="ChatAction">{actions[type](...names)}</p>;
 };
 
 export default ChatAction;

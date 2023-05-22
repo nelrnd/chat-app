@@ -117,7 +117,6 @@ img {
   grid-template-rows: auto 1fr auto;
   max-height: 100%;
   overflow: hidden;
-  position: relative;
 }
 
 .chat-layout main {

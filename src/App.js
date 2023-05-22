@@ -25,7 +25,7 @@ function App() {
               path="/"
               element={
                 <Layout theme={theme}>
-                  {user && <Sidebar />}
+                  {user && <Sidebar userId={user.uid} />}
                   <HomePage />
                 </Layout>
               }
@@ -34,7 +34,7 @@ function App() {
               path="/chats/:chatId"
               element={
                 <Layout theme={theme}>
-                  {user && <Sidebar hideOnSmall={true} />}
+                  {user && <Sidebar userId={user.uid} hideOnSmall={true} />}
                   <ChatPage />
                 </Layout>
               }
@@ -43,7 +43,7 @@ function App() {
               path="/settings"
               element={
                 <Layout theme={theme}>
-                  {user && <Sidebar hideOnSmall={true} />}
+                  {user && <Sidebar userId={user.uid} hideOnSmall={true} />}
                   <SettingsPage />
                 </Layout>
               }

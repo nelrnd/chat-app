@@ -36,16 +36,16 @@ const ManageUsersModal = ({ users, userId, chatId, show, handleClose }) => {
     const addedUsers = currentUsers.filter((u) => users.indexOf(u) === -1);
     const removedUsers = users.filter((u) => currentUsers.indexOf(u) === -1);
 
-    addedUsers.forEach((user) => {
-      addUserToChat(user.id, chatId);
-      createChatRef(user.id, chatId);
-      addAction('add', [userId, user.id], chatId);
+    addedUsers.forEach(async (user) => {
+      await addUserToChat(user.id, chatId);
+      await createChatRef(user.id, chatId);
+      await addAction('add', [userId, user.id], chatId);
     });
 
-    removedUsers.forEach((user) => {
-      removeUserFromChat(user.id, chatId);
-      removeChatRef(user.id, chatId);
-      addAction('remove', [userId, user.id], chatId);
+    removedUsers.forEach(async (user) => {
+      await removeUserFromChat(user.id, chatId);
+      await removeChatRef(user.id, chatId);
+      await addAction('remove', [userId, user.id], chatId);
     });
 
     handleCancel();

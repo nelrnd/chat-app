@@ -1,8 +1,11 @@
 import { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
-import { collection, query, where } from 'firebase/firestore';
-import { db, auth, createChat } from '../../firebase';
+import {
+  useCollectionData,
+  useDocumentData,
+} from 'react-firebase-hooks/firestore';
+import { collection, doc, query, where } from 'firebase/firestore';
+import { db, createChat } from '../../firebase';
 import { ThemeContext } from '../../contexts/theme-context';
 import logoLight from '../../assets/images/logo-light.png';
 import logoDark from '../../assets/images/logo-dark.png';
@@ -10,12 +13,11 @@ import IconButton from '../IconButton/IconButton';
 import TextInput from '../TextInput/TextInput';
 import ChatTab from '../ChatTab/ChatTab';
 import ContactTab from '../ContactTab/ContactTab';
-import useUserData from '../../hooks/useUserData';
 import NewChatModal from '../Modals/NewChatModal';
 import './Sidebar.css';
 
-const Sidebar = ({ hideOnSmall = false }) => {
-  const [user] = useUserData(auth.currentUser.uid);
+const Sidebar = ({ userId, hideOnSmall = false }) => {
+  const [user] = useDocumentData(doc(db, 'users', userId));
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
@@ -27,6 +29,8 @@ const Sidebar = ({ hideOnSmall = false }) => {
   const [showNewModal, setShowNewModal] = useState(false);
   const openNewModal = () => setShowNewModal(true);
   const closeNewModal = () => setShowNewModal(false);
+
+  if (!user) return null;
 
   return (
     <aside className={`Sidebar ${hideOnSmall ? 'hide-on-small' : ''}`}>
@@ -43,26 +47,22 @@ const Sidebar = ({ hideOnSmall = false }) => {
         </div>
       </header>
 
-      {user && (
-        <SidebarSearchSection
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          userId={user.id}
-        />
-      )}
+      <SidebarSearchSection
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        userId={user.id}
+      />
 
-      {user && !!user.chats.length && !searchTerm && (
+      {!!user.chats.length && !searchTerm && (
         <SidebarChatsSection chatIds={user.chats} />
       )}
 
-      {user && (
-        <NewChatModal
-          userId={user.id}
-          userChats={user.chats}
-          show={showNewModal}
-          handleClose={closeNewModal}
-        />
-      )}
+      <NewChatModal
+        userId={user.id}
+        userChats={user.chats}
+        show={showNewModal}
+        handleClose={closeNewModal}
+      />
     </aside>
   );
 };
@@ -71,6 +71,7 @@ const SidebarSearchSection = ({ searchTerm, setSearchTerm, userId }) => {
   const usersCollection = collection(db, 'users');
   const searchQuery = query(usersCollection, where('email', '==', searchTerm));
   const [results] = useCollectionData(searchQuery);
+
   const navigate = useNavigate();
 
   const handleChange = (e) => setSearchTerm(e.target.value);
@@ -96,15 +97,15 @@ const SidebarSearchSection = ({ searchTerm, setSearchTerm, userId }) => {
         <>
           <p>Search results:</p>
           {results && results.length ? (
-            results
-              .filter((user) => user.id !== userId)
-              .map((user) => (
-                <ContactTab
-                  key={user.id}
-                  userId={user.id}
-                  handleClick={() => handleClick(user.id)}
-                />
-              ))
+            results.map((user) => (
+              <ContactTab
+                key={user.id}
+                userId={user.id}
+                handleClick={
+                  user.id !== userId ? () => handleClick(user.id) : null
+                }
+              />
+            ))
           ) : (
             <p className="no-result">No user founds...</p>
           )}
