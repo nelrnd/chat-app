@@ -47,6 +47,10 @@ export async function signInWithGoogle() {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
     await createUser(auth.currentUser);
+    // Add user to global chat
+    await addUser(auth.currentUser.uid, 'global_chat');
+    await createChatRef(auth.currentUser.uid, 'global_chat');
+    await addAction('join', [auth.currentUser.uid], 'global_chat');
   } catch (err) {
     console.error(err);
   }

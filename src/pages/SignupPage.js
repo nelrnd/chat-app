@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { auth, createUser, signInWithGoogle } from '../firebase';
+import {
+  addAction,
+  addUser,
+  auth,
+  createChatRef,
+  createUser,
+  signInWithGoogle,
+} from '../firebase';
 import { Link, Navigate } from 'react-router-dom';
 import { validateEmail } from '../utils';
 import JoinLayout from '../components/JoinLayout/JoinLayout';
@@ -34,6 +41,10 @@ const SignupPage = () => {
       await createUserWithEmailAndPassword(auth, email, pwd);
       await updateProfile(auth.currentUser, { displayName: name });
       await createUser(auth.currentUser);
+      // Add user to global chat
+      await addUser(auth.currentUser.uid, 'global_chat');
+      await createChatRef(auth.currentUser.uid, 'global_chat');
+      await addAction('join', [auth.currentUser.uid], 'global_chat');
     } catch (err) {
       if (err.code === 'auth/email-already-in-use') {
         const errText = 'A user with that email already exists';
